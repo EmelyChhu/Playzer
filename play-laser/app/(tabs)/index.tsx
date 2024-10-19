@@ -1,15 +1,21 @@
 import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import { View } from '@/components/Themed';
+import { PaperProvider, Text, Button } from 'react-native-paper';
 
 export default function TabOneScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
+    <PaperProvider>
+      <View style={styles.container}>
+        <Text style={styles.title}variant="displayLarge">
+          Welcome to PlayLaser!
+        </Text>
+        <Button mode="contained">Sign up</Button>
+        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <EditScreenInfo path="app/(tabs)/index.tsx" />
+      </View>
+    </PaperProvider>
   );
 }
 
@@ -20,8 +26,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    padding: 25,
   },
   separator: {
     marginVertical: 30,
