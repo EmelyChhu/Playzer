@@ -1,18 +1,19 @@
 import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
-import { View, Text } from '@/components/Themed';
-import { PaperProvider } from 'react-native-paper';
+import { View } from '@/components/Themed';
+import { PaperProvider, Text, Button } from 'react-native-paper';
+import { router } from 'expo-router';
 
-export default function HomeScreen() {
+export default function EntryScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title}>
-          Home
+        <Text style={styles.title}variant="displayLarge">
+          Welcome to PlayLaser!
         </Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <EditScreenInfo path="app/(tabs)/index.tsx" />
+        <Button mode="contained" onPress={() => router.push("/(tabs)")}>Sign up</Button>
       </View>
     </PaperProvider>
   );
@@ -25,8 +26,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    padding: 25,
+    textAlign: 'center',
   },
   separator: {
     marginVertical: 30,
