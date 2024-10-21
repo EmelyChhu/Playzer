@@ -46,7 +46,7 @@ export default function TabLayout() {
           title: 'Profile',
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/profile/settings" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
