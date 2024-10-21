@@ -7,6 +7,9 @@ import { BleManager } from 'react-native-ble-plx';
 import { useState, useEffect, useRef } from 'react';
 import { btoa, atob } from 'react-native-quick-base64';
 
+import DeviceModal from "./../device-connection-modal";
+import useBLE from "../../useBLE";
+
 // const bleManager = new BleManager();
 
 // // Android Bluetooth Permission
@@ -35,16 +38,43 @@ import { btoa, atob } from 'react-native-quick-base64';
 
 // requestLocationPermission();
 
-const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
-const STEP_DATA_CHAR_UUID = "beefcafe-36e1-4688-b7f5-00000000000b";
+// const SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+// const STEP_DATA_CHAR_UUID = "beefcafe-36e1-4688-b7f5-00000000000b";
 
 export default function WorkoutScreen() {
-  const [deviceID, setDeviceID] = useState(null);
-  const [connectionStatus, setConnectionStatus] = useState("Searching...");
-  const [time, setTime] = useState("");
-  const [stepCount, setStepCount] = useState(0);
-  const [stepDataChar, setStepDataChar] = useState(null);
+  // const [deviceID, setDeviceID] = useState(null);
+  // const [connectionStatus, setConnectionStatus] = useState("Searching...");
+  // const [stepCount, setStepCount] = useState(0);
+  // const [stepDataChar, setStepDataChar] = useState(null);
+  const {
+    requestPermissions,
+    scanForPeripherals,
+    allDevices,
+    connectToDevice,
+    connectedDevice,
+    heartRate,
+    disconnectFromDevice,
+    sendData,
+  } = useBLE();
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
+  const [time, setTime] = useState("");
+
+  const scanForDevices = async () => {
+    const isPermissionsEnabled = await requestPermissions();
+    if (isPermissionsEnabled) {
+      scanForPeripherals();
+    }
+  };
+
+  const hideModal = () => {
+    setIsModalVisible(false);
+  };
+
+  const openModal = async () => {
+    scanForDevices();
+    setIsModalVisible(true);
+  };
   // const deviceRef = useRef(null);
 
   // const searchAndConnectToDevice = () => {
@@ -130,11 +160,38 @@ export default function WorkoutScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Workout</Text>
-      <Text>{connectionStatus}</Text>
+      {/*<Text>{connectionStatus}</Text>*/}
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Text>Time between laser intervals:</Text>
       <TextInput style={styles.input} value={time} onChangeText={setTime}></TextInput>
-      <Button mode="contained" onPress={() => console.log("Send data to ESP32 with " + time + " second intervals")}>Start workout</Button>
+      {/* {connectedDevice ?
+      <Button style={styles.button} mode="contained" onPress={() => sendData(connectedDevice, time)}>Start workout</Button>
+      : null} */}
+      <Button style={styles.button} mode="contained" onPress={() => sendData(connectedDevice, time)}>Start workout</Button>
+      {connectedDevice ? (
+          <>
+            <Text>Device Connected</Text>
+          </>
+        ) : (
+          <Text>
+            Please Connect to a Device
+          </Text>
+        )}
+      <Button
+        style={styles.button}
+        mode="contained"
+        onPress={connectedDevice ? disconnectFromDevice : openModal}
+      >
+        <Text>
+          {connectedDevice ? "Disconnect" : "Connect"}
+        </Text>
+      </Button>
+      <DeviceModal
+        closeModal={hideModal}
+        visible={isModalVisible}
+        connectToPeripheral={connectToDevice}
+        devices={allDevices}
+      />
     </View>
   );
 }
@@ -158,5 +215,8 @@ const styles = StyleSheet.create({
     height: 40,
     width: 100,
     margin: 12,
-  }
+  },
+  button: {
+    margin: 15,
+  },
 });

@@ -11,6 +11,7 @@ import {
 import * as ExpoDevice from "expo-device";
 
 import base64 from "react-native-base64";
+import {atob, btoa} from 'react-native-quick-base64';
 
 const HEART_RATE_UUID = "0000180d-0000-1000-8000-00805f9b34fb";
 const HEART_RATE_CHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb";
@@ -23,6 +24,10 @@ interface BluetoothLowEnergyApi {
   connectedDevice: Device | null;
   allDevices: Device[];
   heartRate: number;
+  sendData(
+    device: Device,
+    data: string,
+  ): Promise<void>;
 }
 
 function useBLE(): BluetoothLowEnergyApi {
@@ -165,6 +170,19 @@ function useBLE(): BluetoothLowEnergyApi {
     }
   };
 
+  const sendData = async (device: Device, data: string) => {
+    try {
+      await bleManager.writeCharacteristicWithResponseForDevice(
+        device.id,
+        HEART_RATE_UUID,
+        HEART_RATE_CHARACTERISTIC,
+        btoa(data),
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return {
     scanForPeripherals,
     requestPermissions,
@@ -173,6 +191,7 @@ function useBLE(): BluetoothLowEnergyApi {
     connectedDevice,
     disconnectFromDevice,
     heartRate,
+    sendData
   };
 }
 
