@@ -13,7 +13,8 @@ export default function EntryScreen() {
           Welcome to PlayLaser!
         </Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <Button mode="contained" onPress={() => router.push("/(tabs)")}>Sign up</Button>
+        <Button style={styles.button} mode="contained" onPress={() => router.push("/auth/sign-up")}>Sign up</Button>
+        <Button style={styles.button} textColor='red' onPress={() => router.push("/auth/log-in")}>Log in</Button>
       </View>
     </PaperProvider>
   );
@@ -33,5 +34,8 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  button: {
+    margin: 10,
   },
 });
