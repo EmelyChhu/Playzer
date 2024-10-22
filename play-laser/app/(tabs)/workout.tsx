@@ -162,12 +162,13 @@ export default function WorkoutScreen() {
       <Text style={styles.title}>Workout</Text>
       {/*<Text>{connectionStatus}</Text>*/}
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Text>Time between laser intervals:</Text>
-      <TextInput style={styles.input} value={time} onChangeText={setTime}></TextInput>
-      {/* {connectedDevice ?
-      <Button style={styles.button} mode="contained" onPress={() => sendData(connectedDevice, time)}>Start workout</Button>
-      : null} */}
-      <Button style={styles.button} mode="contained" onPress={() => sendData(connectedDevice, time)}>Start workout</Button>
+      {connectedDevice ?
+        <View>
+          <Text>Time between laser intervals:</Text>
+          <TextInput style={styles.input} value={time} onChangeText={setTime}></TextInput>
+          <Button style={styles.button} mode="contained" onPress={() => sendData(connectedDevice, time)}>Start workout</Button>
+        </View>
+      : null}
       {connectedDevice ? (
           <>
             <Text>Device Connected</Text>
@@ -215,6 +216,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: 100,
     margin: 12,
+    alignSelf: 'center',
   },
   button: {
     margin: 15,

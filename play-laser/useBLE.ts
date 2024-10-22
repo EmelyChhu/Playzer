@@ -13,8 +13,8 @@ import * as ExpoDevice from "expo-device";
 import base64 from "react-native-base64";
 import {atob, btoa} from 'react-native-quick-base64';
 
-const HEART_RATE_UUID = "0000180d-0000-1000-8000-00805f9b34fb";
-const HEART_RATE_CHARACTERISTIC = "00002a37-0000-1000-8000-00805f9b34fb";
+const SERVICE_UUID = "0e5b8089-499c-45a4-abf8-a03b72e250f3";
+const NUM_CHARACTERISTIC_UUID = "615a8742-09c4-4e94-a410-a9db961335d1";
 
 interface BluetoothLowEnergyApi {
   requestPermissions(): Promise<boolean>;
@@ -100,7 +100,7 @@ function useBLE(): BluetoothLowEnergyApi {
       if (error) {
         console.log(error);
       }
-      if (device && device.name?.includes("CorSense")) {
+      if (device && device.name?.includes("PlayLaser")) {
         setAllDevices((prevState: Device[]) => {
           if (!isDuplicteDevice(prevState, device)) {
             return [...prevState, device];
@@ -161,8 +161,8 @@ function useBLE(): BluetoothLowEnergyApi {
   const startStreamingData = async (device: Device) => {
     if (device) {
       device.monitorCharacteristicForService(
-        HEART_RATE_UUID,
-        HEART_RATE_CHARACTERISTIC,
+        SERVICE_UUID,
+        NUM_CHARACTERISTIC_UUID,
         onHeartRateUpdate
       );
     } else {
@@ -172,11 +172,24 @@ function useBLE(): BluetoothLowEnergyApi {
 
   const sendData = async (device: Device, data: string) => {
     try {
-      await bleManager.writeCharacteristicWithResponseForDevice(
+      await bleManager.writeCharacteristicWithoutResponseForDevice(
         device.id,
-        HEART_RATE_UUID,
-        HEART_RATE_CHARACTERISTIC,
+        SERVICE_UUID,
+        NUM_CHARACTERISTIC_UUID,
         btoa(data),
+      );
+    } catch (error) {
+      console.log(error);
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    try {
+      await bleManager.writeCharacteristicWithoutResponseForDevice(
+        device.id,
+        SERVICE_UUID,
+        NUM_CHARACTERISTIC_UUID,
+        btoa("hello"),
       );
     } catch (error) {
       console.log(error);
