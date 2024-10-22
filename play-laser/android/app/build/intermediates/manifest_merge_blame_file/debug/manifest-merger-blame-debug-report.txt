@@ -1,0 +1,316 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.anonymous.playlaser"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="23"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+11-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:4:3-75
+11-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:4:20-73
+12    <uses-permission android:name="android.permission.INTERNET" />
+12-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:2:3-64
+12-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:2:20-62
+13    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+13-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:3:3-77
+13-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:3:20-75
+14    <uses-permission android:name="android.permission.VIBRATE" />
+14-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:5:3-63
+14-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:5:20-61
+15    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+15-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:6:3-78
+15-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:6:20-76
+16    <uses-permission
+16-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:7:3-65
+17        android:name="android.permission.BLUETOOTH"
+17-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:7:20-63
+18        android:maxSdkVersion="30" />
+18-->[com.polidea.rxandroidble2:rxandroidble:1.17.2] C:\Users\emely\.gradle\caches\8.8\transforms\1d5e6940f6719559e83ad73289893ffa\transformed\jetified-rxandroidble-1.17.2\AndroidManifest.xml:12:9-35
+19    <uses-permission
+19-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:8:3-71
+20        android:name="android.permission.BLUETOOTH_ADMIN"
+20-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:8:20-69
+21        android:maxSdkVersion="30" />
+21-->[com.polidea.rxandroidble2:rxandroidble:1.17.2] C:\Users\emely\.gradle\caches\8.8\transforms\1d5e6940f6719559e83ad73289893ffa\transformed\jetified-rxandroidble-1.17.2\AndroidManifest.xml:15:9-35
+22    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+22-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:9:3-79
+22-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:9:20-76
+23
+24    <queries>
+24-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:11:3-17:13
+25        <intent>
+25-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:12:5-16:14
+26            <action android:name="android.intent.action.VIEW" />
+26-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:13:7-58
+26-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:13:15-56
+27
+28            <category android:name="android.intent.category.BROWSABLE" />
+28-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:14:7-67
+28-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:14:17-65
+29
+30            <data android:scheme="https" />
+30-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:15:7-37
+30-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:15:13-35
+31        </intent>
+32
+33        <package android:name="host.exp.exponent" /> <!-- Query open documents -->
+33-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:8:9-53
+33-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:8:18-50
+34        <intent>
+34-->[:expo-file-system] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-file-system\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:15:9-17:18
+35            <action android:name="android.intent.action.OPEN_DOCUMENT_TREE" />
+35-->[:expo-file-system] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-file-system\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:16:13-79
+35-->[:expo-file-system] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-file-system\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:16:21-76
+36        </intent>
+37        <intent>
+37-->[:expo-web-browser] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-web-browser\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:8:9-12:18
+38
+39            <!-- Required for opening tabs if targeting API 30 -->
+40            <action android:name="android.support.customtabs.action.CustomTabsService" />
+40-->[:expo-web-browser] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-web-browser\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-90
+40-->[:expo-web-browser] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-web-browser\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:11:21-87
+41        </intent>
+42    </queries>
+43
+44    <permission
+44-->[androidx.core:core:1.12.0] C:\Users\emely\.gradle\caches\8.8\transforms\dcc50b8211765f8268c7608925311678\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
+45        android:name="com.anonymous.playlaser.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+45-->[androidx.core:core:1.12.0] C:\Users\emely\.gradle\caches\8.8\transforms\dcc50b8211765f8268c7608925311678\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
+46        android:protectionLevel="signature" />
+46-->[androidx.core:core:1.12.0] C:\Users\emely\.gradle\caches\8.8\transforms\dcc50b8211765f8268c7608925311678\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
+47
+48    <uses-permission android:name="com.anonymous.playlaser.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" /> <!-- required for API 23 - 30, no android:maxSdkVersion because of a potential breaking change -->
+48-->[androidx.core:core:1.12.0] C:\Users\emely\.gradle\caches\8.8\transforms\dcc50b8211765f8268c7608925311678\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
+48-->[androidx.core:core:1.12.0] C:\Users\emely\.gradle\caches\8.8\transforms\dcc50b8211765f8268c7608925311678\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+49    <!-- TODO: add android:maxSdkVersion on 2.0.0 -->
+50    <uses-permission-sdk-23 android:name="android.permission.ACCESS_COARSE_LOCATION" />
+50-->[com.polidea.rxandroidble2:rxandroidble:1.17.2] C:\Users\emely\.gradle\caches\8.8\transforms\1d5e6940f6719559e83ad73289893ffa\transformed\jetified-rxandroidble-1.17.2\AndroidManifest.xml:18:5-88
+50-->[com.polidea.rxandroidble2:rxandroidble:1.17.2] C:\Users\emely\.gradle\caches\8.8\transforms\1d5e6940f6719559e83ad73289893ffa\transformed\jetified-rxandroidble-1.17.2\AndroidManifest.xml:18:29-85
+51    <uses-permission-sdk-23 android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- API 31+ -->
+51-->[com.polidea.rxandroidble2:rxandroidble:1.17.2] C:\Users\emely\.gradle\caches\8.8\transforms\1d5e6940f6719559e83ad73289893ffa\transformed\jetified-rxandroidble-1.17.2\AndroidManifest.xml:19:5-86
+51-->[com.polidea.rxandroidble2:rxandroidble:1.17.2] C:\Users\emely\.gradle\caches\8.8\transforms\1d5e6940f6719559e83ad73289893ffa\transformed\jetified-rxandroidble-1.17.2\AndroidManifest.xml:19:29-83
+52    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+52-->[com.polidea.rxandroidble2:rxandroidble:1.17.2] C:\Users\emely\.gradle\caches\8.8\transforms\1d5e6940f6719559e83ad73289893ffa\transformed\jetified-rxandroidble-1.17.2\AndroidManifest.xml:21:5-76
+52-->[com.polidea.rxandroidble2:rxandroidble:1.17.2] C:\Users\emely\.gradle\caches\8.8\transforms\1d5e6940f6719559e83ad73289893ffa\transformed\jetified-rxandroidble-1.17.2\AndroidManifest.xml:21:22-73
+53    <uses-permission
+53-->[com.polidea.rxandroidble2:rxandroidble:1.17.2] C:\Users\emely\.gradle\caches\8.8\transforms\1d5e6940f6719559e83ad73289893ffa\transformed\jetified-rxandroidble-1.17.2\AndroidManifest.xml:22:5-25:31
+54        android:name="android.permission.BLUETOOTH_SCAN"
+54-->[com.polidea.rxandroidble2:rxandroidble:1.17.2] C:\Users\emely\.gradle\caches\8.8\transforms\1d5e6940f6719559e83ad73289893ffa\transformed\jetified-rxandroidble-1.17.2\AndroidManifest.xml:23:9-57
+55        android:usesPermissionFlags="neverForLocation" />
+55-->[com.polidea.rxandroidble2:rxandroidble:1.17.2] C:\Users\emely\.gradle\caches\8.8\transforms\1d5e6940f6719559e83ad73289893ffa\transformed\jetified-rxandroidble-1.17.2\AndroidManifest.xml:24:9-55
+56
+57    <application
+57-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:18:3-36:17
+58        android:name="com.anonymous.playlaser.MainApplication"
+58-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:18:16-47
+59        android:allowBackup="true"
+59-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:18:162-188
+60        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+60-->[androidx.core:core:1.12.0] C:\Users\emely\.gradle\caches\8.8\transforms\dcc50b8211765f8268c7608925311678\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
+61        android:debuggable="true"
+62        android:extractNativeLibs="false"
+63        android:icon="@mipmap/ic_launcher"
+63-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:18:81-115
+64        android:label="@string/app_name"
+64-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:18:48-80
+65        android:roundIcon="@mipmap/ic_launcher_round"
+65-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:18:116-161
+66        android:theme="@style/AppTheme"
+66-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:18:189-220
+67        android:usesCleartextTraffic="true" >
+67-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\debug\AndroidManifest.xml:6:18-53
+68        <meta-data
+68-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:19:5-83
+69            android:name="expo.modules.updates.ENABLED"
+69-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:19:16-59
+70            android:value="false" />
+70-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:19:60-81
+71        <meta-data
+71-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:20:5-105
+72            android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH"
+72-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:20:16-80
+73            android:value="ALWAYS" />
+73-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:20:81-103
+74        <meta-data
+74-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:21:5-99
+75            android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS"
+75-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:21:16-79
+76            android:value="0" />
+76-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:21:80-97
+77
+78        <activity
+78-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:22:5-34:16
+79            android:name="com.anonymous.playlaser.MainActivity"
+79-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:22:15-43
+80            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode"
+80-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:22:44-134
+81            android:exported="true"
+81-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:22:256-279
+82            android:launchMode="singleTask"
+82-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:22:135-166
+83            android:screenOrientation="portrait"
+83-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:22:280-316
+84            android:theme="@style/Theme.App.SplashScreen"
+84-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:22:210-255
+85            android:windowSoftInputMode="adjustResize" >
+85-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:22:167-209
+86            <intent-filter>
+86-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:23:7-26:23
+87                <action android:name="android.intent.action.MAIN" />
+87-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:24:9-60
+87-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:24:17-58
+88
+89                <category android:name="android.intent.category.LAUNCHER" />
+89-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:25:9-68
+89-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:25:19-66
+90            </intent-filter>
+91            <intent-filter>
+91-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:27:7-33:23
+92                <action android:name="android.intent.action.VIEW" />
+92-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:13:7-58
+92-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:13:15-56
+93
+94                <category android:name="android.intent.category.DEFAULT" />
+94-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:29:9-67
+94-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:29:19-65
+95                <category android:name="android.intent.category.BROWSABLE" />
+95-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:14:7-67
+95-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:14:17-65
+96
+97                <data android:scheme="myapp" />
+97-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:15:7-37
+97-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:15:13-35
+98                <data android:scheme="com.anonymous.playlaser" />
+98-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:15:7-37
+98-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:15:13-35
+99            </intent-filter>
+100        </activity>
+101        <activity
+101-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:35:5-106
+102            android:name="com.facebook.react.devsupport.DevSettingsActivity"
+102-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:35:15-79
+103            android:exported="false" />
+103-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:35:80-104
+104        <activity
+104-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:12:9-25:20
+105            android:name="expo.modules.devlauncher.launcher.DevLauncherActivity"
+105-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-81
+106            android:exported="true"
+106-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:14:13-36
+107            android:launchMode="singleTask"
+107-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:15:13-44
+108            android:theme="@style/Theme.DevLauncher.LauncherActivity" >
+108-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:16:13-70
+109            <intent-filter>
+109-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:17:13-24:29
+110                <action android:name="android.intent.action.VIEW" />
+110-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:13:7-58
+110-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:13:15-56
+111
+112                <category android:name="android.intent.category.DEFAULT" />
+112-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:29:9-67
+112-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:29:19-65
+113                <category android:name="android.intent.category.BROWSABLE" />
+113-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:14:7-67
+113-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:14:17-65
+114
+115                <data android:scheme="expo-dev-launcher" />
+115-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:15:7-37
+115-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:15:13-35
+116            </intent-filter>
+117        </activity>
+118        <activity
+118-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:26:9-29:70
+119            android:name="expo.modules.devlauncher.launcher.errors.DevLauncherErrorActivity"
+119-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:27:13-93
+120            android:screenOrientation="portrait"
+120-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:28:13-49
+121            android:theme="@style/Theme.DevLauncher.ErrorActivity" />
+121-->[:expo-dev-launcher] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-launcher\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:29:13-67
+122        <activity
+122-->[:expo-dev-menu] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-menu\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:8:9-21:20
+123            android:name="expo.modules.devmenu.DevMenuActivity"
+123-->[:expo-dev-menu] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-menu\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:9:13-64
+124            android:exported="true"
+124-->[:expo-dev-menu] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-menu\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:10:13-36
+125            android:launchMode="singleTask"
+125-->[:expo-dev-menu] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-menu\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-44
+126            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar" >
+126-->[:expo-dev-menu] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-menu\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:12:13-75
+127            <intent-filter>
+127-->[:expo-dev-menu] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-dev-menu\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-20:29
+128                <action android:name="android.intent.action.VIEW" />
+128-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:13:7-58
+128-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:13:15-56
+129
+130                <category android:name="android.intent.category.DEFAULT" />
+130-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:29:9-67
+130-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:29:19-65
+131                <category android:name="android.intent.category.BROWSABLE" />
+131-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:14:7-67
+131-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:14:17-65
+132
+133                <data android:scheme="expo-dev-menu" />
+133-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:15:7-37
+133-->C:\PlayLaser-Mobile-App\play-laser\android\app\src\main\AndroidManifest.xml:15:13-35
+134            </intent-filter>
+135        </activity>
+136
+137        <provider
+137-->[:expo-file-system] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-file-system\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:21:9-30:20
+138            android:name="expo.modules.filesystem.FileSystemFileProvider"
+138-->[:expo-file-system] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-file-system\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:22:13-74
+139            android:authorities="com.anonymous.playlaser.FileSystemFileProvider"
+139-->[:expo-file-system] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-file-system\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:23:13-74
+140            android:exported="false"
+140-->[:expo-file-system] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-file-system\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:24:13-37
+141            android:grantUriPermissions="true" >
+141-->[:expo-file-system] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-file-system\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:25:13-47
+142            <meta-data
+142-->[:expo-file-system] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-file-system\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:27:13-29:70
+143                android:name="android.support.FILE_PROVIDER_PATHS"
+143-->[:expo-file-system] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-file-system\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:28:17-67
+144                android:resource="@xml/file_system_provider_paths" />
+144-->[:expo-file-system] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-file-system\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:29:17-67
+145        </provider>
+146
+147        <meta-data
+147-->[:expo-modules-core] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-modules-core\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:9:9-11:89
+148            android:name="org.unimodules.core.AppLoader#react-native-headless"
+148-->[:expo-modules-core] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-modules-core\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:10:13-79
+149            android:value="expo.modules.adapters.react.apploader.RNHeadlessAppLoader" />
+149-->[:expo-modules-core] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-modules-core\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-86
+150        <meta-data
+150-->[:expo-modules-core] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-modules-core\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:12:9-15:45
+151            android:name="com.facebook.soloader.enabled"
+151-->[:expo-modules-core] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-modules-core\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-57
+152            android:value="true" />
+152-->[:expo-modules-core] C:\PlayLaser-Mobile-App\play-laser\node_modules\expo-modules-core\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:14:13-33
+153
+154        <provider
+154-->[androidx.emoji2:emoji2:1.2.0] C:\Users\emely\.gradle\caches\8.8\transforms\b38e0421285d5203e7af8313acb095f0\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+155            android:name="androidx.startup.InitializationProvider"
+155-->[androidx.emoji2:emoji2:1.2.0] C:\Users\emely\.gradle\caches\8.8\transforms\b38e0421285d5203e7af8313acb095f0\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:25:13-67
+156            android:authorities="com.anonymous.playlaser.androidx-startup"
+156-->[androidx.emoji2:emoji2:1.2.0] C:\Users\emely\.gradle\caches\8.8\transforms\b38e0421285d5203e7af8313acb095f0\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:26:13-68
+157            android:exported="false" >
+157-->[androidx.emoji2:emoji2:1.2.0] C:\Users\emely\.gradle\caches\8.8\transforms\b38e0421285d5203e7af8313acb095f0\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:27:13-37
+158            <meta-data
+158-->[androidx.emoji2:emoji2:1.2.0] C:\Users\emely\.gradle\caches\8.8\transforms\b38e0421285d5203e7af8313acb095f0\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+159                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+159-->[androidx.emoji2:emoji2:1.2.0] C:\Users\emely\.gradle\caches\8.8\transforms\b38e0421285d5203e7af8313acb095f0\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:30:17-75
+160                android:value="androidx.startup" />
+160-->[androidx.emoji2:emoji2:1.2.0] C:\Users\emely\.gradle\caches\8.8\transforms\b38e0421285d5203e7af8313acb095f0\transformed\jetified-emoji2-1.2.0\AndroidManifest.xml:31:17-49
+161            <meta-data
+161-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\emely\.gradle\caches\8.8\transforms\3e908c36f21354315fad645777f7e8d9\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:31:13-33:52
+162                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+162-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\emely\.gradle\caches\8.8\transforms\3e908c36f21354315fad645777f7e8d9\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:32:17-78
+163                android:value="androidx.startup" />
+163-->[androidx.lifecycle:lifecycle-process:2.4.1] C:\Users\emely\.gradle\caches\8.8\transforms\3e908c36f21354315fad645777f7e8d9\transformed\jetified-lifecycle-process-2.4.1\AndroidManifest.xml:33:17-49
+164        </provider>
+165    </application>
+166
+167</manifest>
