@@ -54,6 +54,7 @@ export default function EntryScreen() {
             <TextInput
                 style={styles.input}
                 mode="outlined"
+                secureTextEntry={true}
                 label="Password"
                 value={password}
                 onChangeText={setPassword}/>

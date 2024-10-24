@@ -88,6 +88,7 @@ export default function EntryScreen() {
             <TextInput
                 style={styles.input}
                 mode="outlined"
+                secureTextEntry={true}
                 error={validPasswordInput ? false : true}
                 textColor={validPasswordInput ? undefined : "pink"}
                 label="Password"
