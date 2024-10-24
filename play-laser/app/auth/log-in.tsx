@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   label: {
     textAlign: 'left',
     width: '100%',
-    margin: 5,
+    marginTop: 10,
   },
   separator: {
     marginVertical: 30,
@@ -89,11 +89,11 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '100%',
-    height: 75,
+    height: 60,
   },
   input: {
-    flex: 1,
-    marginBottom: 20,
+    marginBottom: 40,
+    height: 40,
   },
   button: {
     width: '100%',
