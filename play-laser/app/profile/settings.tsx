@@ -10,7 +10,7 @@ export default function SettingsScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Settings</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Pressable onPress={() => router.push("/")}>
+      <Pressable onPress={() => router.navigate("/")}>
         <Text style={styles.button}>Log out</Text>
       </Pressable>
 
