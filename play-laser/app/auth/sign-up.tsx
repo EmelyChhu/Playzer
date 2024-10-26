@@ -1,0 +1,157 @@
+import { StyleSheet } from 'react-native';
+import { useState, useEffect, useLayoutEffect } from 'react';
+
+import { View } from '@/components/Themed';
+import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
+import { router } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+
+// returns true if the email has a localPart@domain.com
+function isValidEmail(email : string) : boolean {
+  const atIndex = email.indexOf("@");
+  if (atIndex == -1 || atIndex == 0 || atIndex == email.length - 1) {
+    return false;
+  }
+
+  const domain = email.substring(atIndex + 1);
+  const periodIndex = domain.indexOf(".");
+  if (periodIndex == -1 || periodIndex == 0 || periodIndex == domain.length - 1) {
+    return false;
+  }
+
+  return true;
+}
+
+// returns true if the password is 8 or more characters long
+function isValidPassword(password : string) : boolean {
+  return (password.length >= 8 ? true : false);
+}
+
+export default function EntryScreen() {
+    const navigation = useNavigation();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [validEmailInput, setValidEmailInput] = useState(true);
+    const [validPasswordInput, setValidPasswordInput] = useState(true);
+
+    const handleSignUp = () => {
+      const validEmail = isValidEmail(email)
+      const validPassword = isValidPassword(password)
+
+      setValidEmailInput(validEmail);
+      setValidPasswordInput(validPassword);
+
+      if (validEmail && validPassword) {
+        router.push("../(tabs)")
+      }
+    }
+
+    useEffect(() => {
+      if (email != "" && password != "") {
+          setButtonDisabled(false);
+      }
+    }, [email, password]);
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+          title: 'Sign Up',
+          headerBackTitle: 'Back',
+        });
+      }, [navigation]);
+
+  return (
+    <PaperProvider>
+      <View style={styles.container}>
+        <Text style={styles.title} variant="displaySmall">
+          Create an Account
+        </Text>
+        <Text style={styles.label} variant="titleMedium">
+          Email
+        </Text>
+        <View style={styles.inputContainer}>
+            <TextInput
+                style={styles.input}
+                mode="outlined"
+                error={validEmailInput ? false : true}
+                textColor={validEmailInput ? undefined : "pink"}
+                label="Email"
+                value={email}
+                onChangeText={setEmail}/>
+        </View>
+        {!validEmailInput ? <Text style={styles.errorText}>Please enter a valid email.</Text> : null}
+        <Text style={styles.label} variant="titleMedium">
+          Password
+        </Text>
+        <View style={styles.inputContainer}>
+            <TextInput
+                style={styles.input}
+                mode="outlined"
+                secureTextEntry={true}
+                error={validPasswordInput ? false : true}
+                textColor={validPasswordInput ? undefined : "pink"}
+                label="Password"
+                value={password}
+                onChangeText={setPassword}/>
+        </View>
+    <Text style={validPasswordInput ? styles.subtitle : styles.subtitleError}>Passwords must contain at least 8 characters.</Text>
+        {!validPasswordInput ? <Text style={styles.errorText}>Please enter a valid password.</Text> : null}
+        <Button style={styles.button} mode="contained" disabled={buttonDisabled} onPress={handleSignUp}>
+            Sign up
+        </Button>
+      </View>
+    </PaperProvider>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: 10,
+  },
+  title: {
+    padding: 25,
+    textAlign: 'center',
+  },
+  label: {
+    textAlign: 'left',
+    width: '100%',
+    marginTop: 10,
+  },
+  subtitle: {
+    textAlign: 'left',
+    width: '100%',
+    marginBottom: 8,
+  },
+  subtitleError: {
+    textAlign: 'left',
+    width: '100%',
+    marginBottom: 8,
+    color: 'pink',
+  },
+  separator: {
+    marginVertical: 30,
+    height: 1,
+    width: '80%',
+  },
+  inputContainer: {
+    width: '100%',
+    height: 60,
+  },
+  input: {
+    marginBottom: 0,
+    height: 40,
+  },
+  button: {
+    width: '100%',
+    marginTop: 20,
+  },
+  errorText: {
+    textAlign: 'left',
+    width: '100%',
+    color: 'pink',
+  },
+});
