@@ -5,6 +5,8 @@ import { View } from '@/components/Themed';
 import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
+//import backend from '../../database/backend';
+import AuthSystem from '../../database/backend';
 
 export default function EntryScreen() {
     const navigation = useNavigation();
@@ -12,10 +14,22 @@ export default function EntryScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [buttonDisabled, setButtonDisabled] = useState(true);
+    const authSystem = new AuthSystem();
 
-    const handleLogIn = () => {
+    /*const handleLogIn = () => {
         router.push("../(tabs)")
+    }*/
+
+    const handleLogIn = async () => {
+      const success = await authSystem.authenticateUser(email, password); // Call the authenticateUser method
+      if (success) {
+          router.push("../(tabs)"); // Navigate to the main tabs if login is successful
+      } else {
+          // Optionally, handle login failure (e.g., show an error message)
+          console.log('Login failed. Please check your credentials.'); // Replace with a user-friendly message
+      }
     }
+
 
     useEffect(() => {
         if (email != "" && password != "") {
