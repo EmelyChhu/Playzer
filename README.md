@@ -1,15 +1,15 @@
 # PlayLaser-Mobile-App
-**Completed Work**
+### Completed Work
 - Hardware
-- ESP32 System
-    - Ran an intro program to ensure device works 
-    - Set up bluetooth connection code to communicate with a device
-      ![image](https://github.com/user-attachments/assets/654ecb2c-8793-4f6b-afc0-9c513149a785)
-    - First draft CAD model of servo motor mount
-      - Laser mount not implemented yet
-      <img width="254" alt="image" src="https://github.com/user-attachments/assets/5c731df4-eb0f-451c-a3a8-81fb58c8de3a">
-      <img width="290" alt="image" src="https://github.com/user-attachments/assets/a76c276f-9f8a-4671-b186-cbae50ed17db">
-    - Demo / proved viability of servo motor system and ESP32
+    - ESP32 System
+        - Ran an intro program to ensure device works 
+        - Set up bluetooth connection code to communicate with a device
+          ![image](https://github.com/user-attachments/assets/654ecb2c-8793-4f6b-afc0-9c513149a785)
+        - First draft CAD model of servo motor mount
+          - Laser mount not implemented yet
+          <img width="254" alt="image" src="https://github.com/user-attachments/assets/5c731df4-eb0f-451c-a3a8-81fb58c8de3a">
+          <img width="290" alt="image" src="https://github.com/user-attachments/assets/a76c276f-9f8a-4671-b186-cbae50ed17db">
+        - Demo / proved viability of servo motor system and ESP32
 - Software
     - Frontend
       - Foundational app structure with screen navigation
@@ -34,7 +34,20 @@
     - Backend
       - Implement database to store information using MongoDB
         
-**Project Architecture**
-![image](https://github.com/user-attachments/assets/9d2da04c-8161-4ee3-b575-c6d6e70aa303)
+### Project Architecture
+![image](https://github.com/user-attachments/assets/9d2da04c-8161-4ee3-b575-c6d6e70aa303)  
+
+**Hardware**  
+The ESP32 system is composed of the ESP32 DevKit-C, TFmini Plus LiDaR sensor, motors and a laser. At the heart of the system is the ESP32 device, which acts as the brains and connects all of these components together. It allows for communication to happen with the Playzer Mobile App via bluetooth using the bluetooth low energy module on the device.
+
+**Software**  
+The Playzer Mobile App is built using React Native, TypeScript, and Expo, which enables us to develop for both iOS and Android devices simultaneously. The React Native Paper UI Library is utilized to develop the user interface, and the app communicates with the Playzer device’s ESP32 via Bluetooth using the react-native-ble-plx library. The Playzer database, which stores user information, will be stored locally using SQLite and remotely using Firebase.
+
+**Known Bugs**  
+Submission button for Sign up and Log in Screens
+- The button should be disabled whenever the email and password fields are empty
+- Currently the button is disabled in its initial state and is enabled once input is added to both fields
+- However, if the user deletes their input, the button is still enabled when it should be disabled
+- A fix for this will involve editing the useEffect for the buttonDisabled state to check if the values are empty and disabling the button if they are
 
       
