@@ -14,7 +14,7 @@ export default function EntryScreen() {
     const [buttonDisabled, setButtonDisabled] = useState(true);
 
     const handleLogIn = () => {
-        router.push("../(tabs)")
+        router.push("../(tabs)/home")
     }
 
     useEffect(() => {

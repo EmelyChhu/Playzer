@@ -44,7 +44,7 @@ export default function EntryScreen() {
       setValidPasswordInput(validPassword);
 
       if (validEmail && validPassword) {
-        router.push("../(tabs)")
+        router.push("../(tabs)/home")
       }
     }
 
