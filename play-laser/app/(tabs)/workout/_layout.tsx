@@ -15,6 +15,7 @@ export default function WorkoutStackLayout() {
         options={{ 
           headerShown: true,
           headerTitle: "Start a Workout",
+          headerBackTitleVisible: false,
         }} 
       />
       <Stack.Screen 
@@ -22,6 +23,7 @@ export default function WorkoutStackLayout() {
         options={{ 
           headerShown: true,
           headerTitle: "Premade Routines",
+          headerBackTitleVisible: false,
         }} 
       />
       <Stack.Screen 
@@ -29,6 +31,7 @@ export default function WorkoutStackLayout() {
         options={{ 
           headerShown: true,
           headerTitle: "Routine",
+          headerBackTitleVisible: false,
         }} 
       />
     </Stack>
