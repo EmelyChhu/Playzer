@@ -19,9 +19,9 @@ export default function WorkoutScreen() {
             <FontAwesome
               name="crosshairs"
               size={25}
-              color={Colors[colorScheme ?? 'light'].text}
+              color={Colors[colorScheme ?? 'light'].buttonText}
             />
-            <Text style={styles.buttonText}>Start a Workout</Text>
+            <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start a Workout</Text>
           </View> 
         </Button>
         <Text style={styles.title}>View Workout Routines</Text>
@@ -31,9 +31,9 @@ export default function WorkoutScreen() {
               <FontAwesome
                 name="list"
                 size={25}
-                color={Colors[colorScheme ?? 'light'].text}
+                color={Colors[colorScheme ?? 'light'].buttonText}
               />
-              <Text style={styles.routineButtonText}>Premade Routines</Text>
+              <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Premade Routines</Text>
             </View> 
           </Button>
           <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
@@ -41,9 +41,9 @@ export default function WorkoutScreen() {
               <FontAwesome
                 name="edit"
                 size={25}
-                color={Colors[colorScheme ?? 'light'].text}
+                color={Colors[colorScheme ?? 'light'].buttonText}
               />
-              <Text style={styles.routineButtonText}>Custom Routines</Text>
+              <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Custom Routines</Text>
             </View> 
           </Button>
         
@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     marginLeft: 8,
-    color: 'white',
   },
   button: {
     width: '100%',
@@ -77,7 +76,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    backgroundColor: '#6850ac',
   },
   buttonContent: {
     height: 48,
@@ -114,7 +112,6 @@ const styles = StyleSheet.create({
   routineButtonText: {
     fontSize: 16,
     marginTop: 4,
-    // color: 'white',
     textAlign: 'center',
   },
 });
