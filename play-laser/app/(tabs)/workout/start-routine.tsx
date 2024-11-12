@@ -1,6 +1,5 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import { PaperProvider, Text, Button } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -8,10 +7,12 @@ import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { Workout, exampleWorkouts } from '@/types';
 import { router } from 'expo-router';
+import { LaserPositionCardProps, LaserGridProps } from '@/types';
 
 export default function WorkoutScreen() {
   const colorScheme = useColorScheme();
-  const workouts = exampleWorkouts;
+  const workouts: Workout[] = exampleWorkouts;
+  const workoutDuration = workouts[0].laserPositions.length * (workouts[0].durationBetweenLasers + workouts[0].laserDuration);
 
   return (
     <PaperProvider>
@@ -25,20 +26,82 @@ export default function WorkoutScreen() {
         </Button>
         <Text style={styles.title} variant="titleLarge">Workout Details</Text>
         <Text variant="bodyMedium">
-            Workout Duration: {workouts[0].laserPositions.length * (workouts[0].durationBetweenLasers + workouts[0].laserDuration)} seconds
+          <Text style={{ fontWeight: 'bold' }}>Workout Duration: </Text>
+          {Math.floor(workoutDuration / 60)} minutes {workoutDuration % 60} seconds
         </Text>
         <Text variant="bodyMedium">
-            Laser Duration: {workouts[0].laserDuration} seconds
+          <Text style={{ fontWeight: 'bold' }}>Laser Duration: </Text>
+          {workouts[0].laserDuration} seconds
         </Text>
         <Text variant="bodyMedium">
-            Duration Between Lasers: {workouts[0].durationBetweenLasers} seconds
+          <Text style={{ fontWeight: 'bold' }}>Duration Between Lasers: </Text>
+          {workouts[0].durationBetweenLasers} seconds
         </Text>
-        <View>
-          
+        <View style={styles.scrollViewContainer}>
+          <ScrollView>
+            {workouts[0].laserPositions.map((laserPosition, index) => (
+              <LaserPositionCard
+                key={index}
+                workout={workouts[0]}
+                laserPosition={index}
+              />
+            ))}
+          </ScrollView>
         </View>
       </View>
     </PaperProvider>
   );
+}
+
+const LaserPositionCard: React.FC<LaserPositionCardProps> = ({ workout, laserPosition }) => {
+  const colorScheme = useColorScheme();
+
+  return (
+    <View style={[styles.laserPositionCard, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
+      <LaserGrid 
+        numColumns={workout.numColumns}
+        numRows={workout.numRows} 
+        numPositions={workout.numPositions} 
+        laserPosition={workout.laserPositions[laserPosition]} 
+      />
+      <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+        Laser {laserPosition + 1}
+      </Text>
+    </View>
+  )
+}
+
+const LaserGrid: React.FC<LaserGridProps> = ({ numColumns, numRows, numPositions, laserPosition }) => {
+  const colorScheme = useColorScheme();
+  const laserPositionRow = Math.floor((laserPosition - 1) / numColumns);
+  const laserPositionColumn = (laserPosition - 1) % numColumns;
+
+  const rows = [];
+  for (let i = 0; i < numRows; i++) {
+    const columns = [];
+    for (let j = 0; j < numColumns; j++) {
+      columns.push(
+        <View key={`${i}-${j}`} style={[styles.gridItem, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
+          <FontAwesome
+            name="dot-circle-o"
+            size={9}
+            color={(laserPositionRow == i && laserPositionColumn == j) ? "#422f7f" : "white"} 
+          />
+        </View>
+      );
+    }
+    rows.push(
+      <View key={i} style={[styles.gridRow, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
+        {columns}
+      </View>
+    );
+  }
+
+  return (
+    <View style={[styles.laserGrid, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
+      {rows}
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -47,6 +110,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     padding: 16,
+  },
+  scrollViewContainer: {
+    flex: 1,
+    width: '100%',
+    marginTop: 16,
   },
   title: {
     fontWeight: 'bold',
@@ -65,41 +133,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  buttonContent: {
-    height: 48,
+  laserPositionCard: {
+    backgroundColor: 'white',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    paddingTop: 2,  // TODO: make vertical centering automatic
-  },
-  routineButtonsContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  routineButton: {
-    width: '48%',
-    height: 96,
-    marginVertical: 16,
     justifyContent: 'center',
-    alignItems: 'center',
-    // backgroundColor: '#6850ac',
+    padding: 8,
+    borderRadius: 16,
+    marginBottom: 16,
   },
-  routineButtonContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    marginTop: 8,
+  laserGrid: {
+    marginRight: 32,
   },
-  routineButtonText: {
-    fontSize: 16,
-    marginTop: 4,
-    textAlign: 'center',
+  gridRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  gridItem: {
+    width: 8,
+    height: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 5,
   },
 });
