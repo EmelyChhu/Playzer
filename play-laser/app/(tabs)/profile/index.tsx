@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
-import { Text, Button } from 'react-native-paper';
+import { Text, Button, PaperProvider } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -11,22 +11,30 @@ export default function ProfileScreen() {
   const colorScheme = useColorScheme();
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.profileContainer, {backgroundColor: Colors[colorScheme ?? 'light'].headerBackground}]}>
-        <FontAwesome
-              style={styles.icon}
-              name="user-circle"
-              size={75}
-              color={Colors[colorScheme ?? 'light'].text}
-            />
-        <Text style={styles.title}>User</Text>
-        <Button style={styles.editButton} mode="contained">Edit Profile</Button>
+    <PaperProvider>
+      <View style={styles.container}>
+        <View style={[styles.profileContainer, {backgroundColor: Colors[colorScheme ?? 'light'].headerBackground}]}>
+          <FontAwesome
+                style={styles.icon}
+                name="user-circle"
+                size={75}
+                color={Colors[colorScheme ?? 'light'].button}
+              />
+          <Text style={styles.title}>User</Text>
+          <Button style={styles.editButton} mode="contained">Edit Profile</Button>
+        </View>
+        {/* <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" /> */}
+        <View style={styles.recentActivitiesContainer}>
+          <Text style={styles.title}>Recent Activities</Text>
+          
+          <Button style={styles.emptyStateButton} mode="contained">
+            <Text variant="bodyLarge">
+              You haven't completed any activities yet!
+            </Text>
+          </Button>
+        </View>
       </View>
-      {/* <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" /> */}
-      <View style={styles.recentActivitiesContainer}>
-        <Text style={styles.title}>Recent Activities</Text>
-      </View>
-    </View>
+    </PaperProvider>
   );
 }
 
@@ -43,7 +51,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   recentActivitiesContainer: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+  },
+  emptyStateButton: {
+    width: 355,
+    height: 50,
+    backgroundColor: '#121212',
+    borderRadius: 0,
   },
   title: {
     fontSize: 20,
@@ -62,6 +77,5 @@ const styles = StyleSheet.create({
   },
   editButton: {
     width: 200,
-    borderRadius: 0,
   },
 });
