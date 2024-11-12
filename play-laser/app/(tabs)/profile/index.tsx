@@ -23,15 +23,11 @@ export default function ProfileScreen() {
           <Text style={styles.title}>User</Text>
           <Button style={styles.editButton} mode="contained">Edit Profile</Button>
         </View>
-        {/* <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" /> */}
-        <View style={styles.recentActivitiesContainer}>
-          <Text style={styles.title}>Recent Activities</Text>
-          
-          <Button style={styles.emptyStateButton} mode="contained">
+        <View style={styles.recentWorkoutsContainer}>
+          <Text style={styles.header}>Recent Workouts</Text>
             <Text variant="bodyLarge">
-              You haven't completed any activities yet!
+              You haven't completed a workout yet! Complete a workout to see it here.
             </Text>
-          </Button>
         </View>
       </View>
     </PaperProvider>
@@ -50,21 +46,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  recentActivitiesContainer: {
+  recentWorkoutsContainer: {
     paddingHorizontal: 16,
     paddingVertical: 24,
-  },
-  emptyStateButton: {
-    width: 355,
-    height: 50,
-    backgroundColor: '#121212',
-    borderRadius: 0,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
-    color: 'white',
     marginBottom: 32,
   },
   separator: {
@@ -78,4 +67,10 @@ const styles = StyleSheet.create({
   editButton: {
     width: 200,
   },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginBottom: 12,
+  }
 });
