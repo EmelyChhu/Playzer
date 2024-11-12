@@ -10,6 +10,27 @@ export default function WorkoutStackLayout() {
           headerTitle: "Workout"
         }} 
       />
+      <Stack.Screen 
+        name="start"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Start a Workout",
+        }} 
+      />
+      <Stack.Screen 
+        name="start-premade"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Premade Routines",
+        }} 
+      />
+      <Stack.Screen 
+        name="start-routine"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Routine",
+        }} 
+      />
     </Stack>
   );
 }

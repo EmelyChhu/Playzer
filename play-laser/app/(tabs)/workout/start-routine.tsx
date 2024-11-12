@@ -16,40 +16,25 @@ export default function WorkoutScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title}>Quick Start</Text>
-        <Button style={styles.button} mode='contained' contentStyle={styles.buttonContainer} onPress={() => router.push("./workout/start")}>
-          <View style={styles.buttonContainer}>
-            <FontAwesome
-              name="crosshairs"
-              size={25}
-              color={Colors[colorScheme ?? 'light'].buttonText}
-            />
-            <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start a Workout</Text>
-          </View> 
+        <Text style={styles.title} variant="headlineMedium">Basic 1</Text>
+        <Text variant="bodyMedium">
+            {workouts[0].description}
+        </Text>
+        <Button style={styles.button} mode='contained'>
+          <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start Workout</Text>
         </Button>
-        <Text style={styles.title}>View Workout Routines</Text>
-        <View style={styles.routineButtonsContainer}>
-          <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
-            <View style={styles.routineButtonContainer}>
-              <FontAwesome
-                name="list"
-                size={25}
-                color={Colors[colorScheme ?? 'light'].buttonText}
-              />
-              <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Premade Routines</Text>
-            </View> 
-          </Button>
-          <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
-            <View style={styles.routineButtonContainer}>
-              <FontAwesome
-                name="edit"
-                size={25}
-                color={Colors[colorScheme ?? 'light'].buttonText}
-              />
-              <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Custom Routines</Text>
-            </View> 
-          </Button>
-        
+        <Text style={styles.title} variant="titleLarge">Workout Details</Text>
+        <Text variant="bodyMedium">
+            Workout Duration: {workouts[0].laserPositions.length * (workouts[0].durationBetweenLasers + workouts[0].laserDuration)} seconds
+        </Text>
+        <Text variant="bodyMedium">
+            Laser Duration: {workouts[0].laserDuration} seconds
+        </Text>
+        <Text variant="bodyMedium">
+            Duration Between Lasers: {workouts[0].durationBetweenLasers} seconds
+        </Text>
+        <View>
+          
         </View>
       </View>
     </PaperProvider>
@@ -64,9 +49,9 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
-    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
+    marginBottom: 4,
   },
   buttonText: {
     fontSize: 16,
@@ -78,7 +63,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   buttonContent: {
     height: 48,
