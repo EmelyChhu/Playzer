@@ -4,7 +4,8 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import { Text, Button } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Colors from '@/constants/Colors';import { useColorScheme } from '@/components/useColorScheme';
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
 
 export default function WorkoutScreen() {
   const colorScheme = useColorScheme();
