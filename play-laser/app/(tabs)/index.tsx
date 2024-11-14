@@ -8,11 +8,10 @@ export default function HomeScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title}>
-          Home
-        </Text>
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <EditScreenInfo path="app/(tabs)/index.tsx" />
+        {/* <Text style={styles.title}>Home</Text> */}
+        <Text style={styles.subtitle}>Welcome to Playzer</Text>
+        {/* <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" /> */}
+        {/* <EditScreenInfo path="app/(tabs)/index.tsx" /> */}
       </View>
     </PaperProvider>
   );
@@ -27,6 +26,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: 16,
+    marginTop: 8,
   },
   separator: {
     marginVertical: 30,
