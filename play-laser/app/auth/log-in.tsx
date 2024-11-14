@@ -5,8 +5,11 @@ import { View } from '@/components/Themed';
 import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
-//import backend from '../../database/backend';
-import AuthSystem from '../../database/backend';
+
+import { FIREBASE_AUTH } from '@/FirebaseConfig';
+import { signInWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
+
 
 export default function EntryScreen() {
     const navigation = useNavigation();
@@ -14,22 +17,34 @@ export default function EntryScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [buttonDisabled, setButtonDisabled] = useState(true);
-    const authSystem = new AuthSystem();
+    const [errorMessage, setErrorMessage] = useState("");
 
-    /*const handleLogIn = () => {
-        router.push("../(tabs)")
-    }*/
+    const auth = FIREBASE_AUTH;
 
     const handleLogIn = async () => {
-      const success = await authSystem.authenticateUser(email, password); // Call the authenticateUser method
-      if (success) {
-          router.push("../(tabs)"); // Navigate to the main tabs if login is successful
-      } else {
-          // Optionally, handle login failure (e.g., show an error message)
-          console.log('Login failed. Please check your credentials.'); // Replace with a user-friendly message
+      setErrorMessage("");
+      setButtonDisabled(false);
+      try {
+        const response = await signInWithEmailAndPassword(auth, email, password);
+        router.push("../(tabs)")
+      }
+      catch(error : any) {
+        const firebaseError = error as FirebaseError;
+        if(firebaseError.code === 'auth/invalid-email') {
+          setErrorMessage("This email is not registered.");
+        }
+        else if(firebaseError.code === 'auth/invalid-credential') {
+          setErrorMessage("Incorrect password. Please try again.");
+        }
+        else {
+          console.error(error);
+          setErrorMessage("An unexpected error occurred. Please try again.");
+        }
+      }
+      finally {
+        setButtonDisabled(true);
       }
     }
-
 
     useEffect(() => {
         if (email != "" && password != "") {
@@ -59,7 +74,9 @@ export default function EntryScreen() {
                 mode="outlined"
                 label="Email"
                 value={email}
-                onChangeText={setEmail}/>
+                onChangeText={setEmail}
+                error={!!errorMessage}
+                />
         </View>
         <Text style={styles.label} variant="titleMedium">
           Password
@@ -71,8 +88,10 @@ export default function EntryScreen() {
                 secureTextEntry={true}
                 label="Password"
                 value={password}
-                onChangeText={setPassword}/>
-        </View>
+                onChangeText={setPassword}
+                error={!!errorMessage}/>
+          </View>
+          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
         <Button style={styles.button} mode="contained" disabled={buttonDisabled} onPress={handleLogIn}>
             Log in
         </Button>
@@ -113,5 +132,10 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     marginTop: 20,
-  }
+  },
+  errorText: {
+    color: 'pink',
+    textAlign: 'left',
+    width: '100%',
+  },
 });
