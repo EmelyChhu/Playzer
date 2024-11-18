@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   routineButton: {
     width: 128,
-    height: 80,
+    height: 92,
     marginVertical: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'transparent',
-    marginTop: 8,
   },
   routineButtonText: {
     fontSize: 16,
