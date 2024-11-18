@@ -23,13 +23,6 @@ export default function EntryScreen() {
         }
     }, [email, password]);
 
-    useLayoutEffect(() => {
-        navigation.setOptions({
-          title: 'Log In',
-          headerBackTitle: 'Back',
-        });
-      }, [navigation]);
-
   return (
     <PaperProvider>
       <View style={styles.container}>

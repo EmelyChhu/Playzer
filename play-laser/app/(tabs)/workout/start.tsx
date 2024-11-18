@@ -16,20 +16,14 @@ export default function WorkoutScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title}>Quick Start</Text>
-        <Button style={styles.button} mode='contained' contentStyle={styles.buttonContainer} onPress={() => router.push("./workout/start")}>
-          <View style={styles.buttonContainer}>
-            <FontAwesome
-              name="crosshairs"
-              size={25}
-              color={Colors[colorScheme ?? 'light'].buttonText}
-            />
-            <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start a Workout</Text>
-          </View> 
-        </Button>
-        <Text style={styles.title}>View Workout Routines</Text>
+        <Text style={styles.title}>Select a Workout Routine</Text>
         <View style={styles.routineButtonsContainer}>
-          <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
+          <Button 
+            style={styles.routineButton}
+            mode='contained'
+            contentStyle={styles.routineButtonContainer}
+            onPress={() => router.push("./start-premade")}
+          >
             <View style={styles.routineButtonContainer}>
               <FontAwesome
                 name="list"
