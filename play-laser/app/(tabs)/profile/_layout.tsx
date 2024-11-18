@@ -8,7 +8,13 @@ export default function ProfileStackLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: Colors[colorScheme ?? 'light'].headerBackground,
+        },
+        headerTintColor: Colors[colorScheme ?? 'light'].text,
+    }}>
       <Stack.Screen 
         name="index"
         options={{

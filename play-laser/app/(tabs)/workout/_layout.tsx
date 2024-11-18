@@ -1,8 +1,19 @@
 import { Stack } from 'expo-router';
 
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
+
 export default function WorkoutStackLayout() {
+  const colorScheme = useColorScheme();
+
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: Colors[colorScheme ?? 'light'].headerBackground,
+        },
+        headerTintColor: Colors[colorScheme ?? 'light'].text,
+      }}>
       <Stack.Screen 
         name="index"
         options={{ 
@@ -15,7 +26,7 @@ export default function WorkoutStackLayout() {
         options={{ 
           headerShown: true,
           headerTitle: "Start a Workout",
-          headerBackTitleVisible: false,
+          headerBackTitle: "Back",
         }} 
       />
       <Stack.Screen 
@@ -23,7 +34,7 @@ export default function WorkoutStackLayout() {
         options={{ 
           headerShown: true,
           headerTitle: "Premade Routines",
-          headerBackTitleVisible: false,
+          headerBackTitle: "Back",
         }} 
       />
       <Stack.Screen 
@@ -31,7 +42,7 @@ export default function WorkoutStackLayout() {
         options={{ 
           headerShown: true,
           headerTitle: "Routine",
-          headerBackTitleVisible: false,
+          headerBackTitle: "Back",
         }} 
       />
     </Stack>
