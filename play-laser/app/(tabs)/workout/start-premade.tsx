@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   },
   routineButton: {
     width: 128,
-    height: 92,
+    height: 80,
     marginVertical: 8,
     justifyContent: 'center',
     alignItems: 'center',
