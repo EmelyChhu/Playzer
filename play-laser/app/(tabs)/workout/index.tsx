@@ -2,51 +2,54 @@ import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
-import { Text, Button } from 'react-native-paper';
+import { PaperProvider, Text, Button } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Colors from '@/constants/Colors';import { useColorScheme } from '@/components/useColorScheme';
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
 
 export default function WorkoutScreen() {
   const colorScheme = useColorScheme();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Quick Start</Text>
-      <Button style={styles.button} mode='contained' contentStyle={styles.buttonContainer}>
-        <View style={styles.buttonContainer}>
-          <FontAwesome
-            name="crosshairs"
-            size={25}
-            color={Colors[colorScheme ?? 'light'].text}
-          />
-          <Text style={styles.buttonText}>Start a Workout</Text>
-        </View> 
-      </Button>
-      <Text style={styles.title}>View Workout Routines</Text>
-      <View style={styles.routineButtonsContainer}>
-        <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
-          <View style={styles.routineButtonContainer}>
+    <PaperProvider>
+      <View style={styles.container}>
+        <Text style={styles.title}>Quick Start</Text>
+        <Button style={styles.button} mode='contained' contentStyle={styles.buttonContainer}>
+          <View style={styles.buttonContainer}>
             <FontAwesome
-              name="list"
+              name="crosshairs"
               size={25}
-              color={Colors[colorScheme ?? 'light'].text}
+              color={Colors[colorScheme ?? 'light'].buttonText}
             />
-            <Text style={styles.routineButtonText}>Premade Routines</Text>
+            <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start a Workout</Text>
           </View> 
         </Button>
-        <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
-          <View style={styles.routineButtonContainer}>
-            <FontAwesome
-              name="edit"
-              size={25}
-              color={Colors[colorScheme ?? 'light'].text}
-            />
-            <Text style={styles.routineButtonText}>Custom Routines</Text>
-          </View> 
-        </Button>
-      
+        <Text style={styles.title}>View Workout Routines</Text>
+        <View style={styles.routineButtonsContainer}>
+          <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
+            <View style={styles.routineButtonContainer}>
+              <FontAwesome
+                name="list"
+                size={25}
+                color={Colors[colorScheme ?? 'light'].buttonText}
+              />
+              <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Premade Routines</Text>
+            </View> 
+          </Button>
+          <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
+            <View style={styles.routineButtonContainer}>
+              <FontAwesome
+                name="edit"
+                size={25}
+                color={Colors[colorScheme ?? 'light'].buttonText}
+              />
+              <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Custom Routines</Text>
+            </View> 
+          </Button>
+        
+        </View>
       </View>
-    </View>
+    </PaperProvider>
   );
 }
 
@@ -61,12 +64,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
-    color: 'white',
   },
   buttonText: {
     fontSize: 16,
     marginLeft: 8,
-    color: 'white',
   },
   button: {
     width: '100%',
@@ -90,16 +91,17 @@ const styles = StyleSheet.create({
   },
   routineButtonsContainer: {
     flexDirection: 'row',
-    width: '100%',  // Match width to align with other elements
+    width: '100%',
     flexWrap: 'wrap',
-    justifyContent: 'space-between', // Adjust spacing between routine buttons
+    justifyContent: 'space-between',
   },
   routineButton: {
-    width: '48%', // Slightly less than half to create space
+    width: '48%',
     height: 96,
     marginVertical: 16,
     justifyContent: 'center',
     alignItems: 'center',
+    // backgroundColor: '#6850ac',
   },
   routineButtonContainer: {
     flexDirection: 'column',
@@ -110,7 +112,6 @@ const styles = StyleSheet.create({
   routineButtonText: {
     fontSize: 16,
     marginTop: 4,
-    color: 'white',
     textAlign: 'center',
   },
 });

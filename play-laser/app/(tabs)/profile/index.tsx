@@ -1,31 +1,76 @@
 import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import { View } from '@/components/Themed';
+import { Text, Button, PaperProvider } from 'react-native-paper';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
 
 export default function ProfileScreen() {
+  const colorScheme = useColorScheme();
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Profile</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/profile.tsx" />
-    </View>
+    <PaperProvider>
+      <View style={styles.container}>
+        <View style={[styles.profileContainer, {backgroundColor: Colors[colorScheme ?? 'light'].headerBackground}]}>
+          <FontAwesome
+                style={styles.icon}
+                name="user-circle"
+                size={75}
+                color={Colors[colorScheme ?? 'light'].button}
+              />
+          <Text style={styles.title}>User</Text>
+          <Button style={styles.editButton} mode="contained">Edit Profile</Button>
+        </View>
+        <View style={styles.recentWorkoutsContainer}>
+          <Text style={styles.header}>Recent Workouts</Text>
+            <Text variant="bodyLarge">
+              You haven't completed a workout yet! Complete a workout to see it here.
+            </Text>
+        </View>
+      </View>
+    </PaperProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  profileContainer: {
+    width: '100%',
+    height: 250,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  recentWorkoutsContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 24,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    textAlign: 'left',
+    marginBottom: 32,
   },
   separator: {
     marginVertical: 30,
     height: 1,
     width: '80%',
   },
+  icon: {
+    marginBottom: 8,
+  },
+  editButton: {
+    width: 200,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginBottom: 12,
+  }
 });
