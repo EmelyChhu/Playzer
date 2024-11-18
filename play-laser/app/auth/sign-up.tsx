@@ -54,13 +54,6 @@ export default function EntryScreen() {
       }
     }, [email, password]);
 
-    useLayoutEffect(() => {
-        navigation.setOptions({
-          title: 'Sign Up',
-          headerBackTitle: 'Back',
-        });
-      }, [navigation]);
-
   return (
     <PaperProvider>
       <View style={styles.container}>
