@@ -1,17 +1,20 @@
 import { StyleSheet } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
-import { View, Text } from '@/components/Themed';
-import { PaperProvider } from 'react-native-paper';
+import { View } from '@/components/Themed';
+import { PaperProvider, Text } from 'react-native-paper';
 
 export default function HomeScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        {/* <Text style={styles.title}>Home</Text> */}
-        <Text style={styles.subtitle}>Welcome to Playzer</Text>
-        {/* <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" /> */}
-        {/* <EditScreenInfo path="app/(tabs)/index.tsx" /> */}
+        <Text style={styles.title} variant="displayLarge">
+          Welcome to Playzer!
+        </Text>
+        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <Text style={styles.subtitle} variant="bodyLarge">
+          Navigate to the "Workout" tab to start training!
+        </Text>
       </View>
     </PaperProvider>
   );
@@ -22,14 +25,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 24,
   },
   title: {
-    fontSize: 20,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
-    marginTop: 8,
+    textAlign: 'center',
   },
   separator: {
     marginVertical: 30,
