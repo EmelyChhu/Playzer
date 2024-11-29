@@ -22,11 +22,13 @@ export default function EntryScreen() {
     const auth = FIREBASE_AUTH;
 
     const handleLogIn = async () => {
+      console.log("handleLogIn triggered");
       setErrorMessage("");
       setButtonDisabled(false);
       try {
         const response = await signInWithEmailAndPassword(auth, email, password);
-        router.push("../(tabs)")
+        console.log('Login response:', response);
+        router.push("../(tabs)/home")
       }
       catch(error : any) {
         const firebaseError = error as FirebaseError;

@@ -52,7 +52,7 @@ export default function EntryScreen() {
           const response = await createUserWithEmailAndPassword(auth, email, password);
           console.log(response);
           alert('Account created succesfully!')
-          router.push("../(tabs)")
+          router.push("../(tabs)/home")
         }
         catch (error : any) {
           console.log(error);
