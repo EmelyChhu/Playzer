@@ -22,7 +22,7 @@ export default function WorkoutScreen() {
             style={styles.routineButton}
             mode='contained'
             contentStyle={styles.routineButtonContainer}
-            onPress={() => router.push("./start-premade")}
+            onPress={() => router.push("./start/start-premade")}
           >
             <View style={styles.routineButtonContainer}>
               <FontAwesome

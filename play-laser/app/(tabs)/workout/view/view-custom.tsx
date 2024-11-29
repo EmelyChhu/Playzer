@@ -22,7 +22,7 @@ export default function ViewCustomRoutinesScreen() {
         </Text>
         <Text style={styles.subtitle} variant="titleLarge">New</Text>
         <View style={styles.routineButtonsContainer}>
-          <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
+          <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer} onPress={() => router.push("./create-custom")}>
             <View style={styles.routineButtonContainer}>
               <FontAwesome
                 name="plus"
