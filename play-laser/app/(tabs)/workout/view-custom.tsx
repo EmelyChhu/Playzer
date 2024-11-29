@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
@@ -9,47 +9,49 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { Workout, exampleWorkouts } from '@/types';
 import { router } from 'expo-router';
 
-export default function WorkoutScreen() {
+export default function ViewCustomRoutinesScreen() {
   const colorScheme = useColorScheme();
   const workouts = exampleWorkouts;
 
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title}>Quick Start</Text>
-        <Button style={styles.button} mode='contained' contentStyle={styles.buttonContainer} onPress={() => router.push("./workout/start")}>
-          <View style={styles.buttonContainer}>
-            <FontAwesome
-              name="crosshairs"
-              size={25}
-              color={Colors[colorScheme ?? 'light'].buttonText}
-            />
-            <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start a Workout</Text>
-          </View> 
-        </Button>
-        <Text style={styles.title}>View Workout Routines</Text>
+        <Text style={styles.title} variant="headlineMedium">Routines</Text>
+        <Text variant="bodyMedium">
+          View routines you've created or create your own.
+        </Text>
+        <Text style={styles.subtitle} variant="titleLarge">New</Text>
         <View style={styles.routineButtonsContainer}>
           <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
             <View style={styles.routineButtonContainer}>
               <FontAwesome
-                name="list"
-                size={25}
+                name="plus"
+                size={20}
                 color={Colors[colorScheme ?? 'light'].buttonText}
               />
-              <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Premade Routines</Text>
+              <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Create</Text>
             </View> 
           </Button>
-          <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer} onPress={() => router.push("./workout/view-custom")}>
-            <View style={styles.routineButtonContainer}>
-              <FontAwesome
-                name="edit"
-                size={25}
-                color={Colors[colorScheme ?? 'light'].buttonText}
-              />
-              <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Custom Routines</Text>
-            </View> 
-          </Button>
-        
+        </View>
+        <Text style={styles.subtitle} variant="titleLarge">Created</Text>
+        <View style={styles.routineButtonsContainer}>
+          <ScrollView horizontal style={styles.routineButtonsContainer}>
+            <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
+              <View style={styles.routineButtonContainer}>
+                <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Custom 1</Text>
+              </View> 
+            </Button>
+            <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
+              <View style={styles.routineButtonContainer}>
+                <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Custom 2</Text>
+              </View> 
+            </Button>
+            <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
+              <View style={styles.routineButtonContainer}>
+                <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Custom 3</Text>
+              </View> 
+            </Button>
+          </ScrollView>
         </View>
       </View>
     </PaperProvider>
@@ -64,9 +66,13 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
-    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontWeight: 'bold',
+    marginTop: 8,
   },
   buttonText: {
     fontSize: 16,
@@ -74,7 +80,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    height: 48,
+    height: 20,
     marginVertical: 16,
     alignSelf: 'center',
     justifyContent: 'center',
@@ -93,24 +99,20 @@ const styles = StyleSheet.create({
     paddingTop: 2,  // TODO: make vertical centering automatic
   },
   routineButtonsContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    height: 92,
   },
   routineButton: {
-    width: '48%',
-    height: 96,
-    marginVertical: 16,
+    width: 128,
+    height: 80,
+    marginVertical: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: '#6850ac',
+    marginRight: 16,
   },
   routineButtonContainer: {
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: 'transparent',
-    marginTop: 8,
   },
   routineButtonText: {
     fontSize: 16,

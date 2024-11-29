@@ -45,6 +45,14 @@ export default function WorkoutStackLayout() {
           headerBackTitle: "Back",
         }} 
       />
+      <Stack.Screen 
+        name="view-custom"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Custom Routines",
+          headerBackTitle: "Back",
+        }} 
+      />
     </Stack>
   );
 }
