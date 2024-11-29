@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
-import { PaperProvider, Text, Button } from 'react-native-paper';
+import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -16,13 +16,13 @@ export default function CreateCustomRoutineScreen() {
   const workouts = exampleWorkouts;
 
   const [workoutDuration, setWorkoutDuration] = useState(0);
-  const [durationBetweenLasers, setDurationBetweenLasers] = useState(0);
-  const [laserDuration, setLaserDuration] = useState(0);
+  const [durationBetweenLasers, setDurationBetweenLasers] = useState("");
+  const [laserDuration, setLaserDuration] = useState("");
   const [laserPositions, setLaserPositions] = useState<number[]>([]);
 
   useEffect(() => {
     // perform calculation for workoutDuration
-    setWorkoutDuration(durationBetweenLasers * laserDuration);
+    setWorkoutDuration(Number(durationBetweenLasers) * Number(laserDuration));
   }, [durationBetweenLasers, laserDuration, laserPositions]);
 
   useEffect(() => {
@@ -38,25 +38,52 @@ export default function CreateCustomRoutineScreen() {
       <View style={styles.container}>
         <Text style={styles.title} variant="headlineMedium">Create a Routine</Text>
         <Text variant="bodyMedium">
-          Click on points on the grid in the order you'd like the laser positions to be and choose your workout settings.
+          Enter your workout settings and click on the grid to add laser positions.
         </Text>
         <Button style={styles.saveButton} mode='contained'>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             Save Custom Routine
           </Text>
         </Button>
-        <Text style={styles.title} variant="titleLarge">Workout Details</Text>
-        <Text variant="bodyMedium">
+        <Text style={styles.title} variant="titleLarge">Workout Settings</Text>
+        {/* <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Workout Duration: </Text>
           {Math.floor(workoutDuration / 60)} minutes {workoutDuration % 60} seconds
-        </Text>
-        <Text variant="bodyMedium">
+        </Text> */}
+        {/* <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Laser Duration: </Text>
           {laserDuration} seconds
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Duration Between Lasers: </Text>
           {durationBetweenLasers} seconds
+        </Text> */}
+        <Text style={styles.label} variant="titleSmall">
+          Laser Duration (seconds)
+        </Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+              style={styles.input}
+              mode="outlined"
+              label="Laser Duration (seconds)"
+              value={laserDuration}
+              onChangeText={setLaserDuration}
+              />
+        </View>
+        <Text style={styles.label} variant="titleSmall">
+          Duration Between Lasers (seconds)
+        </Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+              style={styles.input}
+              mode="outlined"
+              label="Duration Between Lasers (seconds)"
+              value={durationBetweenLasers}
+              onChangeText={setDurationBetweenLasers}
+              />
+        </View>
+        <Text style={styles.label} variant="titleSmall">
+          Laser Positions
         </Text>
         <View style={styles.laserGridInputContainer}>
           <LaserGridInput 
@@ -182,6 +209,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
     padding: 16,
+    paddingBottom: 0,
   },
   title: {
     fontWeight: 'bold',
@@ -276,6 +304,20 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 8,
-  }
+    paddingTop: 32,
+    paddingBottom: 22,
+  },
+  inputContainer: {
+    width: '100%',
+    height: 50,
+  },
+  input: {
+    marginBottom: 40,
+    height: 40,
+  },
+  label: {
+    textAlign: 'left',
+    width: '100%',
+    marginTop: 4,
+  },
 });
