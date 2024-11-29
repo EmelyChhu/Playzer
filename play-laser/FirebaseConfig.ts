@@ -9,7 +9,7 @@ import { getFirestore } from "firebase/firestore";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: process.env.API_KEY,
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
   authDomain: "playzer-6caf3.firebaseapp.com",
   projectId: "playzer-6caf3",
   storageBucket: "playzer-6caf3.firebasestorage.app",
@@ -24,7 +24,6 @@ export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
 export const FIREBASE_DB = getFirestore(FIREBASE_APP);
 //const analytics = getAnalytics(app);
 
-import { API_KEY } from '@env';
 const FirebaseConfig = {
-  apiKey: API_KEY,
+  apiKey: process.env.EXPO_PUBLIC_API_KEY,
 };
