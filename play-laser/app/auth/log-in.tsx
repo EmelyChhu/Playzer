@@ -22,18 +22,16 @@ export default function EntryScreen() {
     const auth = FIREBASE_AUTH;
 
     const handleLogIn = async () => {
-      console.log("handleLogIn triggered");
       setErrorMessage("");
       setButtonDisabled(false);
       try {
         const response = await signInWithEmailAndPassword(auth, email, password);
-        console.log('Login response:', response);
         router.push("../(tabs)/home")
       }
       catch(error : any) {
         const firebaseError = error as FirebaseError;
         if(firebaseError.code === 'auth/invalid-email') {
-          setErrorMessage("This email is not registered.");
+          setErrorMessage("Invalid email.");
         }
         else if(firebaseError.code === 'auth/invalid-credential') {
           setErrorMessage("Incorrect password. Please try again.");
