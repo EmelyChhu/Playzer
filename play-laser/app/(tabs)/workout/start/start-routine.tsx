@@ -43,6 +43,7 @@ export default function WorkoutScreen() {
               <LaserPositionCard
                 key={index}
                 workout={workouts[0]}
+                index={index}
                 laserPosition={index}
               />
             ))}
@@ -73,8 +74,8 @@ const LaserPositionCard: React.FC<LaserPositionCardProps> = ({ workout, laserPos
 
 const LaserGrid: React.FC<LaserGridProps> = ({ numColumns, numRows, numPositions, laserPosition }) => {
   const colorScheme = useColorScheme();
-  const laserPositionRow = Math.floor((laserPosition - 1) / numColumns);
-  const laserPositionColumn = (laserPosition - 1) % numColumns;
+  const laserPositionRow = laserPosition != undefined ? Math.floor((laserPosition - 1) / numColumns) : -1;
+  const laserPositionColumn = laserPosition != undefined ? (laserPosition - 1) % numColumns : -1;
 
   const rows = [];
   for (let i = 0; i < numRows; i++) {
