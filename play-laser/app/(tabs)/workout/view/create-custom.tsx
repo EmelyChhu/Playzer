@@ -38,53 +38,31 @@ export default function CreateCustomRoutineScreen() {
       <View style={styles.container}>
         <Text style={styles.title} variant="headlineMedium">Create a Routine</Text>
         <Text variant="bodyMedium">
-          Enter your workout settings and click on the grid to add laser positions.
+          Input the workout settings and click on the grid to add laser positions.
         </Text>
         <Button style={styles.saveButton} mode='contained'>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             Save Custom Routine
           </Text>
         </Button>
-        <Text style={styles.title} variant="titleLarge">Workout Settings</Text>
-        {/* <Text variant="bodyMedium">
-          <Text style={{ fontWeight: 'bold' }}>Workout Duration: </Text>
-          {Math.floor(workoutDuration / 60)} minutes {workoutDuration % 60} seconds
-        </Text> */}
-        {/* <Text variant="bodyMedium">
-          <Text style={{ fontWeight: 'bold' }}>Laser Duration: </Text>
-          {laserDuration} seconds
-        </Text>
-        <Text variant="bodyMedium">
-          <Text style={{ fontWeight: 'bold' }}>Duration Between Lasers: </Text>
-          {durationBetweenLasers} seconds
-        </Text> */}
-        <Text style={styles.label} variant="titleSmall">
-          Laser Duration (seconds)
-        </Text>
+        <Text style={styles.title} variant="titleLarge">Time (seconds)</Text>
         <View style={styles.inputContainer}>
           <TextInput
-              style={styles.input}
-              mode="outlined"
-              label="Laser Duration (seconds)"
-              value={laserDuration}
-              onChangeText={setLaserDuration}
-              />
-        </View>
-        <Text style={styles.label} variant="titleSmall">
-          Duration Between Lasers (seconds)
-        </Text>
-        <View style={styles.inputContainer}>
+            style={styles.input}
+            mode="outlined"
+            label="Laser"
+            value={durationBetweenLasers}
+            onChangeText={setDurationBetweenLasers}
+          />
           <TextInput
-              style={styles.input}
-              mode="outlined"
-              label="Duration Between Lasers (seconds)"
-              value={durationBetweenLasers}
-              onChangeText={setDurationBetweenLasers}
-              />
+            style={styles.input}
+            mode="outlined"
+            label="Between Lasers"
+            value={durationBetweenLasers}
+            onChangeText={setDurationBetweenLasers}
+          />
         </View>
-        <Text style={styles.label} variant="titleSmall">
-          Laser Positions
-        </Text>
+        <Text style={styles.title} variant="titleLarge">Add Laser Positions</Text>
         <View style={styles.laserGridInputContainer}>
           <LaserGridInput 
             numColumns={8}
@@ -304,15 +282,20 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 32,
-    paddingBottom: 22,
+    paddingTop: 8,
+    // paddingBottom: 4,
   },
   inputContainer: {
     width: '100%',
     height: 50,
+    flexDirection: 'row',
+    marginBottom: 16,
   },
   input: {
-    marginBottom: 40,
+    width: '48%',
+    // marginBottom: 5,
+    // marginLeft: 12,
+    marginRight: 8,
     height: 40,
   },
   label: {
