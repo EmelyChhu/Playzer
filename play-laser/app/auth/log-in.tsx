@@ -10,6 +10,7 @@ import { FIREBASE_AUTH } from '@/FirebaseConfig';
 import { signInWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 // import { fetchWorkouts } from "@/FirebaseConfig";
+import { countDocumentsInCollection } from "@/FirebaseConfig";
 
 export default function EntryScreen() {
     const navigation = useNavigation();
@@ -32,6 +33,8 @@ export default function EntryScreen() {
         /* test for premade workout collection
         const workouts = await fetchWorkouts();
         console.log("Fetched workouts:", workouts);*/
+        
+        countDocumentsInCollection("Workout");
 
         router.push("../(tabs)/home")
       }

@@ -59,7 +59,7 @@ export const fetchWorkouts = async (workoutId: string): Promise<Workout | null> 
 
     const workoutDoc = querySnapshot.docs[0];
     const workoutData = workoutDoc.data();
-    console.log("Workout Data:", workoutData);
+    // console.log("Workout Data:", workoutData);
 
     const workout: Workout = {
       id: workoutData.id || "0", // defaults to 0 if none is provided
@@ -82,4 +82,18 @@ export const fetchWorkouts = async (workoutId: string): Promise<Workout | null> 
     return null;
   }
 };
-//fetchWorkouts();
+
+export const countDocumentsInCollection = async (collectionName: string) => {
+  try {
+    const collectionRef = collection(FIREBASE_DB, collectionName);
+    const querySnapshot = await getDocs(collectionRef);
+    const documentCount = querySnapshot.size;
+
+    console.log(`The collection "${collectionName}" contains ${documentCount} documents.`);
+    return documentCount;
+  } 
+  catch (error) {
+    console.error("Error counting documents in collection:", error);
+    return 0;
+  }
+};
