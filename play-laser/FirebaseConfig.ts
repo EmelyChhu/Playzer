@@ -1,13 +1,13 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth"; // setPersistence, browserLocalPersistence
+import { getAuth } from "firebase/auth"; 
 import { getFirestore, 
   collection, getDocs,
   doc, getDoc 
 } from "firebase/firestore";
 import { Workout } from '@/types';
 
-//import { getAnalytics } from "firebase/analytics";
+// import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -29,27 +29,9 @@ export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
 export const FIREBASE_DB = getFirestore(FIREBASE_APP);
 //const analytics = getAnalytics(app);
 
-/*setPersistence(FIREBASE_AUTH, browserLocalPersistence)  
-  .then(() => {
-    console.log("Persistence set successfully");
-  })
-  .catch((error) => {
-    console.error("Error setting persistence:", error);
-  });*/
-
 const FirebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_API_KEY,
 };
-
-// Verify Workout Collection 
-/*const auth = getAuth();
-const user = auth.currentUser;
-if (user) {
-  console.log("Authenticated user:", user.uid);
-} 
-else {
-  console.error("No user is signed in!");
-}*/
 
 export const fetchWorkouts = async (workoutId: string): Promise<Workout | null> => { 
   const db = getFirestore()
