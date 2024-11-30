@@ -20,7 +20,7 @@ export default function WorkoutScreen() {
   // console.log(workout);
 
   useEffect(() => {
-    const workoutId = "BZa3BZs25YKy14acgWxD"; // TESTING BASIC 1 PREMADE ROUTINE
+    const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
     // console.log("Fetching workout with ID:", workoutId);
 
     const loadWorkout = async () => {

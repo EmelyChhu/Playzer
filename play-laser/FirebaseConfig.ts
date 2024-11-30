@@ -3,7 +3,8 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth"; 
 import { getFirestore, 
   collection, getDocs,
-  doc, getDoc 
+  doc, getDoc,
+  query, where 
 } from "firebase/firestore";
 import { Workout } from '@/types';
 
@@ -34,7 +35,7 @@ const FirebaseConfig = {
 };
 
 export const fetchWorkouts = async (workoutId: string): Promise<Workout | null> => { 
-  const db = getFirestore()
+  //const db = getFirestore()
 
   // verify that the collection exist, remove async parameters
   /*
@@ -46,37 +47,38 @@ export const fetchWorkouts = async (workoutId: string): Promise<Workout | null> 
     });*/
 
   // call for the premade workouts
-  const workoutsDocRef = doc(FIREBASE_DB, "Workout", workoutId);
+  const workoutsDocRef = collection(FIREBASE_DB, "Workout");
+  const workoutsQuery = query(workoutsDocRef, where("id", "==", workoutId));
   // console.log("Fetching workout from path:", workoutsDocRef.path);
   try {
-    const workoutDoc = await getDoc(workoutsDocRef);
-    if (workoutDoc.exists()) {
-      const workoutData = workoutDoc.data();
-      // console.log("Workout Data:", workoutDoc.data());
-
-      const workout: Workout = {
-        id: workoutData.id || "1", // defaults to 1 if none is provided
-        name: workoutData.name || "Unnamed Workout",  
-        type: workoutData.type || "Unknown",  
-        durationBetweenLasers: workoutData.durationBetweenLasers || 0,  
-        laserDuration: workoutData.laserDuration || 0,
-        numColumns: workoutData.numColumns || 0,
-        numRows: workoutData.numRows || 0,
-        numPositions: workoutData.numPositions || 0,
-        laserPositions: workoutData.laserPositions || [],
-        creatorId: workoutData?.creatorId || undefined,  // optional
-        description: workoutData?.description || "",  // optional
-        icon: workoutData?.icon || undefined,  // optional
-      }; 
-      return workout;
-    } 
-    else {
-      // console.log("No such document!");
+    const querySnapshot = await getDocs(workoutsQuery);
+    if (querySnapshot.empty) {
+      console.log("No such document!");
       return null;
     }
+
+    const workoutDoc = querySnapshot.docs[0];
+    const workoutData = workoutDoc.data();
+    console.log("Workout Data:", workoutData);
+
+    const workout: Workout = {
+      id: workoutData.id || "0", // defaults to 0 if none is provided
+      name: workoutData.name || "Unnamed Workout",  
+      type: workoutData.type || "Unknown",  
+      durationBetweenLasers: workoutData.durationBetweenLasers || 1,  
+      laserDuration: workoutData.laserDuration || 1,
+      numColumns: workoutData.numColumns || 8,
+      numRows: workoutData.numRows || 4,
+      numPositions: workoutData.numPositions || 32,
+      laserPositions: workoutData.laserPositions || [],
+      creatorId: workoutData?.creatorId || undefined,  // optional
+      description: workoutData?.description || "",  // optional
+      icon: workoutData?.icon || undefined,  // optional
+    }; 
+    return workout;
   }
   catch (error) {
-    // console.error("Error fetching workouts:", error);
+    console.error("Error fetching workouts:", error);
     return null;
   }
 };
