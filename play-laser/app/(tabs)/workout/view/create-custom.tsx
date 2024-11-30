@@ -19,10 +19,15 @@ export default function CreateCustomRoutineScreen() {
   const [durationBetweenLasers, setDurationBetweenLasers] = useState("");
   const [laserDuration, setLaserDuration] = useState("");
   const [laserPositions, setLaserPositions] = useState<number[]>([]);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errorLaserDuration, setErrorLaserDuration] = useState(false);
+  const [errorDurationBetweenLasers, setErrorDurationBetweenLasers] = useState(false);
+  const [errorMessageLasers, setErrorMessageLasers] = useState("");
 
   useEffect(() => {
-    // perform calculation for workoutDuration
-    setWorkoutDuration(Number(durationBetweenLasers) * Number(laserDuration));
+    const workoutDuration = laserPositions.length * (Number(durationBetweenLasers) + Number(laserDuration));
+    setWorkoutDuration(workoutDuration);
   }, [durationBetweenLasers, laserDuration, laserPositions]);
 
   useEffect(() => {
@@ -33,6 +38,55 @@ export default function CreateCustomRoutineScreen() {
     setLaserDuration(laserDuration);
   }, [laserDuration]);
 
+  const handleSaveRoutine = async () => {
+    const numLaserDuration = parseFloat(laserDuration);
+    const numDurationBetweenLasers = parseFloat(durationBetweenLasers);
+    let convFail = false;
+    setErrorMessage("");
+    setErrorLaserDuration(false);
+    setErrorDurationBetweenLasers(false);
+    setErrorMessageLasers("");
+
+    if (!(!isNaN(numLaserDuration) && Number.isInteger(numLaserDuration) && numLaserDuration >= 1 && numLaserDuration <= 30)) {
+      convFail = true;
+      setErrorMessage("Please enter an integer between 1-30.");
+      setErrorLaserDuration(true);
+    }
+    if (!(!isNaN(numDurationBetweenLasers) && Number.isInteger(numDurationBetweenLasers) && numDurationBetweenLasers >= 1 && numDurationBetweenLasers <= 30)) {
+      convFail = true;
+      setErrorMessage("Please enter an integer between 1-30.");
+      setErrorDurationBetweenLasers(true);
+    }
+    if (laserPositions.length <= 5) {
+      convFail = true;
+      setErrorMessageLasers("Please add at least 5 laser positions.");
+    }
+    if (!convFail) {
+      const newCustomWorkout = {
+        id: "1",
+        name: "Custom 1",
+        type: "Custom",
+        durationBetweenLasers: {durationBetweenLasers},
+        laserDuration: {laserDuration},
+        numColumns: 8,
+        numRows: 4,
+        numPositions: 32,
+        laserPositions: {laserPositions},
+        description: "This is a newly created custom workout routine."
+      }
+      // send workout to database
+      // navigate back to "View Custom Routines Page"
+    }
+  }
+
+  useEffect(() => {
+    if (durationBetweenLasers !== "" && laserDuration !== "" && laserPositions.length >= 5) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [durationBetweenLasers, laserDuration]);
+
   return (
     <PaperProvider>
       <View style={styles.container}>
@@ -40,7 +94,7 @@ export default function CreateCustomRoutineScreen() {
         <Text variant="bodyMedium">
           Input the workout settings and click on the grid to add laser positions.
         </Text>
-        <Button style={styles.saveButton} mode='contained'>
+        <Button style={styles.saveButton} mode='contained' onPress={handleSaveRoutine}>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             Save Custom Routine
           </Text>
@@ -51,8 +105,9 @@ export default function CreateCustomRoutineScreen() {
             style={styles.input}
             mode="outlined"
             label="Laser"
-            value={durationBetweenLasers}
-            onChangeText={setDurationBetweenLasers}
+            value={laserDuration}
+            onChangeText={setLaserDuration}
+            error={errorLaserDuration}
           />
           <TextInput
             style={styles.input}
@@ -60,8 +115,10 @@ export default function CreateCustomRoutineScreen() {
             label="Between Lasers"
             value={durationBetweenLasers}
             onChangeText={setDurationBetweenLasers}
+            error={errorDurationBetweenLasers}
           />
         </View>
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
         <Text style={styles.title} variant="titleLarge">Add Laser Positions</Text>
         <View style={styles.laserGridInputContainer}>
           <LaserGridInput 
@@ -72,6 +129,7 @@ export default function CreateCustomRoutineScreen() {
             laserPositions={laserPositions}
           />
         </View>
+        {errorMessageLasers ? <Text style={styles.errorText}>{errorMessageLasers}</Text> : null}
         <View style={styles.scrollViewContainer}>
           <ScrollView>
             {laserPositions.map((laserPosition, index) => (
@@ -193,6 +251,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'left',
     marginBottom: 4,
+    marginTop: 8,
   },
   subtitle: {
     fontWeight: 'bold',
@@ -211,7 +270,7 @@ const styles = StyleSheet.create({
   saveButton: {
     width: '100%',
     height: 48,
-    marginVertical: 16,
+    marginTop: 16,
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
@@ -282,14 +341,12 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 8,
-    // paddingBottom: 4,
+    paddingTop: 4,
   },
   inputContainer: {
     width: '100%',
     height: 50,
     flexDirection: 'row',
-    marginBottom: 16,
   },
   input: {
     width: '48%',
@@ -302,5 +359,11 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     width: '100%',
     marginTop: 4,
+  },
+  errorText: {
+    color: 'pink',
+    textAlign: 'left',
+    width: '100%',
+    marginTop: 8,
   },
 });
