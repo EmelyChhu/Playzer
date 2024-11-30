@@ -85,7 +85,7 @@ export default function EntryScreen() {
                 error={!!errorMessage}/>
           </View>
           {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-        <Button style={styles.button} mode="contained" disabled={buttonDisabled} onPress={handleLogIn}>
+        <Button style={styles.button} mode="contained" onPress={handleLogIn}>
             Log in
         </Button>
       </View>

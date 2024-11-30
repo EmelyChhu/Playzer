@@ -39,7 +39,7 @@ export default function WorkoutScreen() {
               <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Premade Routines</Text>
             </View> 
           </Button>
-          <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
+          <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer} onPress={() => router.push("./workout/view/")}>
             <View style={styles.routineButtonContainer}>
               <FontAwesome
                 name="edit"

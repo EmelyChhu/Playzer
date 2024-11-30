@@ -18,19 +18,24 @@ export default function WorkoutStackLayout() {
         name="index"
         options={{ 
           headerShown: true,
-          headerTitle: "Workout"
+          headerTitle: "Start a Workout",
+          headerBackTitle: "Back",
         }} 
       />
       <Stack.Screen 
-        name="start"
+        name="start-premade"
         options={{ 
-          headerShown: false,
+          headerShown: true,
+          headerTitle: "Premade Routines",
+          headerBackTitle: "Back",
         }} 
       />
       <Stack.Screen 
-        name="view"
+        name="start-routine"
         options={{ 
-          headerShown: false,
+          headerShown: true,
+          headerTitle: "Routine",
+          headerBackTitle: "Back",
         }} 
       />
     </Stack>

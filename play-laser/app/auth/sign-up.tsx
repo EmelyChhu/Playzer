@@ -106,7 +106,7 @@ export default function EntryScreen() {
         </View>
     <Text style={validPasswordInput ? styles.subtitle : styles.subtitleError}>Passwords must contain at least 8 characters.</Text>
         {!validPasswordInput ? <Text style={styles.errorText}>Please enter a valid password.</Text> : null}
-        <Button style={styles.button} mode="contained" disabled={buttonDisabled} onPress={handleSignUp}>
+        <Button style={styles.button} mode="contained" onPress={handleSignUp}>
             Sign up
         </Button>
       </View>
