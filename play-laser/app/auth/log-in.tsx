@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import { FIREBASE_AUTH } from '@/FirebaseConfig';
 import { signInWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
-
+// import { fetchWorkouts } from "@/FirebaseConfig";
 
 export default function EntryScreen() {
     const navigation = useNavigation();
@@ -26,6 +26,13 @@ export default function EntryScreen() {
       setButtonDisabled(false);
       try {
         const response = await signInWithEmailAndPassword(auth, email, password);
+        // below line generates the user id after they have signed in
+        console.log("User signed in:", response.user.uid); 
+
+        /* test for premade workout collection
+        const workouts = await fetchWorkouts();
+        console.log("Fetched workouts:", workouts);*/
+
         router.push("../(tabs)/home")
       }
       catch(error : any) {

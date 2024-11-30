@@ -9,17 +9,46 @@ import { Workout, exampleWorkouts } from '@/types';
 import { router } from 'expo-router';
 import { LaserPositionCardProps, LaserGridProps } from '@/types';
 
+import React, { useState, useEffect } from 'react';
+import { fetchWorkouts } from "@/FirebaseConfig";
+
+
 export default function WorkoutScreen() {
   const colorScheme = useColorScheme();
-  const workouts: Workout[] = exampleWorkouts;
-  const workoutDuration = workouts[0].laserPositions.length * (workouts[0].durationBetweenLasers + workouts[0].laserDuration);
+  // const workouts: Workout[] = exampleWorkouts;
+  const [workout, setWorkout] = useState<Workout | null>(null);
+  // console.log(workout);
+
+  useEffect(() => {
+    const workoutId = "BZa3BZs25YKy14acgWxD"; // TESTING BASIC 1 PREMADE ROUTINE
+    // console.log("Fetching workout with ID:", workoutId);
+
+    const loadWorkout = async () => {
+      const fetchedWorkout = await fetchWorkouts(workoutId);
+      // console.log("Fetched workout:", fetchedWorkout);
+      setWorkout(fetchedWorkout);
+    };
+    loadWorkout();
+  }, []);
+
+  if(!workout) {
+    return (
+      <PaperProvider>
+        <View style={styles.container}>
+          <Text>Loading workout...</Text> 
+        </View>
+      </PaperProvider>
+    );
+  }
+
+  const workoutDuration = workout.laserPositions.length * (workout.durationBetweenLasers + workout.laserDuration);
 
   return (
     <PaperProvider>
       <View style={styles.container}>
         <Text style={styles.title} variant="headlineMedium">Basic 1</Text>
         <Text variant="bodyMedium">
-            {workouts[0].description}
+            {workout.description}
         </Text>
         <Button style={styles.button} mode='contained'>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start Workout</Text>
@@ -31,18 +60,18 @@ export default function WorkoutScreen() {
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Laser Duration: </Text>
-          {workouts[0].laserDuration} seconds
+          {workout.laserDuration} seconds
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Duration Between Lasers: </Text>
-          {workouts[0].durationBetweenLasers} seconds
+          {workout.durationBetweenLasers} seconds
         </Text>
         <View style={styles.scrollViewContainer}>
           <ScrollView>
-            {workouts[0].laserPositions.map((laserPosition, index) => (
+            {workout.laserPositions.map((laserPosition, index) => (
               <LaserPositionCard
                 key={index}
-                workout={workouts[0]}
+                workout={workout}
                 index={index}
                 laserPosition={index}
               />

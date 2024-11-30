@@ -1,7 +1,12 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth"; // setPersistence, browserLocalPersistence
+import { getFirestore, 
+  collection, getDocs,
+  doc, getDoc 
+} from "firebase/firestore";
+import { Workout } from '@/types';
+
 //import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,6 +29,73 @@ export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
 export const FIREBASE_DB = getFirestore(FIREBASE_APP);
 //const analytics = getAnalytics(app);
 
+/*setPersistence(FIREBASE_AUTH, browserLocalPersistence)  
+  .then(() => {
+    console.log("Persistence set successfully");
+  })
+  .catch((error) => {
+    console.error("Error setting persistence:", error);
+  });*/
+
 const FirebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_API_KEY,
 };
+
+// Verify Workout Collection 
+/*const auth = getAuth();
+const user = auth.currentUser;
+if (user) {
+  console.log("Authenticated user:", user.uid);
+} 
+else {
+  console.error("No user is signed in!");
+}*/
+
+export const fetchWorkouts = async (workoutId: string): Promise<Workout | null> => { 
+  const db = getFirestore()
+
+  // verify that the collection exist, remove async parameters
+  /*
+  const workoutsCollection = collection(db, 'Workout')
+  try {
+    const querySnapshot = await getDocs(workoutsCollection)
+    querySnapshot.forEach((doc) => {
+      console.log(`Document ID: ${doc.id}`, doc.data());
+    });*/
+
+  // call for the premade workouts
+  const workoutsDocRef = doc(FIREBASE_DB, "Workout", workoutId);
+  // console.log("Fetching workout from path:", workoutsDocRef.path);
+  try {
+    const workoutDoc = await getDoc(workoutsDocRef);
+    if (workoutDoc.exists()) {
+      const workoutData = workoutDoc.data();
+      // console.log("Workout Data:", workoutDoc.data());
+
+      const workout: Workout = {
+        id: workoutData.id || "1", // defaults to 1 if none is provided
+        name: workoutData.name || "Unnamed Workout",  
+        type: workoutData.type || "Unknown",  
+        durationBetweenLasers: workoutData.durationBetweenLasers || 0,  
+        laserDuration: workoutData.laserDuration || 0,
+        numColumns: workoutData.numColumns || 0,
+        numRows: workoutData.numRows || 0,
+        numPositions: workoutData.numPositions || 0,
+        laserPositions: workoutData.laserPositions || [],
+        creatorId: workoutData?.creatorId || undefined,  // optional
+        description: workoutData?.description || "",  // optional
+        icon: workoutData?.icon || undefined,  // optional
+      }; 
+      return workout;
+    } 
+    else {
+      // console.log("No such document!");
+      return null;
+    }
+  }
+  catch (error) {
+    // console.error("Error fetching workouts:", error);
+    return null;
+  }
+};
+//fetchWorkouts();
