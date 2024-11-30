@@ -6,19 +6,20 @@ import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 
+import { FIREBASE_AUTH } from '@/FirebaseConfig';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+
 // returns true if the email has a localPart@domain.com
 function isValidEmail(email : string) : boolean {
   const atIndex = email.indexOf("@");
   if (atIndex == -1 || atIndex == 0 || atIndex == email.length - 1) {
     return false;
   }
-
   const domain = email.substring(atIndex + 1);
   const periodIndex = domain.indexOf(".");
   if (periodIndex == -1 || periodIndex == 0 || periodIndex == domain.length - 1) {
     return false;
   }
-
   return true;
 }
 
@@ -36,7 +37,9 @@ export default function EntryScreen() {
     const [validEmailInput, setValidEmailInput] = useState(true);
     const [validPasswordInput, setValidPasswordInput] = useState(true);
 
-    const handleSignUp = () => {
+    const auth = FIREBASE_AUTH;
+
+    const handleSignUp = async () => {
       const validEmail = isValidEmail(email)
       const validPassword = isValidPassword(password)
 
@@ -44,7 +47,20 @@ export default function EntryScreen() {
       setValidPasswordInput(validPassword);
 
       if (validEmail && validPassword) {
-        router.push("../(tabs)/home")
+        setButtonDisabled(false);
+        try {
+          const response = await createUserWithEmailAndPassword(auth, email, password);
+          console.log(response);
+          alert('Account created succesfully!')
+          router.push("../(tabs)/home")
+        }
+        catch (error : any) {
+          console.log(error);
+          alert('Registration failed: ' + error.message);
+        }
+        finally {
+          setButtonDisabled(true);
+        }
       }
     }
 

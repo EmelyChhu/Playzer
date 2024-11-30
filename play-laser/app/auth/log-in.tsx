@@ -6,15 +6,44 @@ import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 
+import { FIREBASE_AUTH } from '@/FirebaseConfig';
+import { signInWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
+
+
 export default function EntryScreen() {
     const navigation = useNavigation();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [errorMessage, setErrorMessage] = useState("");
 
-    const handleLogIn = () => {
+    const auth = FIREBASE_AUTH;
+
+    const handleLogIn = async () => {
+      setErrorMessage("");
+      setButtonDisabled(false);
+      try {
+        const response = await signInWithEmailAndPassword(auth, email, password);
         router.push("../(tabs)/home")
+      }
+      catch(error : any) {
+        const firebaseError = error as FirebaseError;
+        if(firebaseError.code === 'auth/invalid-email') {
+          setErrorMessage("Invalid email.");
+        }
+        else if(firebaseError.code === 'auth/invalid-credential') {
+          setErrorMessage("Incorrect password. Please try again.");
+        }
+        else {
+          console.error(error);
+          setErrorMessage("An unexpected error occurred. Please try again.");
+        }
+      }
+      finally {
+        setButtonDisabled(true);
+      }
     }
 
     useEffect(() => {
@@ -38,7 +67,9 @@ export default function EntryScreen() {
                 mode="outlined"
                 label="Email"
                 value={email}
-                onChangeText={setEmail}/>
+                onChangeText={setEmail}
+                error={!!errorMessage}
+                />
         </View>
         <Text style={styles.label} variant="titleMedium">
           Password
@@ -50,8 +81,10 @@ export default function EntryScreen() {
                 secureTextEntry={true}
                 label="Password"
                 value={password}
-                onChangeText={setPassword}/>
-        </View>
+                onChangeText={setPassword}
+                error={!!errorMessage}/>
+          </View>
+          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
         <Button style={styles.button} mode="contained" disabled={buttonDisabled} onPress={handleLogIn}>
             Log in
         </Button>
@@ -92,5 +125,10 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     marginTop: 20,
-  }
+  },
+  errorText: {
+    color: 'pink',
+    textAlign: 'left',
+    width: '100%',
+  },
 });
