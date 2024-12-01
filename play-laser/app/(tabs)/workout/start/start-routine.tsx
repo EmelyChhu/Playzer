@@ -46,7 +46,7 @@ export default function WorkoutScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title} variant="headlineMedium">Basic 1</Text>
+        <Text style={styles.title} variant="headlineMedium">{workout.name}</Text>
         <Text variant="bodyMedium">
             {workout.description}
         </Text>
