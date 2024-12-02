@@ -50,7 +50,7 @@ export default function WorkoutScreen() {
         <Text variant="bodyMedium">
             {workout.description}
         </Text>
-        <Button style={styles.button} mode='contained'>
+        <Button style={styles.button} mode='contained' onPress={() => router.push("./connect-start")}>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start Workout</Text>
         </Button>
         <Text style={styles.title} variant="titleLarge">Workout Details</Text>

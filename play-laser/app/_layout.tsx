@@ -44,28 +44,29 @@ export default function RootLayout() {
   }
 
   return <RootLayoutNav />;
+    // <NavigationContainer>
+      // <RootLayoutNav />
+    // </NavigationContainer>);
 }
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <NavigationContainer>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: Colors[colorScheme ?? 'light'].headerBackground,
-            },
-            headerTintColor: Colors[colorScheme ?? 'light'].text,
-          }}
-        >
-          <Stack.Screen name="index" options={{ headerShown: false }}  />
-          <Stack.Screen name="auth/sign-up" options={{ headerShown: true, title: "Sign Up", headerBackTitle: "Back" }}  />
-          <Stack.Screen name="auth/log-in" options={{ headerShown: true, title: "Log In", headerBackTitle: "Back" }}  />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
-      </ThemeProvider>
-    </NavigationContainer>
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: Colors[colorScheme ?? 'light'].headerBackground,
+          },
+          headerTintColor: Colors[colorScheme ?? 'light'].text,
+        }}
+      >
+        <Stack.Screen name="index" options={{ headerShown: false }}  />
+        <Stack.Screen name="auth/sign-up" options={{ headerShown: true, title: "Sign Up", headerBackTitle: "Back" }}  />
+        <Stack.Screen name="auth/log-in" options={{ headerShown: true, title: "Log In", headerBackTitle: "Back" }}  />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </ThemeProvider>
   );
 }

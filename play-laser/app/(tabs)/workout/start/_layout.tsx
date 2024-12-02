@@ -38,6 +38,14 @@ export default function WorkoutStackLayout() {
           headerBackTitle: "Back",
         }} 
       />
+      <Stack.Screen 
+        name="connect-start"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Start Routine",
+          headerBackTitle: "Back",
+        }} 
+      />
     </Stack>
   );
 }
