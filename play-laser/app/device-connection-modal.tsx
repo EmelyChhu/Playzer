@@ -28,6 +28,7 @@ type DeviceModalProps = {
 };
 
 const DeviceModalListItem: FC<DeviceModalListItemProps> = (props) => {
+  const colorScheme = useColorScheme();
   const { item, connectToPeripheral, closeModal } = props;
 
   const connectAndCloseModal = useCallback(() => {
@@ -38,9 +39,9 @@ const DeviceModalListItem: FC<DeviceModalListItemProps> = (props) => {
   return (
     <TouchableOpacity
       onPress={connectAndCloseModal}
-      style={modalStyle.ctaButton}
+      style={[modalStyle.ctaButton, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}
     >
-      <Text style={modalStyle.ctaButtonText}>{item.item.name}</Text>
+      <Text style={[modalStyle.ctaButtonText, {backgroundColor: Colors[colorScheme ?? 'light'].buttonText}]}>{item.item.name}</Text>
     </TouchableOpacity>
   );
 };
@@ -115,7 +116,6 @@ const modalStyle = StyleSheet.create({
     textAlign: "center",
   },
   ctaButton: {
-    backgroundColor: "#FF6060",
     justifyContent: "center",
     alignItems: "center",
     height: 50,

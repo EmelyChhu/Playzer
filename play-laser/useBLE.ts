@@ -100,7 +100,7 @@ function useBLE(): BluetoothLowEnergyApi {
       if (error) {
         console.log(error);
       }
-      if (device && device.name?.includes("PlayLaser")) {
+      if (device && device.name?.includes("Playzer")) {
         setAllDevices((prevState: Device[]) => {
           if (!isDuplicteDevice(prevState, device)) {
             return [...prevState, device];
@@ -172,11 +172,16 @@ function useBLE(): BluetoothLowEnergyApi {
 
   const sendData = async (device: Device, data: string) => {
     try {
+      let rawData = BigInt(0);
+      rawData |= BigInt(4)  << BigInt(8);
+      rawData |= BigInt(2);
+      console.log(rawData.toString(16));
+
       await bleManager.writeCharacteristicWithoutResponseForDevice(
         device.id,
         SERVICE_UUID,
         NUM_CHARACTERISTIC_UUID,
-        btoa(data),
+        btoa(`${rawData}`),
       );
     } catch (error) {
       console.log(error);

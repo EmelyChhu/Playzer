@@ -22,37 +22,35 @@ export default function ConnectStartScreen() {
     scanForPeripherals,
     allDevices,
     connectToDevice,
-    // connectedDevice,
+    connectedDevice,
     heartRate,
     disconnectFromDevice,
     sendData,
   } = useBLE();
 
-  const connectedDevice = true;
-
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [workoutDuration, setWorkoutDuration] = useState(150);
   const [time, setTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(false); // Stopwatch running state
+  const [isRunning, setIsRunning] = useState(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (isRunning && time != workoutDuration) {
       const id = setInterval(() => {
-        setTime(prevTime => prevTime + 1); // Increment time by 1 every second
+        setTime(prevTime => prevTime + 1);
       }, 1000);
       setIntervalId(id);
     } else {
-      handleReset();
+      // handleReset();
       if (intervalId) {
-        clearInterval(intervalId); // Clear interval when stopwatch stops
+        clearInterval(intervalId);
       }
     }
 
     return () => {
       if (intervalId) {
-        clearInterval(intervalId); // Cleanup on component unmount
+        clearInterval(intervalId);
       }
     };
   }, [isRunning]);
@@ -83,12 +81,12 @@ export default function ConnectStartScreen() {
   }
 
   const handleStartStop = () => {
-    setIsRunning(prevState => !prevState); // Toggle between running and stopped
+    setIsRunning(prevState => !prevState);
   };
 
   const handleReset = () => {
     setIsRunning(false);
-    setTime(0); // Reset time to 0
+    setTime(0);
   };
 
   const scanForDevices = async () => {
@@ -110,8 +108,8 @@ export default function ConnectStartScreen() {
   const handleStartWorkout = () => {
     handleStartStop();
     // test send
-    //const time = 2;
-    // sendData(connectedDevice, time);
+    const time = "2";
+    sendData(connectedDevice, time);
 
     // perform bit masking
     const byteArray = new Uint8Array(20);
@@ -120,98 +118,54 @@ export default function ConnectStartScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      {/* <Text style={styles.title} variant="headlineMedium">{workout.name}</Text> */}
-      {/* <Text style={styles.title}>Workout!</Text> */}
-      {/*<Text>{connectionStatus}</Text>*/}
-      {/* <Button
-        style={styles.button}
-        mode='contained'
-        onPress={() => {
-          if (connectedDevice) {
-            // sendData(connectedDevice, time); // Send data to the device
-            console.log("Workout started")
-          } else {
-            openModal(); // Open the device connection modal
-          }
-        }}
-      >
-        <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].text}]}>
-          {connectedDevice ? "Start workout" : "Connect device"}
-        </Text>
-      </Button>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" /> */}
-      
-      {connectedDevice ?
-        <View style={styles.infoContainer}>
-          <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
-            {Math.floor(time / 60)}m {time % 60}s
+    <PaperProvider>
+      <View style={styles.container}>
+        {connectedDevice ?
+          <View style={styles.infoContainer}>
+            <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
+              {Math.floor(time / 60)}m {time % 60}s
+            </Text>
+            <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
+              elapsed
+            </Text>
+            <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
+              {Math.floor((workoutDuration - time) / 60)}m {(workoutDuration - time) % 60}s
+            </Text>
+            <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
+              remaining
+            </Text>
+          </View>
+        :
+          <View style={styles.infoContainer}>
+            <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
+              Connect a device to start the workout
+            </Text>
+          </View>
+        }
+        <DeviceModal
+          closeModal={hideModal}
+          visible={isModalVisible}
+          connectToPeripheral={connectToDevice}
+          devices={allDevices}
+        />
+        <Button
+          style={styles.button}
+          mode='contained'
+          onPress={() => {
+            if (connectedDevice) {
+              // sendData(connectedDevice, time); // Send data to the device
+              handleStartWorkout();
+            } else {
+              openModal(); // Open the device connection modal
+            }
+          }}
+        >
+          <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+            {connectedDevice ? (isRunning ? "Stop workout" : "Start workout") : "Connect device"}
           </Text>
-          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
-            elapsed
-          </Text>
-          <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
-            {Math.floor((workoutDuration - time) / 60)}m {(workoutDuration - time) % 60}s
-          </Text>
-          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
-            remaining
-          </Text>
-        </View>
-      :
-        <View style={styles.infoContainer}>
-          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
-            Connect a device to start the workout
-          </Text>
-        </View>
-      }
-      {/* {connectedDevice ? (
-          <>
-            <Text>Device Connected</Text>
-          </>
-        ) : (
-          <Text>
-            Please Connect to a Device
-          </Text>
-        )} */}
-      {/* {connectedDevice ?
-        <View>
-          <Text>Time between laser intervals:</Text>
-          <TextInput style={styles.input} value={time} onChangeText={setTime}></TextInput>
-          <Button style={styles.button} mode="contained" onPress={() => sendData(connectedDevice, time)}>Start workout</Button>
-        </View>
-      : null}
-      {connectedDevice ? (
-          <>
-            <Text>Device Connected</Text>
-          </>
-        ) : (
-          <Text>
-            Please Connect to a Device
-          </Text>
-        )} */}
-      <DeviceModal
-        closeModal={hideModal}
-        visible={isModalVisible}
-        connectToPeripheral={connectToDevice}
-        devices={allDevices}
-      />
-      <Button
-        style={styles.button}
-        mode='contained'
-        onPress={() => {
-          if (connectedDevice) {
-            // sendData(connectedDevice, time); // Send data to the device
-            handleStartWorkout();
-          } else {
-            openModal(); // Open the device connection modal
-          }
-        }}
-      >
-        <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].text}]}>
-          {connectedDevice ? (isRunning ? "Stop workout" : "Start workout") : "Connect device"}
-        </Text>
-      </Button>
-    </View>
+        </Button>
+      </View>
+    </PaperProvider>
   );
 }
 
