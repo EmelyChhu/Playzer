@@ -22,18 +22,40 @@ export default function ConnectStartScreen() {
     scanForPeripherals,
     allDevices,
     connectToDevice,
-    connectedDevice,
+    // connectedDevice,
     heartRate,
     disconnectFromDevice,
     sendData,
   } = useBLE();
 
-  // const connectedDevice = true;
+  const connectedDevice = true;
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [workout, setWorkout] = useState<Workout | null>(null);
-  const [time, setTime] = useState("");
-  // console.log(workout);
+  const [workoutDuration, setWorkoutDuration] = useState(150);
+  const [time, setTime] = useState(0);
+  const [isRunning, setIsRunning] = useState(false); // Stopwatch running state
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (isRunning && time != workoutDuration) {
+      const id = setInterval(() => {
+        setTime(prevTime => prevTime + 1); // Increment time by 1 every second
+      }, 1000);
+      setIntervalId(id);
+    } else {
+      handleReset();
+      if (intervalId) {
+        clearInterval(intervalId); // Clear interval when stopwatch stops
+      }
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId); // Cleanup on component unmount
+      }
+    };
+  }, [isRunning]);
 
   useEffect(() => {
     const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
@@ -43,6 +65,9 @@ export default function ConnectStartScreen() {
       const fetchedWorkout = await fetchWorkouts(workoutId);
       // console.log("Fetched workout:", fetchedWorkout);
       setWorkout(fetchedWorkout);
+      if (fetchedWorkout) {
+        setWorkoutDuration(fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration));
+      }
     };
     loadWorkout();
   }, []);
@@ -56,6 +81,15 @@ export default function ConnectStartScreen() {
       </PaperProvider>
     );
   }
+
+  const handleStartStop = () => {
+    setIsRunning(prevState => !prevState); // Toggle between running and stopped
+  };
+
+  const handleReset = () => {
+    setIsRunning(false);
+    setTime(0); // Reset time to 0
+  };
 
   const scanForDevices = async () => {
     const isPermissionsEnabled = await requestPermissions();
@@ -72,6 +106,18 @@ export default function ConnectStartScreen() {
     scanForDevices();
     setIsModalVisible(true);
   };
+
+  const handleStartWorkout = () => {
+    handleStartStop();
+    // test send
+    //const time = 2;
+    // sendData(connectedDevice, time);
+
+    // perform bit masking
+    const byteArray = new Uint8Array(20);
+    byteArray[0] = 8;
+    // sendData(connectedDevice, byteArray);
+  }
 
   return (
     <View style={styles.container}>
@@ -99,16 +145,16 @@ export default function ConnectStartScreen() {
       {connectedDevice ?
         <View style={styles.infoContainer}>
           <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
-            2m 45s
+            {Math.floor(time / 60)}m {time % 60}s
           </Text>
           <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
             elapsed
           </Text>
           <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
-            4
+            {Math.floor((workoutDuration - time) / 60)}m {(workoutDuration - time) % 60}s
           </Text>
           <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
-            laser positions remaining
+            remaining
           </Text>
         </View>
       :
@@ -155,14 +201,14 @@ export default function ConnectStartScreen() {
         onPress={() => {
           if (connectedDevice) {
             // sendData(connectedDevice, time); // Send data to the device
-            console.log("Workout started")
+            handleStartWorkout();
           } else {
             openModal(); // Open the device connection modal
           }
         }}
       >
         <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].text}]}>
-          {connectedDevice ? "Start workout" : "Connect device"}
+          {connectedDevice ? (isRunning ? "Stop workout" : "Start workout") : "Connect device"}
         </Text>
       </Button>
     </View>
@@ -212,10 +258,11 @@ const styles = StyleSheet.create({
   infoText: {
     textAlign: 'center',
     fontSize: 60,
+    marginBottom: 6,
   },
   numText: {
     textAlign: 'center',
     fontSize: 75,
-    marginTop: 12,
+    marginTop: 6,
   }
 });
