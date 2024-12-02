@@ -44,9 +44,6 @@ export default function RootLayout() {
   }
 
   return <RootLayoutNav />;
-    // <NavigationContainer>
-      // <RootLayoutNav />
-    // </NavigationContainer>);
 }
 
 function RootLayoutNav() {

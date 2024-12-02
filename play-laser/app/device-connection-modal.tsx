@@ -8,8 +8,11 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
+import { View } from '@/components/Themed';
 import { Device } from "react-native-ble-plx";
 import { Button } from 'react-native-paper';
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
 
 type DeviceModalListItemProps = {
   item: ListRenderItemInfo<Device>;
@@ -43,6 +46,7 @@ const DeviceModalListItem: FC<DeviceModalListItemProps> = (props) => {
 };
 
 const DeviceModal: FC<DeviceModalProps> = (props) => {
+  const colorScheme = useColorScheme();
   const { devices, visible, connectToPeripheral, closeModal } = props;
 
   const renderDeviceModalListItem = useCallback(
@@ -65,8 +69,8 @@ const DeviceModal: FC<DeviceModalProps> = (props) => {
       transparent={false}
       visible={visible}
     >
-      <SafeAreaView style={modalStyle.modalTitle}>
-        <Text style={modalStyle.modalTitleText}>
+      <View style={modalStyle.modalTitle}>
+        <Text style={[modalStyle.modalTitleText, {color: Colors[colorScheme ?? 'light'].text}]}>
           Tap on a device to connect
         </Text>
         <FlatList
@@ -77,7 +81,7 @@ const DeviceModal: FC<DeviceModalProps> = (props) => {
         <Button style={modalStyle.closeModalButton} mode="contained" onPress={() => closeModal()}>
           <Text>Close connection window</Text>
         </Button>
-      </SafeAreaView>
+      </View>
     </Modal>
   );
 };
@@ -101,11 +105,11 @@ const modalStyle = StyleSheet.create({
   },
   modalTitle: {
     flex: 1,
-    backgroundColor: "#f2f2f2",
+    padding: 16,
   },
   modalTitleText: {
     marginTop: 40,
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: "bold",
     marginHorizontal: 20,
     textAlign: "center",
@@ -125,7 +129,12 @@ const modalStyle = StyleSheet.create({
     color: "white",
   },
   closeModalButton: {
-    margin: 40,
+    width: '100%',
+    height: 48,
+    marginVertical: 16,
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
 
