@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   buttonContent: {
-    height: 48,
+    height: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'transparent',
-    paddingTop: 2,  // TODO: make vertical centering automatic
+    paddingTop: 5,  // TODO: make vertical centering automatic
   },
   routineButtonsContainer: {
     flexDirection: 'row',
@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: '#6850ac',
   },
   routineButtonContainer: {
     flexDirection: 'column',
@@ -113,7 +112,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   routineButtonText: {
-    fontSize: 16,
+    fontSize: 15,
     marginTop: 4,
     textAlign: 'center',
   },

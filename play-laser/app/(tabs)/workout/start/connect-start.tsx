@@ -22,13 +22,13 @@ export default function ConnectStartScreen() {
     scanForPeripherals,
     allDevices,
     connectToDevice,
-    // connectedDevice,
+    connectedDevice,
     heartRate,
     disconnectFromDevice,
     sendData,
   } = useBLE();
 
-  const connectedDevice = true;
+  // const connectedDevice = true;
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [workout, setWorkout] = useState<Workout | null>(null);

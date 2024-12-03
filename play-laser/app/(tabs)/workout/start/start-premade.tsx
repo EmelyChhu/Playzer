@@ -63,33 +63,33 @@ export default function WorkoutScreen() {
         <Text style={styles.subtitle} variant="titleLarge">Sport-Specific</Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
-            <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
+            <Button style={styles.routineButton} mode='contained'>
               <View style={styles.routineButtonContainer}>
-                <FontAwesome
+                {/* <FontAwesome
                   name="soccer-ball-o"
-                  size={25}
+                  size={5}
                   color={Colors[colorScheme ?? 'light'].buttonText}
-                />
+                /> */}
                 <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Football</Text>
               </View> 
             </Button>
             <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
               <View style={styles.routineButtonContainer}>
-                <FontAwesome
+                {/* <FontAwesome
                   name="circle"
                   size={25}
                   color={Colors[colorScheme ?? 'light'].buttonText}
-                />
+                /> */}
                 <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Tennis</Text>
               </View> 
             </Button>
             <Button style={styles.routineButton} mode='contained' contentStyle={styles.routineButtonContainer}>
               <View style={styles.routineButtonContainer}>
-                <FontAwesome
+                {/* <FontAwesome
                   name="soccer-ball-o"
                   size={25}
                   color={Colors[colorScheme ?? 'light'].buttonText}
-                />
+                /> */}
                 <Text style={[styles.routineButtonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Soccer</Text>
               </View> 
             </Button>

@@ -98,7 +98,6 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: '#6850ac',
   },
   routineButtonContainer: {
     flexDirection: 'column',
@@ -107,7 +106,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   routineButtonText: {
-    fontSize: 16,
+    fontSize: 15,
     marginTop: 4,
     textAlign: 'center',
   },
