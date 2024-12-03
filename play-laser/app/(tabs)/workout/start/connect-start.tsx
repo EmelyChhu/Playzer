@@ -113,24 +113,32 @@ export default function ConnectStartScreen() {
     setIsModalVisible(true);
   };
 
-  const decodeWorkoutData = (workout: Workout): bigint => {
+  const encodeWorkoutData = (workout: Workout): bigint => {
     let data = BigInt(0);
+
     data |= BigInt(workout.laserDuration) << BigInt(4);  // 4 bits for laserDuration
-    data |= BigInt(workout.durationBetweenLasers) << BigInt(4);  // 4 bits for durationBetweenLasers
-    data |= BigInt(workout.numRows) << BigInt(4);  // 4 bits for numRows
-    data |= BigInt(workout.numColumns) << BigInt(4);  // 4 bits for numColumns
-    data |= BigInt(workout.laserPositions.length) << BigInt(5);  // 5 bits for number of laserPositions
-    for (let i = 0; i < workout.laserPositions.length; i++) {
-      data |= BigInt(workout.laserPositions[i]) << BigInt(6)  // 6 bits for each laserPosition
+    data |= BigInt(workout.durationBetweenLasers);
+    data <<= BigInt(4);
+    data |= BigInt(workout.numRows);  // 4 bits for numRows
+    data <<= BigInt(4);
+    data |= BigInt(workout.numColumns);  // 4 bits for numColumns
+    data <<= BigInt(6);
+
+    for (let i = workout.laserPositions.length - 1; i >= 0; i--) {
+      data |= BigInt(workout.laserPositions[i]); // 6 bits for each laserPosition
+      data <<= BigInt(6);
     }
-    data = data >> BigInt(6);
-    // console.log(data.toString(16));
+    
+    data >>= BigInt(1);
+    data |= BigInt(workout.laserPositions.length);  // 5 bits for number of laserPositions
+    
     return data;
   }
 
   const handleStartWorkout = () => {
     handleStartStop();
-    const data = decodeWorkoutData(workout);
+    const data = encodeWorkoutData(workout);
+    console.log(data.toString(16));
     if (connectedDevice) {
       sendData(connectedDevice, data);
     }
