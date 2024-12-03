@@ -1,5 +1,34 @@
-# PlayLaser-Mobile-App
-### Completed Work
+# Playzer
+### Design Prototype Completed Work
+- Hardware
+    - Fixing the LiDaR sensor data collection
+        - Had to deal with garbage values that were not correct (in the ten thousands)
+    - Data processing of LiDaR sensor
+        - Converting to feet, getting averages, etc.
+    - Adding communication protocol to receive various types of workout information in the app
+    - Complete motor and laser mount CAD designs
+    - Wrote functions that execute workouts that specify time betwenn lasers, laser duration, laser positions, and number of columns and rows
+- Software
+    - Fix color scheming for Light/Dark mode
+        - Expo SDK 52 update required refactoring of color scheme use
+    - Add base Home and Profile screens
+    - Implement Start a Premade Workout Flow
+        - Add screen for viewing premade workouts and a specific workout's details
+        - Establish communication protocol with ESP32 and create connection screen
+    - Implement Create a Custom Workout Routine Flow
+        - Add screen for user to view custom workouts and create a custom workout
+    - Add user authentication flow for Sign Up and Log In Screens
+        - Connected to Firebase database
+- Bugs
+    - Submission button for Sign up, Log in, and Create a custom routine Screens
+        - The button for these screens should be disabled until text has been input in all boxes
+        - Currently there is an issue with the button’s background color when the isDisabled property is used, so all buttons have been enabled
+        - Logic and error handling have been implemented to prevent the user from submitting when inputted information is incorrect
+    - React Native Paper Button Component Light/Dark mode color schemes
+        - Currently there is an issue with the button’s background color and text switching properly when the user switches between Light and Dark mode that may be related to breaking change from Expo SDK 51 to 52
+        - A potential fix involves creating a custom themed element within the project
+
+### Pre-Alpha Build Completed Work
 - Hardware
     - ESP32 System
         - Ran an intro program to ensure device works 
@@ -33,6 +62,12 @@
         - Send user input to ESP32 using react-native-ble-plx library
     - Backend
       - Implement database to store information using MongoDB
+- Known Bugs 
+    - Submission button for Sign up and Log in Screens
+        - The button should be disabled whenever the email and password fields are empty
+        - Currently the button is disabled in its initial state and is enabled once input is added to both fields
+        - However, if the user deletes their input, the button is still enabled when it should be disabled
+        - A fix for this will involve editing the useEffect for the buttonDisabled state to check if the values are empty and disabling the button if they are
         
 ### Project Architecture
 ![image](https://github.com/user-attachments/assets/9d2da04c-8161-4ee3-b575-c6d6e70aa303)  
@@ -42,12 +77,3 @@ The ESP32 system is composed of the ESP32 DevKit-C, TFmini Plus LiDaR sensor, mo
 
 **Software**  
 The Playzer Mobile App is built using React Native, TypeScript, and Expo, which enables us to develop for both iOS and Android devices simultaneously. The React Native Paper UI Library is utilized to develop the user interface, and the app communicates with the Playzer device’s ESP32 via Bluetooth using the react-native-ble-plx library. The Playzer database, which stores user information, will be stored locally using SQLite and remotely using Firebase.
-
-**Known Bugs**  
-Submission button for Sign up and Log in Screens
-- The button should be disabled whenever the email and password fields are empty
-- Currently the button is disabled in its initial state and is enabled once input is added to both fields
-- However, if the user deletes their input, the button is still enabled when it should be disabled
-- A fix for this will involve editing the useEffect for the buttonDisabled state to check if the values are empty and disabling the button if they are
-
-      
