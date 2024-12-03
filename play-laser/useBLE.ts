@@ -26,7 +26,7 @@ interface BluetoothLowEnergyApi {
   heartRate: number;
   sendData(
     device: Device,
-    data: string,
+    data: bigint,
   ): Promise<void>;
 }
 
@@ -170,31 +170,13 @@ function useBLE(): BluetoothLowEnergyApi {
     }
   };
 
-  const sendData = async (device: Device, data: string) => {
-    try {
-      let rawData = BigInt(0);
-      rawData |= BigInt(4)  << BigInt(8);
-      rawData |= BigInt(2);
-      console.log(rawData.toString(16));
-
-      await bleManager.writeCharacteristicWithoutResponseForDevice(
-        device.id,
-        SERVICE_UUID,
-        NUM_CHARACTERISTIC_UUID,
-        btoa(`${rawData}`),
-      );
-    } catch (error) {
-      console.log(error);
-    }
-
-    await new Promise(resolve => setTimeout(resolve, 100));
-
+  const sendData = async (device: Device, data: bigint) => {
     try {
       await bleManager.writeCharacteristicWithoutResponseForDevice(
         device.id,
         SERVICE_UUID,
         NUM_CHARACTERISTIC_UUID,
-        btoa("hello"),
+        btoa(`${data}`),
       );
     } catch (error) {
       console.log(error);

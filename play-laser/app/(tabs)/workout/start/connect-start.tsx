@@ -105,16 +105,27 @@ export default function ConnectStartScreen() {
     setIsModalVisible(true);
   };
 
+  const decodeWorkoutData = (workout: Workout): bigint => {
+    let data = BigInt(0);
+    data |= BigInt(workout.laserDuration) << BigInt(4);  // 4 bits for laserDuration
+    data |= BigInt(workout.durationBetweenLasers) << BigInt(4);  // 4 bits for durationBetweenLasers
+    data |= BigInt(workout.numRows) << BigInt(4);  // 4 bits for numRows
+    data |= BigInt(workout.numColumns) << BigInt(4);  // 4 bits for numColumns
+    data |= BigInt(workout.laserPositions.length) << BigInt(5);  // 5 bits for number of laserPositions
+    for (let i = 0; i < workout.laserPositions.length; i++) {
+      data |= BigInt(workout.laserPositions[i]) << BigInt(6)  // 6 bits for each laserPosition
+    }
+    data = data >> BigInt(6);
+    // console.log(data.toString(16));
+    return data;
+  }
+
   const handleStartWorkout = () => {
     handleStartStop();
-    // test send
-    const time = "2";
-    sendData(connectedDevice, time);
-
-    // perform bit masking
-    const byteArray = new Uint8Array(20);
-    byteArray[0] = 8;
-    // sendData(connectedDevice, byteArray);
+    const data = decodeWorkoutData(workout);
+    if (connectedDevice) {
+      sendData(connectedDevice, data);
+    }
   }
 
   return (
