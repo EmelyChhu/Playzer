@@ -22,11 +22,13 @@ export default function ConnectStartScreen() {
     scanForPeripherals,
     allDevices,
     connectToDevice,
-    connectedDevice,
+    // connectedDevice,
     heartRate,
     disconnectFromDevice,
     sendData,
   } = useBLE();
+
+  const connectedDevice = true;
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [workout, setWorkout] = useState<Workout | null>(null);
@@ -35,25 +37,40 @@ export default function ConnectStartScreen() {
   const [isRunning, setIsRunning] = useState(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
+  const handleStartStop = () => {
+    setIsRunning(prevState => !prevState);
+  };
+
+  const handleReset = () => {
+    setIsRunning(false);
+    setTime(0);
+  };
+
   useEffect(() => {
-    if (isRunning && time != workoutDuration) {
-      const id = setInterval(() => {
-        setTime(prevTime => prevTime + 1);
-      }, 1000);
-      setIntervalId(id);
-    } else {
-      // handleReset();
-      if (intervalId) {
-        clearInterval(intervalId);
+    if (isRunning) {
+      if (time < workoutDuration) {
+        const id = setInterval(() => {
+          setTime(prevTime => prevTime + 1);
+        }, 1000);
+        setIntervalId(id);
+  
+        return () => {
+          clearInterval(id);
+        };
+      } else {
+        setIsRunning(false);
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
       }
     }
-
+  
     return () => {
       if (intervalId) {
         clearInterval(intervalId);
       }
     };
-  }, [isRunning]);
+  }, [isRunning, time, workoutDuration]);
 
   useEffect(() => {
     const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
@@ -79,15 +96,6 @@ export default function ConnectStartScreen() {
       </PaperProvider>
     );
   }
-
-  const handleStartStop = () => {
-    setIsRunning(prevState => !prevState);
-  };
-
-  const handleReset = () => {
-    setIsRunning(false);
-    setTime(0);
-  };
 
   const scanForDevices = async () => {
     const isPermissionsEnabled = await requestPermissions();
@@ -132,20 +140,27 @@ export default function ConnectStartScreen() {
     <PaperProvider>
       <View style={styles.container}>
         {connectedDevice ?
-          <View style={styles.infoContainer}>
-            <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
-              {Math.floor(time / 60)}m {time % 60}s
-            </Text>
-            <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
-              elapsed
-            </Text>
-            <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
-              {Math.floor((workoutDuration - time) / 60)}m {(workoutDuration - time) % 60}s
-            </Text>
-            <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
-              remaining
-            </Text>
-          </View>
+          (time == workoutDuration ?
+            <View style={styles.infoContainer}>
+              <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
+                Workout completed!
+              </Text>
+            </View>
+            :
+            <View style={styles.infoContainer}>
+              <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
+                {Math.floor(time / 60)}m {time % 60}s
+              </Text>
+              <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
+                elapsed
+              </Text>
+              <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
+                {Math.floor((workoutDuration - time) / 60)}m {(workoutDuration - time) % 60}s
+              </Text>
+              <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
+                remaining
+              </Text>
+            </View>)
         :
           <View style={styles.infoContainer}>
             <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
