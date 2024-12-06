@@ -22,7 +22,7 @@ export default function ConnectStartScreen() {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-  const [connectedDevice, setConnectedDevice] = useState(true);
+  const [connectedDevice, setConnectedDevice] = useState(false);
 
   const handleStartStop = () => {
     setIsRunning(prevState => !prevState);
