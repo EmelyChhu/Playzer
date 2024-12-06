@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth"; 
 import { getFirestore, 
-  collection, getDocs,
+  collection, getDocs, addDoc,
   doc, getDoc,
   query, where 
 } from "firebase/firestore";
@@ -35,8 +35,6 @@ const FirebaseConfig = {
 };
 
 export const fetchWorkouts = async (workoutId: string): Promise<Workout | null> => { 
-  //const db = getFirestore()
-
   // verify that the collection exist, remove async parameters
   /*
   const workoutsCollection = collection(db, 'Workout')
@@ -80,6 +78,18 @@ export const fetchWorkouts = async (workoutId: string): Promise<Workout | null> 
   catch (error) {
     console.error("Error fetching workouts:", error);
     return null;
+  }
+};
+
+export const addWorkout = async (workoutData: any) => {
+  const workoutsCollectionRef = collection(FIREBASE_DB, "Workout");
+
+  try {
+    const docRef = await addDoc(workoutsCollectionRef, workoutData);
+    console.log("Workout successfully added with ID:", docRef.id);
+  }
+  catch (error) {
+    console.error("Error adding workout:", error);
   }
 };
 

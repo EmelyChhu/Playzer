@@ -11,6 +11,9 @@ import { Workout, exampleWorkouts } from '@/types';
 import { router } from 'expo-router';
 import { LaserPositionCardProps, LaserGridProps } from '@/types';
 
+import { addWorkout } from "@/FirebaseConfig";
+import { FIREBASE_AUTH } from "@/FirebaseConfig";
+
 export default function CreateCustomRoutineScreen() {
   const colorScheme = useColorScheme();
   const workouts = exampleWorkouts;
@@ -63,7 +66,7 @@ export default function CreateCustomRoutineScreen() {
     }
     if (!convFail) {
       const newCustomWorkout = {
-        id: "1",
+        id: "4",
         name: "Custom 1",
         type: "Custom",
         durationBetweenLasers: {durationBetweenLasers},
@@ -72,9 +75,10 @@ export default function CreateCustomRoutineScreen() {
         numRows: 4,
         numPositions: 32,
         laserPositions: {laserPositions},
+        creatorId: FIREBASE_AUTH.currentUser?.uid,
         description: "This is a newly created custom workout routine."
       }
-      // send workout to database
+      await addWorkout(newCustomWorkout);
       // navigate back to "View Custom Routines Page"
     }
   }
