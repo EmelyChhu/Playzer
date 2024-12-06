@@ -1,7 +1,7 @@
 import { StyleSheet, ScrollView } from 'react-native';
 
 import { View } from '@/components/Themed';
-import { PaperProvider, Text, Button } from 'react-native-paper';
+import { PaperProvider, Text, Button, ActivityIndicator } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -34,8 +34,11 @@ export default function WorkoutScreen() {
   if(!workout) {
     return (
       <PaperProvider>
-        <View style={styles.container}>
-          <Text>Loading workout...</Text> 
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText} variant="displayLarge">
+            Loading workout...
+          </Text>
+          <ActivityIndicator animating={true} size={100}/>
         </View>
       </PaperProvider>
     );
@@ -145,6 +148,15 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     marginTop: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+  },
+  loadingText: {
+    textAlign: 'center',
   },
   title: {
     fontWeight: 'bold',

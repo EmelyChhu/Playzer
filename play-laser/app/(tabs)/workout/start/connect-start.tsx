@@ -2,7 +2,7 @@ import { StyleSheet, PermissionsAndroid } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
-import { PaperProvider, Button, TextInput, Text } from 'react-native-paper';
+import { PaperProvider, Button, TextInput, Text, ActivityIndicator } from 'react-native-paper';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { BleManager } from 'react-native-ble-plx';
@@ -90,8 +90,11 @@ export default function ConnectStartScreen() {
   if(!workout) {
     return (
       <PaperProvider>
-        <View style={styles.container}>
-          <Text>Loading workout...</Text> 
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText} variant="displayLarge">
+            Loading workout...
+          </Text>
+          <ActivityIndicator animating={true} size={100}/>
         </View>
       </PaperProvider>
     );
@@ -215,6 +218,15 @@ const styles = StyleSheet.create({
     height: '60%',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+  },
+  loadingText: {
+    textAlign: 'center',
   },
   title: {
     fontSize: 20,
