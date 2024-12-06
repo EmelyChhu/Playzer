@@ -1,7 +1,7 @@
 import { StyleSheet, ScrollView } from 'react-native';
 
 import { View } from '@/components/Themed';
-import { PaperProvider, Text, Button } from 'react-native-paper';
+import { PaperProvider, Text, Button, ActivityIndicator } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -34,8 +34,11 @@ export default function WorkoutScreen() {
   if(!workout) {
     return (
       <PaperProvider>
-        <View style={styles.container}>
-          <Text>Loading workout...</Text> 
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText} variant="displayLarge">
+            Loading workout...
+          </Text>
+          <ActivityIndicator animating={true} size={100}/>
         </View>
       </PaperProvider>
     );
@@ -50,7 +53,7 @@ export default function WorkoutScreen() {
         <Text variant="bodyMedium">
             {workout.description}
         </Text>
-        <Button style={styles.button} mode='contained'>
+        <Button style={styles.button} mode='contained' onPress={() => router.push("./connect-start")}>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start Workout</Text>
         </Button>
         <Text style={styles.title} variant="titleLarge">Workout Details</Text>
@@ -145,6 +148,16 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     marginTop: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    gap: 32,
+  },
+  loadingText: {
+    textAlign: 'center',
   },
   title: {
     fontWeight: 'bold',
