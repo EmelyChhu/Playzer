@@ -1,5 +1,6 @@
 import { StyleSheet, ScrollView, Pressable } from 'react-native';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useFocusEffect } from "@react-navigation/native";
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
@@ -27,6 +28,16 @@ export default function CreateCustomRoutineScreen() {
   const [errorLaserDuration, setErrorLaserDuration] = useState(false);
   const [errorDurationBetweenLasers, setErrorDurationBetweenLasers] = useState(false);
   const [errorMessageLasers, setErrorMessageLasers] = useState("");
+  const [buttonText, setButtonText] = useState("Save Custom Routine");
+  const [isSaved, setIsSaved] = useState(false);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setButtonText("Save Custom Routine");
+      setIsSaved(false);
+      // setButtonDisabled(false);
+    }, [])
+  );
 
   useEffect(() => {
     const workoutDuration = laserPositions.length * (Number(durationBetweenLasers) + Number(laserDuration));
@@ -79,6 +90,9 @@ export default function CreateCustomRoutineScreen() {
         description: "This is a newly created custom workout routine."
       }
       await addWorkout(newCustomWorkout);
+      setButtonText("Workout Saved!");
+      setIsSaved(true);
+      // setButtonDisabled(true);
       // navigate back to "View Custom Routines Page"
     }
   }
@@ -100,7 +114,7 @@ export default function CreateCustomRoutineScreen() {
         </Text>
         <Button style={styles.saveButton} mode='contained' onPress={handleSaveRoutine}>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
-            Save Custom Routine
+            {buttonText}
           </Text>
         </Button>
         <Text style={styles.title} variant="titleLarge">Time (seconds)</Text>
