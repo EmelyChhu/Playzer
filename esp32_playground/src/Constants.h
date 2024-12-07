@@ -2,6 +2,9 @@
 #define CONSTANTS_h
 
 #include <ESP32Servo.h>
+#include <cstdint> // Preferred in C++
+#include <vector>
+
 
 #define LASER_PIN 26 // Replace with the GPIO pin you want to toggle
 #define MOVEMENT_DELAY 300

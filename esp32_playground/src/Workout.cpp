@@ -12,8 +12,8 @@ void turn_off_laser(){
 }
 
 Workout::Workout(uint8_t id, uint16_t duration_btwn, uint16_t lsr_duration, 
-uint8_t cols, uint8_t rows, uint8_t* pos, uint8_t num_pos) :
-id(id), columns(cols), rows(rows), positions(pos), num_positions(num_pos)
+uint8_t cols, uint8_t rows, std::vector<uint8_t> pos, uint8_t num_positions) :
+id(id), columns(cols), rows(rows), positions(pos), num_positions(num_positions)
 {
     duration_btwn_lasers_ms = duration_btwn * 1000;
     laser_duration_ms = lsr_duration * 1000;
@@ -32,7 +32,7 @@ Workout::Workout() // creates default workout for testing
     rows = 4;
     num_positions = 12;
 
-    positions = new uint8_t[12];
+    positions.resize(12); 
     for (size_t i = 0; i < num_positions; i++) {
         positions[i] = i;
     }
@@ -84,7 +84,7 @@ void Workout::return_to_base(){
 }
 
 void Workout::execute(){
-    for (u_int8_t i = 0; i < num_positions; i++){
+    for (uint8_t i = 0; i < num_positions; i++){
 
         Serial.println("position:");
         Serial.println(positions[i]);

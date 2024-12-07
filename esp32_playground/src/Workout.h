@@ -10,7 +10,7 @@ private:
     uint16_t laser_duration_ms;
     uint8_t columns;
     uint8_t rows;
-    uint8_t* positions;
+    std::vector<uint8_t> positions;
     uint8_t num_positions;
 
     uint8_t base_row;
@@ -35,13 +35,13 @@ public:
 
     // Constructor
     Workout(uint8_t id, uint16_t duration_btwn, uint16_t lsr_duration, 
-    u_int8_t cols, u_int8_t rows, u_int8_t* pos, u_int8_t num_pos);
+    uint8_t cols, uint8_t rows, std::vector<uint8_t> pos, u_int8_t num_positions);
 
 
     void execute();
 
     ~Workout() {
-        delete[] positions; // Free allocated memory
+        positions.clear(); // Free allocated memory
     }
 
 };

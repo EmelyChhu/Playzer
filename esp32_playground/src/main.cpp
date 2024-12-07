@@ -1,7 +1,12 @@
 #include "Workout.h"
+#include "ble_lidar.h"
+
+BLE_LIDAR *bluetooth_obj;
 
 void setup() { 
     Serial.begin(115200);
+    Serial.println("Starting the Playzer!");
+
     pinMode(LASER_PIN, OUTPUT);
     digitalWrite(LASER_PIN, LOW);
 
@@ -13,23 +18,26 @@ void setup() {
 
     ledcWrite(PWM_CHANNEL_TOP_SERVO, BASE_DUTY_CYCLE);
     ledcWrite(PWM_CHANNEL_BOT_SERVO, BASE_DUTY_CYCLE);
+
+    bluetooth_obj = new BLE_LIDAR();
+
+    Serial.println("Characteristic defined! Now you can read it in your phone!");
 }
 
 void loop() {
-    /*
-    Workout(uint8_t id, uint16_t duration_btwn, uint16_t lsr_duration, 
-            uint8_t cols, uint8_t rows, uint8_t* pos, uint8_t num_pos)
-    */
-    uint8_t size = 12;
-    uint8_t* pattern = new uint8_t[12];
-    for (size_t i = 0; i < size; i++) {
-        pattern[i] = i;
-    }
+    while (!bluetooth_obj->get_C() && !bluetooth_obj->get_R()){}
 
     Workout test_workout;
-    test_workout = Workout(1, 2, 2, 6, 4, pattern, size);
-    // test_workout = Workout();
+    test_workout = Workout( 1, 
+                            bluetooth_obj->get_DBL(), 
+                            bluetooth_obj->get_LD()*1000, 
+                            bluetooth_obj->get_C(), 
+                            bluetooth_obj->get_R(), 
+                            bluetooth_obj->get_P(), 
+                            bluetooth_obj->get_NP());
 
     test_workout.execute();
+
+    bluetooth_obj->reset_workout();
 
 }

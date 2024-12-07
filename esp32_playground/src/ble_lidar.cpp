@@ -1,36 +1,30 @@
-#include <Arduino.h>
-#include <ESP32Servo.h>
-#include <BLEDevice.h>
-#include <BLEUtils.h>
-#include <BLEServer.h>
-#include <HardwareSerial.h>
+#include "ble_lidar.h"
 
-// UUID Generator: https://www.uuidgenerator.net/
-#define SERVICE_UUID        "0e5b8089-499c-45a4-abf8-a03b72e250f3"
-#define NUM_CHARACTERISTIC_UUID "615a8742-09c4-4e94-a410-a9db961335d1"
-#define TX 1
-#define RX 3
+uint8_t BLE_LIDAR::duration_btwn_lasers;
+uint8_t BLE_LIDAR::laser_duration;
+uint8_t BLE_LIDAR::cols;
+uint8_t BLE_LIDAR::rows;
+uint8_t BLE_LIDAR::num_pos;
 
-// LiDAR Constants
-const int HEADER = 0x59;
-HardwareSerial TFMini(0);
+std::vector<uint8_t> BLE_LIDAR::positions;
 
-// Workout variables
-uint8_t duration_btwn_lasers, laser_duration, cols, rows, num_pos;
-std::vector<uint8_t> positions;
+void BLE_LIDAR::BLE_init(){
+    TFMini.begin(115200, SERIAL_8N1, RX, TX); // start sensor serial data collection
+    BLE_setup();
+}
 
 // LiDAR Distance Retrieval Function
-void getDistance(int* distance) {
+void BLE_LIDAR::getDistance(int* distance) {
   static char i = 0;
   int checksum = 0; 
   static int rx[9];
   if(TFMini.available())
   {  
     rx[i] = TFMini.read();
-    if(rx[0] != 0x59) {
+    if(rx[0] != HEADER) {
       i = 0;
     } 
-    else if(i == 1 && rx[1] != 0x59) {
+    else if(i == 1 && rx[1] != HEADER) {
       i = 0;
     } 
     else if(i == 8) {
@@ -46,7 +40,7 @@ void getDistance(int* distance) {
   }  
 }
 
-uint8_t calculate_distance()
+uint8_t BLE_LIDAR::calculate_distance()
 {
   // get the average distance here, polls it 
   // Retrieve LiDAR Distance in centimeters
@@ -72,7 +66,7 @@ uint8_t calculate_distance()
   return feet;
 } 
 
-void output_distance()
+void BLE_LIDAR::output_distance()
 {
   // Retrieve LiDAR Distance in centimeters
   int distance = 0;
@@ -86,49 +80,47 @@ void output_distance()
   
 }
 
-// BLE Characteristic Callback Class
-class MyCallbacks : public BLECharacteristicCallbacks {
-    void onWrite(BLECharacteristic *pCharacteristic) {
-      std::string value = pCharacteristic->getValue();
-      if (value.length() > 0) {
-        // convert data received to a 64 bit integer
-        for (int i = 0; i < value.length(); i++) {
-          Serial.print(value[i]);  // Print each character or byte
-        }
-        Serial.println();
 
-        uint64_t dec_num = std::stoull(value.c_str());
-
-        num_pos = dec_num & 0x1F; // 5 bits
-        // array of the numbers
-        for (uint8_t i = 0; i < num_pos; i++)
-        {
-          positions.push_back((dec_num >> 5 + (6*i)) & 0x3F); // each position is 6 bits
-        }
-
-        int after_lasers = 5 + (6 * num_pos);
-
-        cols = (dec_num >> after_lasers) & 0xF; // 4 bits
-        rows = (dec_num >> after_lasers + 4) & 0xF; // 4 bits
-        laser_duration = (dec_num >> after_lasers + 8) & 0xF; // 4 bits
-        duration_btwn_lasers = (dec_num >> after_lasers + 12) & 0xF; // 4 bits
-        
-        Serial.println("Number received:" + String(dec_num));
-        Serial.println("Duration Btwn Lasers: "+ String(duration_btwn_lasers) + "\t Laser Duration: "+ String(laser_duration));
-        Serial.println("Rows: "+ String(rows) + "\t Columns: "+ String(cols));
-        Serial.println("Number of Positions: "+ String(num_pos));
-
-        // print out the laser positions
-        Serial.print("Laser Positions: "); 
-        for (uint8_t i = 0; i < positions.size(); i++)
-        {
-          Serial.print(String(positions[i]) + " "); // each position is 6 bits
-        }
-      }
+void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
+  std::string value = pCharacteristic->getValue();
+  if (value.length() > 0) {
+    // convert data received to a 64 bit integer
+    for (int i = 0; i < value.length(); i++) {
+      Serial.print(value[i]);  // Print each character or byte
     }
-};
+    Serial.println();
 
-void ble_setup(){
+    uint64_t dec_num = std::stoull(value.c_str());
+
+    num_pos = dec_num & 0x1F; // 5 bits
+    // array of the numbers
+    for (uint8_t i = 0; i < num_pos; i++)
+    {
+      positions.push_back((dec_num >> 5 + (6*i)) & 0x3F); // each position is 6 bits
+    }
+
+    int after_lasers = 5 + (6 * num_pos);
+
+    cols = (dec_num >> after_lasers) & 0xF; // 4 bits
+    rows = (dec_num >> after_lasers + 4) & 0xF; // 4 bits
+    laser_duration = (dec_num >> after_lasers + 8) & 0xF; // 4 bits
+    duration_btwn_lasers = (dec_num >> after_lasers + 12) & 0xF; // 4 bits
+    
+    Serial.println("Number received:" + String(dec_num));
+    Serial.println("Duration Btwn Lasers: "+ String(duration_btwn_lasers) + "\t Laser Duration: "+ String(laser_duration));
+    Serial.println("Rows: "+ String(rows) + "\t Columns: "+ String(cols));
+    Serial.println("Number of Positions: "+ String(num_pos));
+
+    // print out the laser positions
+    Serial.print("Laser Positions: "); 
+    for (uint8_t i = 0; i < positions.size(); i++)
+    {
+      Serial.print(String(positions[i]) + " "); // each position is 6 bits
+    }
+  }
+}
+
+void BLE_LIDAR::BLE_setup(){
   // BLE Setup
   BLEDevice::init("Playzer");
   BLEServer *pServer = BLEDevice::createServer();
@@ -154,21 +146,31 @@ void ble_setup(){
   BLEDevice::startAdvertising();
 }
 
-void setup() {
-  // Initialize Serial
-  Serial.begin(115200);
-  Serial.println("Starting the Playzer!");
-  TFMini.begin(115200, SERIAL_8N1, RX, TX); // start sensor serial data collection
-
-  ble_setup();
-
-  Serial.println("Characteristic defined! Now you can read it in your phone!");
+void BLE_LIDAR::reset_workout(){
+  duration_btwn_lasers = 0;
+  laser_duration = 0;
+  cols = 0;
+  rows = 0;
+  num_pos = 0;
+  positions.clear();
 }
 
-void loop() {
-  //output_distance();
-  // Slight delay between cycles
-  delay(100);
-  //calculate_distance();
-  //delay(100);
+uint8_t BLE_LIDAR::get_DBL(){
+  return duration_btwn_lasers;
+}
+
+uint8_t BLE_LIDAR::get_LD(){
+  return laser_duration;
+}
+uint8_t BLE_LIDAR::get_C(){
+  return cols;
+}
+uint8_t BLE_LIDAR::get_R(){
+  return rows;
+}
+uint8_t BLE_LIDAR::get_NP(){
+  return num_pos;
+}
+std::vector<uint8_t> BLE_LIDAR::get_P(){
+  return positions;
 }
