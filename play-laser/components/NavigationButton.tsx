@@ -17,7 +17,7 @@ export default function NavigationButton(
   }
 ) {
   const colorScheme = useColorScheme();
-  const {size, path, text, icon} = props;
+  const { size, path, text, icon } = props;
   
   return (
     <Button

@@ -2,7 +2,7 @@ import { StyleSheet, ScrollView, Pressable } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useFocusEffect } from "@react-navigation/native";
 
-import EditScreenInfo from '@/components/EditScreenInfo';
+import LaserPositionCard from '@/components/LaserPositionCard';
 import { View } from '@/components/Themed';
 import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -165,27 +165,8 @@ export default function CreateCustomRoutineScreen() {
   );
 }
 
-const LaserPositionCard: React.FC<LaserPositionCardProps> = ({ workout, laserPosition, index }) => {
+const LaserGridInput: React.FC<LaserGridProps> = ({ numColumns, numRows, setLaserPositions, laserPositions }) => {
   const colorScheme = useColorScheme();
-  return (
-    <View style={[styles.laserPositionCard, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
-      <LaserGrid 
-        numColumns={workout.numColumns}
-        numRows={workout.numRows} 
-        numPositions={workout.numPositions} 
-        laserPosition={laserPosition} 
-      />
-      <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
-        Laser {index + 1}
-      </Text>
-    </View>
-  )
-}
-
-const LaserGridInput: React.FC<LaserGridProps> = ({ numColumns, numRows, numPositions, laserPosition, setLaserPositions, laserPositions }) => {
-  const colorScheme = useColorScheme();
-  const laserPositionRow = laserPosition != undefined ? Math.floor((laserPosition - 1) / numColumns) : -1;
-  const laserPositionColumn = laserPosition != undefined ? (laserPosition - 1) % numColumns : -1;
   
   const handleLaserPositionPress = (row: number, column: number) => {
     const newPosition = row * 8 + column + 1;
@@ -224,39 +205,6 @@ const LaserGridInput: React.FC<LaserGridProps> = ({ numColumns, numRows, numPosi
   )
 }
 
-const LaserGrid: React.FC<LaserGridProps> = ({ numColumns, numRows, numPositions, laserPosition }) => {
-  const colorScheme = useColorScheme();
-  const laserPositionRow = laserPosition != undefined ? Math.floor((laserPosition - 1) / numColumns) : -1;
-  const laserPositionColumn = laserPosition != undefined ? (laserPosition - 1) % numColumns : -1;
-
-  const rows = [];
-  for (let i = 0; i < numRows; i++) {
-    const columns = [];
-    for (let j = 0; j < numColumns; j++) {
-      columns.push(
-        <View key={`${i}-${j}`} style={[styles.gridItemInput, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
-          <FontAwesome
-            name="dot-circle-o"
-            size={9}
-            color={(laserPositionRow == i && laserPositionColumn == j) ? "#422f7f" : "white"} 
-          />
-        </View>
-      );
-    }
-    rows.push(
-      <View key={i} style={[styles.gridRow, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
-        {columns}
-      </View>
-    );
-  }
-
-  return (
-    <View style={[styles.laserGrid, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
-      {rows}
-    </View>
-  )
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -279,12 +227,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 8,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    paddingTop: 2,  // TODO: make vertical centering automatic
-  },
   saveButton: {
     width: '100%',
     height: 48,
@@ -292,39 +234,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  routineButtonsContainer: {
-    height: 92,
-  },
-  routineButton: {
-    width: 128,
-    height: 80,
-    marginVertical: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  routineButtonContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-  },
-  routineButtonText: {
-    fontSize: 16,
-    marginTop: 4,
-    textAlign: 'center',
-  },
-  laserPositionCard: {
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
-    borderRadius: 16,
-    marginBottom: 16,
-  },
-  laserGrid: {
-    marginRight: 32,
   },
   laserGridInput: {
     alignItems: 'center',
@@ -338,13 +247,6 @@ const styles = StyleSheet.create({
   gridItem: {
     width: 32,
     height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 5,
-  },
-  gridItemInput: {
-    width: 8,
-    height: 8,
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 5,
@@ -372,11 +274,6 @@ const styles = StyleSheet.create({
     // marginLeft: 12,
     marginRight: 8,
     height: 40,
-  },
-  label: {
-    textAlign: 'left',
-    width: '100%',
-    marginTop: 4,
   },
   errorText: {
     color: 'pink',
