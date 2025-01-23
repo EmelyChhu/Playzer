@@ -37,30 +37,45 @@ function useBLE(): BluetoothLowEnergyApi {
   const [heartRate, setHeartRate] = useState<number>(0);
 
   const requestAndroid31Permissions = async () => {
-    const bluetoothScanPermission = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-      {
-        title: "Location Permission",
-        message: "Bluetooth Low Energy requires Location",
-        buttonPositive: "OK",
-      }
-    );
-    const bluetoothConnectPermission = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-      {
-        title: "Location Permission",
-        message: "Bluetooth Low Energy requires Location",
-        buttonPositive: "OK",
-      }
-    );
-    const fineLocationPermission = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        title: "Location Permission",
-        message: "Bluetooth Low Energy requires Location",
-        buttonPositive: "OK",
-      }
-    );
+    // const bluetoothScanPermission = await PermissionsAndroid.request(
+    //   PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+    //   {
+    //     title: "Location Permission",
+    //     message: "Bluetooth Low Energy requires Location",
+    //     buttonPositive: "OK",
+    //   }
+    // );
+    // const bluetoothConnectPermission = await PermissionsAndroid.request(
+    //   PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+    //   {
+    //     title: "Location Permission",
+    //     message: "Bluetooth Low Energy requires Location",
+    //     buttonPositive: "OK",
+    //   }
+    // );
+    // const fineLocationPermission = await PermissionsAndroid.request(
+    //   PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    //   {
+    //     title: "Location Permission",
+    //     message: "Bluetooth Low Energy requires Location",
+    //     buttonPositive: "OK",
+    //   }
+    // );
+    let bluetoothScanPermission;
+    let bluetoothConnectPermission;
+    let fineLocationPermission;
+    try {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+        PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+      ]);
+      bluetoothScanPermission = granted;
+      bluetoothConnectPermission = granted;
+      fineLocationPermission = granted;
+    } catch (err) {
+      console.warn(err);
+    }
 
     return (
       bluetoothScanPermission === "granted" &&

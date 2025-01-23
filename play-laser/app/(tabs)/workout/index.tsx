@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
     paddingTop: 5,  // TODO: make vertical centering automatic
+    marginTop: 3,
   },
   routineButtonsContainer: {
     flexDirection: 'row',
