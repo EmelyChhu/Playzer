@@ -16,7 +16,7 @@ export default function WorkoutScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title}>Quick Start</Text>
+        <Text style={styles.title} variant="titleLarge">Quick Start</Text>
         <Button style={styles.button} mode='contained' contentStyle={styles.buttonContainer} onPress={() => router.push("./workout/start")}>
           <View style={styles.buttonContainer}>
             <FontAwesome
@@ -27,7 +27,7 @@ export default function WorkoutScreen() {
             <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start a Workout</Text>
           </View> 
         </Button>
-        <Text style={styles.title}>View Workout Routines</Text>
+        <Text style={styles.title} variant="titleLarge">View Workout Routines</Text>
         <View style={styles.routineButtonsContainer}>
           <NavigationButton
             size="medium"
@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
-    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
   },

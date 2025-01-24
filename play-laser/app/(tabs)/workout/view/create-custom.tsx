@@ -108,7 +108,9 @@ export default function CreateCustomRoutineScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title} variant="headlineMedium">Create a Routine</Text>
+        <Text style={styles.title} variant="headlineMedium">
+          Create a Routine
+        </Text>
         <Text variant="bodyMedium">
           Input the workout settings and click on the grid to add laser positions.
         </Text>
@@ -117,7 +119,9 @@ export default function CreateCustomRoutineScreen() {
             {buttonText}
           </Text>
         </Button>
-        <Text style={styles.title} variant="titleLarge">Time (seconds)</Text>
+        <Text style={styles.title} variant="titleLarge">
+          Time (seconds)
+        </Text>
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
@@ -137,7 +141,9 @@ export default function CreateCustomRoutineScreen() {
           />
         </View>
         {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-        <Text style={styles.title} variant="titleLarge">Add Laser Positions</Text>
+        <Text style={styles.title} variant="titleLarge">
+          Add Laser Positions
+        </Text>
         <View style={styles.laserGridInputContainer}>
           <LaserGridInput 
             numColumns={8}

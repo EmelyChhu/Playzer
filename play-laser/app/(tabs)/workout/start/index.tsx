@@ -11,7 +11,7 @@ export default function WorkoutScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title}>Select a Workout Routine</Text>
+        <Text style={styles.title} variant="titleLarge">Select a Workout Routine</Text>
         <View style={styles.routineButtonsContainer}>
           <NavigationButton
             size="medium"
@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
-    fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'left',
   },

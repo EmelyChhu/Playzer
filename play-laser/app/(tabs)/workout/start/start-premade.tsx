@@ -11,11 +11,15 @@ export default function WorkoutScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title} variant="headlineMedium">Routines</Text>
+        <Text style={styles.title} variant="headlineMedium">
+          Routines
+        </Text>
         <Text variant="bodyMedium">
           Looking for inspiration for your workouts? Check out these routines from our trainers.
         </Text>
-        <Text style={styles.subtitle} variant="titleLarge">Basic</Text>
+        <Text style={styles.subtitle} variant="titleLarge">
+          Basic
+        </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal>
             <NavigationButton
@@ -33,7 +37,9 @@ export default function WorkoutScreen() {
             />
           </ScrollView>
         </View>
-        <Text style={styles.subtitle} variant="titleLarge">Random</Text>
+        <Text style={styles.subtitle} variant="titleLarge">
+          Random
+        </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
             <NavigationButton
@@ -50,7 +56,9 @@ export default function WorkoutScreen() {
             />
           </ScrollView>
         </View>
-        <Text style={styles.subtitle} variant="titleLarge">Sport-Specific</Text>
+        <Text style={styles.subtitle} variant="titleLarge">
+          Sport-Specific
+        </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
             <NavigationButton

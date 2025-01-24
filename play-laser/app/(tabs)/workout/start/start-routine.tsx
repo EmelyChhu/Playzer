@@ -15,6 +15,8 @@ import { fetchWorkouts } from "@/FirebaseConfig";
 export default function WorkoutScreen() {
   const colorScheme = useColorScheme();
   const [workout, setWorkout] = useState<Workout | null>(null);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
     const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
@@ -24,6 +26,9 @@ export default function WorkoutScreen() {
       const fetchedWorkout = await fetchWorkouts(workoutId);
       // console.log("Fetched workout:", fetchedWorkout);
       setWorkout(fetchedWorkout);
+      // setMinutes(Math.floor(workoutDuration / 60));
+      setMinutes(1);
+      setSeconds(workoutDuration % 60);
     };
     loadWorkout();
   }, []);
@@ -46,17 +51,27 @@ export default function WorkoutScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title} variant="headlineMedium">{workout.name}</Text>
+        <Text style={styles.title} variant="headlineMedium">
+          {workout.name}
+        </Text>
         <Text variant="bodyMedium">
             {workout.description}
         </Text>
-        <Button style={styles.button} mode='contained' onPress={() => router.push("./connect-start")}>
-          <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start Workout</Text>
+        <Button
+          style={styles.button}
+          mode='contained'
+          onPress={() => router.push("./connect-start")}
+        >
+          <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+            Start Workout
+          </Text>
         </Button>
-        <Text style={styles.title} variant="titleLarge">Workout Details</Text>
+        <Text style={styles.title} variant="titleLarge">
+          Workout Details
+        </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Workout Duration: </Text>
-          {Math.floor(workoutDuration / 60)} minutes {workoutDuration % 60} seconds
+          {minutes > 0 && `${minutes} minutes`} {seconds} seconds
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Laser Duration: </Text>

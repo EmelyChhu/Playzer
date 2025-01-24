@@ -11,11 +11,15 @@ export default function ViewCustomRoutinesScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title} variant="headlineMedium">Routines</Text>
+        <Text style={styles.title} variant="headlineMedium">
+          Routines
+        </Text>
         <Text variant="bodyMedium">
           View routines you've created or create your own.
         </Text>
-        <Text style={styles.subtitle} variant="titleLarge">New</Text>
+        <Text style={styles.subtitle} variant="titleLarge">
+          New
+        </Text>
         <View style={styles.routineButtonsContainer}>
           <NavigationButton
             size="small"
@@ -24,7 +28,9 @@ export default function ViewCustomRoutinesScreen() {
             icon="plus"
           />
         </View>
-        <Text style={styles.subtitle} variant="titleLarge">Created</Text>
+        <Text style={styles.subtitle} variant="titleLarge">
+          Created
+        </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
             <NavigationButton
