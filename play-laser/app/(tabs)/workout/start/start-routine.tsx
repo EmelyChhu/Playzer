@@ -26,8 +26,7 @@ export default function WorkoutScreen() {
       const fetchedWorkout = await fetchWorkouts(workoutId);
       // console.log("Fetched workout:", fetchedWorkout);
       setWorkout(fetchedWorkout);
-      // setMinutes(Math.floor(workoutDuration / 60));
-      setMinutes(1);
+      setMinutes(Math.floor(workoutDuration / 60));
       setSeconds(workoutDuration % 60);
     };
     loadWorkout();
