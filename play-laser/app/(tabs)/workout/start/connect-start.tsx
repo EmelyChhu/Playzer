@@ -22,13 +22,13 @@ export default function ConnectStartScreen() {
     scanForPeripherals,
     allDevices,
     connectToDevice,
-    connectedDevice,
+    // connectedDevice,
     heartRate,
     disconnectFromDevice,
     sendData,
   } = useBLE();
 
-  // const connectedDevice = true;
+  const connectedDevice = true;
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [workout, setWorkout] = useState<Workout | null>(null);
@@ -36,6 +36,7 @@ export default function ConnectStartScreen() {
   const [time, setTime] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [workoutState, setWorkoutState] = useState(2);    // possible states: 1 (connection), 2 (sync distance), 3 (workout), 4 (workout complete)
 
   const handleStartStop = () => {
     setIsRunning(prevState => !prevState);
@@ -147,10 +148,149 @@ export default function ConnectStartScreen() {
     }
   }
 
+  function ConnectionScreen() {    
+    return (
+      <View>
+        <View style={styles.infoContainer}>
+          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
+            Connect a device to start the workout
+          </Text>
+        </View>
+        <DeviceModal
+            closeModal={hideModal}
+            visible={isModalVisible}
+            connectToPeripheral={connectToDevice}
+            devices={allDevices}
+        />
+        <Button
+          style={styles.button}
+          mode='contained'
+          onPress={() => {
+            openModal(); // Open the device connection modal
+          }}
+        >
+          <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+            Connect device
+          </Text>
+        </Button>
+      </View>
+    );
+  }
+  
+  function SyncDistanceScreen() {
+    return (
+      <View>
+        <View style={styles.infoContainer}>
+          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
+            Position the device at the desired wall distance
+          </Text>
+          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].button}]}>
+            XX m
+          </Text>
+          <Button
+          style={styles.button}
+          mode='contained'
+          onPress={() => {
+            handleStartWorkout(); // TODO: Get distance from wall
+          }}
+        >
+          <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+            Rescan distance
+          </Text>
+        </Button>
+        </View>
+        <Button
+          style={styles.button}
+          mode='contained'
+          onPress={() => {
+            setWorkoutState(4);
+          }}
+        >
+          <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+            Confirm distance
+          </Text>
+        </Button>
+      </View>
+    );
+  }
+  
+  function WorkoutScreen() {
+    return (
+      <View>
+        <View style={styles.infoContainer}>
+          <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
+            {Math.floor(time / 60)}m {time % 60}s
+          </Text>
+          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
+            elapsed
+          </Text>
+          <Text style={[styles.numText, {color: Colors[colorScheme ?? 'light'].button}]}>
+            {Math.floor((workoutDuration - time) / 60)}m {(workoutDuration - time) % 60}s
+          </Text>
+          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
+            remaining
+          </Text>
+        </View>
+        <Button
+          style={styles.button}
+          mode='contained'
+          onPress={() => {
+            handleStartWorkout();
+          }}
+        >
+          <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+            {(isRunning ? "Stop workout" : "Start workout")}
+          </Text>
+        </Button>
+      </View>
+    );
+  }
+  
+  function WorkoutCompleteScreen() {
+    return (
+      <View>
+        <View style={styles.infoContainer}>
+          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
+            Workout completed!
+          </Text>
+        </View>
+        <Button
+          style={styles.button}
+          mode='contained'
+          onPress={() => router.push("../../workout")}
+        >
+          <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+            Exit
+          </Text>
+        </Button>
+      </View>
+    );
+  }
+
   return (
     <PaperProvider>
       <View style={styles.container}>
-        {connectedDevice ?
+        {(() => {
+          switch (workoutState) {
+            case 1:
+              return <ConnectionScreen />;
+            case 2:
+              return <SyncDistanceScreen />;
+            case 3:
+              return <WorkoutScreen />;
+            case 4:
+              return <WorkoutCompleteScreen />;
+            default:
+              return (
+                <View style={styles.infoContainer}>
+                  <Text style={[styles.infoText, { color: Colors[colorScheme ?? 'light'].text }]}>
+                    Error: Please restart the app and try again
+                  </Text>
+                </View>
+              );
+          }
+        })()}
+        {/* {connectedDevice ?
           (time == workoutDuration ?
             <View style={styles.infoContainer}>
               <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
@@ -200,15 +340,18 @@ export default function ConnectStartScreen() {
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             {connectedDevice ? (isRunning ? "Stop workout" : "Start workout") : "Connect device"}
           </Text>
-        </Button>
+        </Button> */}
       </View>
     </PaperProvider>
   );
 }
 
+// sync distance), 3 (workout), 4 (workout complete)
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'flex-start',
     padding: 16,
