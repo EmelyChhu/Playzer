@@ -28,6 +28,9 @@ interface BluetoothLowEnergyApi {
     device: Device,
     data: bigint,
   ): Promise<void>;
+  readData(
+    device: Device
+  ): Promise<string | null>;
 }
 
 function useBLE(): BluetoothLowEnergyApi {
@@ -196,7 +199,30 @@ function useBLE(): BluetoothLowEnergyApi {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  const readData = async (device: Device): Promise<string | null> => {
+    try {
+      const characteristic = await bleManager.readCharacteristicForDevice(
+        device.id,
+        SERVICE_UUID,
+        NUM_CHARACTERISTIC_UUID
+      );
+  
+      if (characteristic?.value) {
+        // Decode the Base64-encoded value
+        const decodedValue = Buffer.from(characteristic.value, 'base64').toString('utf-8');
+        console.log('Read data:', decodedValue);
+        return decodedValue; // Return the decoded value
+      } else {
+        console.warn('Characteristic value is null');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error reading data:', error);
+      return null;
+    }
+  };
 
   return {
     scanForPeripherals,
@@ -206,7 +232,8 @@ function useBLE(): BluetoothLowEnergyApi {
     connectedDevice,
     disconnectFromDevice,
     heartRate,
-    sendData
+    sendData,
+    readData
   };
 }
 
