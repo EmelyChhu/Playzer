@@ -2,7 +2,7 @@ import { StyleSheet, PermissionsAndroid } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
-import { PaperProvider, Button, TextInput, Text, ActivityIndicator } from 'react-native-paper';
+import { PaperProvider, Button, TextInput, Text, ActivityIndicator, Portal, Dialog } from 'react-native-paper';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { BleManager } from 'react-native-ble-plx';
@@ -26,6 +26,7 @@ export default function ConnectStartScreen() {
     heartRate,
     disconnectFromDevice,
     sendData,
+    readData,
   } = useBLE();
 
   // const connectedDevice = false;
@@ -33,46 +34,9 @@ export default function ConnectStartScreen() {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [workoutDuration, setWorkoutDuration] = useState(150);
-  const [time, setTime] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-  const [screenState, setScreenState] = useState(2);    // possible states: 1 (connection), 2 (sync distance), 3 (workout), 4 (workout complete)
-  const [distance, setDistance] = useState(0);
-
-  const handleStartStop = () => {
-    setIsRunning(prevState => !prevState);
-  };
-
-  const handleReset = () => {
-    setIsRunning(false);
-    setTime(0);
-  };
-
-  useEffect(() => {
-    if (isRunning) {
-      if (time < workoutDuration) {
-        const id = setInterval(() => {
-          setTime(prevTime => prevTime + 1);
-        }, 1000);
-        setIntervalId(id);
-  
-        return () => {
-          clearInterval(id);
-        };
-      } else {
-        setIsRunning(false);
-        if (intervalId) {
-          clearInterval(intervalId);
-        }
-      }
-    }
-  
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-    };
-  }, [isRunning, time, workoutDuration]);
+  const [screenState, setScreenState] = useState(1);    // possible states: 1 (connection), 2 (sync distance), 3 (workout), 4 (workout complete)
+  const [distance, setDistance] = useState("0");
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   useEffect(() => {
     const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
@@ -140,15 +104,6 @@ export default function ConnectStartScreen() {
     return data;
   }
 
-  const handleStartWorkout = () => {
-    handleStartStop();
-    const data = encodeWorkoutData(workout);
-    console.log(data.toString(16));
-    if (connectedDevice) {
-      sendData(connectedDevice, data);
-    }
-  }
-
   function ConnectionScreen() {
     useEffect(() => {
       if (connectedDevice) {
@@ -185,13 +140,25 @@ export default function ConnectStartScreen() {
   }
   
   function SyncDistanceScreen() {
+    const handleRescanDistance = async () => {
+      if (connectedDevice) {
+        try {
+          const distanceData = await readData(connectedDevice);
+          setDistance(distanceData ?? "");
+        } catch (error) {
+          console.error("Error reading distance:", error);
+        }
+      } else {
+        setIsDialogVisible(true);
+      }
+    };
+
     return (
       <View style={styles.container}>
         <View style={styles.infoContainer}>
           <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
             Position the device at the desired wall distance
           </Text>
-          
           <View style={{flexDirection:'row'}}>
             <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].button}]}>
               {distance} m
@@ -200,7 +167,7 @@ export default function ConnectStartScreen() {
               style={styles.smallButton}
               mode='contained'
               onPress={() => {
-                handleStartWorkout(); // TODO: Get distance from wall
+                handleRescanDistance();
               }}
             >
               <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
@@ -208,7 +175,6 @@ export default function ConnectStartScreen() {
               </Text>
             </Button>
           </View>
-          
         </View>
         <Button
           style={styles.button}
@@ -221,11 +187,91 @@ export default function ConnectStartScreen() {
             Confirm distance
           </Text>
         </Button>
+        <Portal>
+          <Dialog visible={isDialogVisible} onDismiss={() => setIsDialogVisible(false)}>
+            <Dialog.Title>Error</Dialog.Title>
+            <Dialog.Content>
+              <Text variant="bodyMedium">
+                Unable to connect to the device. Please restart the app and try again.
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setIsDialogVisible(false)}>Dismiss</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       </View>
     );
   }
   
   function WorkoutScreen() {
+    const [workoutState, setWorkoutState] = useState(1);   // possible states: 1 (start), 2 (running -> stop), 3 (restart)
+    const [time, setTime] = useState(0);
+    const [isRunning, setIsRunning] = useState(false);
+    const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+
+    // const handleStartStop = () => {
+    //   setIsRunning(prevState => !prevState);
+    // };
+  
+    // const handleReset = () => {
+    //   setIsRunning(false);
+    //   setTime(0);
+    // };
+  
+    useEffect(() => {
+      if (workoutState == 2) {
+        if (time < workoutDuration) {
+          const id = setInterval(() => {
+            setTime(prevTime => prevTime + 1);
+          }, 1000);
+          setIntervalId(id);
+    
+          return () => {
+            clearInterval(id);
+          };
+        } else {
+          setScreenState(4);
+          // handleStopWorkout();
+          if (intervalId) {
+            clearInterval(intervalId);
+          }
+        }
+      }
+    
+      return () => {
+        if (intervalId) {
+          clearInterval(intervalId);
+        }
+      };
+    }, [workoutState, time, workoutDuration]);
+
+    const handleStartWorkout = () => {
+      // handleStartStop();
+      setWorkoutState(2);   // set workout state to running
+      setTime(0);
+      const data = encodeWorkoutData(workout);
+      console.log(data.toString(16));
+
+      if (connectedDevice) {
+        sendData(connectedDevice, data);    // send workout data to device
+      } else {
+        console.log("Error: No device connected")
+        setIsDialogVisible(true);
+      }
+    }
+
+    const handleStopWorkout = () => {
+      setWorkoutState(3);   // set workout state to stop
+      
+      // TODO: send signal to device to stop
+      // if (connectedDevice) {
+      //   sendData(connectedDevice, data);
+      // } else {
+      //   console.log("Error: No device connected")
+      // }
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.infoContainer}>
@@ -246,13 +292,35 @@ export default function ConnectStartScreen() {
           style={styles.button}
           mode='contained'
           onPress={() => {
-            handleStartWorkout();
+            workoutState == 2 ? handleStopWorkout() : handleStartWorkout();
           }}
         >
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
-            {(isRunning ? "Stop workout" : "Start workout")}
+            {(() => {
+              switch (workoutState) {
+                case 1:
+                  return "Start workout";
+                case 2:
+                  return "Stop workout";
+                case 3:
+                  return "Restart workout";
+              }
+            })()}
           </Text>
         </Button>
+        <Portal>
+          <Dialog visible={isDialogVisible} onDismiss={() => setIsDialogVisible(false)}>
+            <Dialog.Title>Error</Dialog.Title>
+            <Dialog.Content>
+              <Text variant="bodyMedium">
+                Unable to connect to the device. Please restart the app and try again.
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setIsDialogVisible(false)}>Dismiss</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       </View>
     );
   }
