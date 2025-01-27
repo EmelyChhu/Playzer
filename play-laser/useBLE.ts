@@ -135,6 +135,8 @@ function useBLE(): BluetoothLowEnergyApi {
       await deviceConnection.discoverAllServicesAndCharacteristics();
       bleManager.stopDeviceScan();
       startStreamingData(deviceConnection);
+
+      monitorBLE(deviceConnection.id, SERVICE_UUID, NUM_CHARACTERISTIC_UUID);
     } catch (e) {
       console.log("FAILED TO CONNECT", e);
     }
@@ -165,13 +167,14 @@ function useBLE(): BluetoothLowEnergyApi {
 
     const firstBitValue: number = Number(rawData) & 0x01;
 
-    if (firstBitValue === 0) {
-      innerHeartRate = rawData[1].charCodeAt(0);
-    } else {
-      innerHeartRate =
-        Number(rawData[1].charCodeAt(0) << 8) +
-        Number(rawData[2].charCodeAt(2));
-    }
+    console.log(atob(characteristic.value));
+    // if (firstBitValue === 0) {
+    //   innerHeartRate = rawData[1].charCodeAt(0);
+    // } else {
+    //   innerHeartRate =
+    //     Number(rawData[1].charCodeAt(0) << 8) +
+    //     Number(rawData[2].charCodeAt(2));
+    // }
 
     setHeartRate(innerHeartRate);
   };
@@ -211,7 +214,7 @@ function useBLE(): BluetoothLowEnergyApi {
   
       if (characteristic?.value) {
         // Decode the Base64-encoded value
-        const decodedValue = Buffer.from(characteristic.value, 'base64').toString('utf-8');
+        const decodedValue = atob(characteristic.value);
         console.log('Read data:', decodedValue);
         return decodedValue; // Return the decoded value
       } else {
@@ -224,6 +227,33 @@ function useBLE(): BluetoothLowEnergyApi {
     }
   };
 
+  const monitorBLE = async (deviceId: string, serviceUUID: string, characteristicUUID: string) => {
+    try {
+      // Monitor for changes in the characteristic value
+      bleManager.monitorCharacteristicForDevice(
+        deviceId,
+        serviceUUID,
+        characteristicUUID,
+        (error, characteristic) => {
+          if (error) {
+            console.error('Error monitoring characteristic:', error);
+            return;
+          }
+  
+          // Handle updated characteristic value
+          if (characteristic?.value) {
+            const decodedValue = atob(characteristic.value);
+            console.log('Received notification:', decodedValue);
+  
+            // Update state or UI based on the new value
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Error setting up monitor:', error);
+    }
+  };
+
   return {
     scanForPeripherals,
     requestPermissions,
@@ -233,7 +263,8 @@ function useBLE(): BluetoothLowEnergyApi {
     disconnectFromDevice,
     heartRate,
     sendData,
-    readData
+    readData,
+    monitorBLE
   };
 }
 
