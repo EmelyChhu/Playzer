@@ -23,20 +23,19 @@ export default function ConnectStartScreen() {
     allDevices,
     connectToDevice,
     connectedDevice,
-    heartRate,
+    distance,
     disconnectFromDevice,
     sendData,
-    readData,
+    isDialogVisible,
+    setIsDialogVisible,
   } = useBLE();
 
-  // const connectedDevice = false;
+  // const connectedDevice = true;
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [workoutDuration, setWorkoutDuration] = useState(150);
   const [screenState, setScreenState] = useState(1);    // possible states: 1 (connection), 2 (sync distance), 3 (workout), 4 (workout complete)
-  const [distance, setDistance] = useState("0");
-  const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   useEffect(() => {
     const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
@@ -135,23 +134,24 @@ export default function ConnectStartScreen() {
             Connect device
           </Text>
         </Button>
+        <Portal>
+          <Dialog visible={isDialogVisible} onDismiss={() => setIsDialogVisible(false)}>
+            <Dialog.Title>Error</Dialog.Title>
+            <Dialog.Content>
+              <Text variant="bodyMedium">
+                Unable to connect to the device. Please restart the app and try again.
+              </Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setIsDialogVisible(false)}>Dismiss</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       </View>
     );
   }
   
   function SyncDistanceScreen() {
-    const handleRescanDistance = async () => {
-      if (connectedDevice) {
-        try {
-          const distanceData = await readData(connectedDevice);
-          setDistance(distanceData ?? "");
-        } catch (error) {
-          console.error("Error reading distance:", error);
-        }
-      } else {
-        setIsDialogVisible(true);
-      }
-    };
 
     return (
       <View style={styles.container}>
@@ -159,22 +159,9 @@ export default function ConnectStartScreen() {
           <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
             Position the device at the desired wall distance
           </Text>
-          <View style={{flexDirection:'row'}}>
-            <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].button}]}>
-              {distance} m
-            </Text>
-            <Button
-              style={styles.smallButton}
-              mode='contained'
-              onPress={() => {
-                handleRescanDistance();
-              }}
-            >
-              <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
-                Rescan
-              </Text>
-            </Button>
-          </View>
+          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].button}]}>
+            {distance} ft
+          </Text>
         </View>
         <Button
           style={styles.button}
@@ -209,15 +196,6 @@ export default function ConnectStartScreen() {
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-
-    // const handleStartStop = () => {
-    //   setIsRunning(prevState => !prevState);
-    // };
-  
-    // const handleReset = () => {
-    //   setIsRunning(false);
-    //   setTime(0);
-    // };
   
     useEffect(() => {
       if (workoutState == 2) {
@@ -232,7 +210,6 @@ export default function ConnectStartScreen() {
           };
         } else {
           setScreenState(4);
-          // handleStopWorkout();
           if (intervalId) {
             clearInterval(intervalId);
           }
@@ -247,7 +224,6 @@ export default function ConnectStartScreen() {
     }, [workoutState, time, workoutDuration]);
 
     const handleStartWorkout = () => {
-      // handleStartStop();
       setWorkoutState(2);   // set workout state to running
       setTime(0);
       const data = encodeWorkoutData(workout);
