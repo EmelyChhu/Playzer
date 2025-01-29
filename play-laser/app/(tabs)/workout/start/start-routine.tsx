@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    marginLeft: 8,
+    // marginLeft: 8,
   },
   button: {
     width: '100%',
