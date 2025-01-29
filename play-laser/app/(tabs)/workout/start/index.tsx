@@ -16,12 +16,12 @@ export default function WorkoutScreen() {
           <NavigationButton
             size="medium"
             path="./start/start-premade"
-            text="Premade Routines"
+            text="Premade"
             icon="list"
           />
           <NavigationButton
             size="medium"
-            text="Custom Routines"
+            text="Custom"
             icon="edit"
           />
         </View>
