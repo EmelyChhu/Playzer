@@ -90,6 +90,7 @@ export default function CreateCustomRoutineScreen() {
         description: "This is a newly created custom workout routine."
       }
       await addWorkout(newCustomWorkout);
+      console.log("Saved Custom Routine:", newCustomWorkout);
       setButtonText("Workout Saved!");
       setIsSaved(true);
       // setButtonDisabled(true);

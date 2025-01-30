@@ -26,11 +26,11 @@ export default function ConnectStartScreen() {
 
   useEffect(() => {
     const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
-    // console.log("Fetching workout with ID:", workoutId);
+    console.log("Fetching workout with ID:", workoutId);
 
     const loadWorkout = async () => {
       const fetchedWorkout = await fetchWorkouts(workoutId);
-      // console.log("Fetched workout:", fetchedWorkout);
+      console.log("Fetched workout:", fetchedWorkout);
       setWorkout(fetchedWorkout);
       if (fetchedWorkout) {
         setWorkoutDuration(fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration));
@@ -86,6 +86,7 @@ export default function ConnectStartScreen() {
     useEffect(() => {
       if (connectedDevice) {
         setScreenState(2);
+        console.log("Device connected.");
       }
     }, [connectedDevice]);
 
@@ -204,7 +205,7 @@ export default function ConnectStartScreen() {
       setWorkoutState(2);   // set workout state to running
       setTime(0);
       const data = encodeWorkoutData(workout);
-      console.log(data.toString(16));
+      console.log("Workout data sent to device:", data.toString(16));
 
       if (connectedDevice) {
         // send workout data to device
