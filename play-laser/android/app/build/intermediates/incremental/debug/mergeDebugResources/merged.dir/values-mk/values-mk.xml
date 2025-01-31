@@ -109,7 +109,7 @@
     <string gender="unknown" name="radiogroup_description">Радио група</string>
     <string gender="unknown" name="rn_tab_description">Картичка</string>
     <string gender="unknown" name="scrollbar_description">Лента за лизгање</string>
-    <string msgid="6264217191555673260" name="search_menu_title">"Пребарување"</string>
+    <string msgid="6264217191555673260" name="search_menu_title">"Пребарај"</string>
     <string gender="unknown" name="spinbutton_description">Копче за вртење</string>
     <string gender="unknown" name="state_busy_description">зафатено</string>
     <string gender="unknown" name="state_collapsed_description">собрано</string>

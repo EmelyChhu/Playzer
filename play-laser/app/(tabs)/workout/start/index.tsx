@@ -5,15 +5,7 @@ import { PaperProvider, Text, Button } from 'react-native-paper';
 import NavigationButton from '@/components/NavigationButton';
 import { Workout, exampleWorkouts } from '@/types';
 
-/**
- * WorkoutStartScreen Component - workout start screen for the Playzer app
- * 
- * @returns {JSX.Element} - React component that renders the UI
- * 
- * provides "Premade" button that allows users to navigate to the Start Premade Routines page (`(tabs)/workout/start/index`)
- * provides "Custom" button that allows users to navigate to the Start Custom Routines page (TODO)
- */
-export default function WorkoutStartScreen() {
+export default function WorkoutScreen() {
   const workouts = exampleWorkouts;
 
   return (
@@ -24,12 +16,12 @@ export default function WorkoutStartScreen() {
           <NavigationButton
             size="medium"
             path="./start/start-premade"
-            text="Premade"
+            text="Premade Routines"
             icon="list"
           />
           <NavigationButton
             size="medium"
-            text="Custom"
+            text="Custom Routines"
             icon="edit"
           />
         </View>

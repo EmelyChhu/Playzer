@@ -9,13 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 import { FIREBASE_AUTH } from '@/FirebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
-/**
- * isValidEmail Function - checks whether a given email has a localPart@domain.com format
- * 
- * @param {string} - user entered email
- * @returns {boolean} - if the email is valid
- */
-export function isValidEmail(email : string) : boolean {
+// returns true if the email has a localPart@domain.com
+function isValidEmail(email : string) : boolean {
   const atIndex = email.indexOf("@");
   if (atIndex == -1 || atIndex == 0 || atIndex == email.length - 1) {
     return false;
@@ -28,26 +23,12 @@ export function isValidEmail(email : string) : boolean {
   return true;
 }
 
-/**
- * isValidPassword Function - checks whether a given password is equal to or longer than 8 characters
- * 
- * @param {string} - user entered password
- * @returns {boolean} - if the password is valid
- */
-export function isValidPassword(password : string) : boolean {
+// returns true if the password is 8 or more characters long
+function isValidPassword(password : string) : boolean {
   return (password.length >= 8 ? true : false);
 }
 
-/**
- * SignUpScreen Component - sign up screen for the Playzer app
- * 
- * @returns {JSX.Element} - React component that renders the UI
- * 
- * provides "Email" text input box that allows users to enter their email
- * provides "Password" text input box that allows users to enter their password
- * provides "Sign up" button that logs users into the app and creates a new account if the entered information is valid
- */
-export default function SignUpScreen() {
+export default function EntryScreen() {
     const navigation = useNavigation();
 
     const [email, setEmail] = useState("");
