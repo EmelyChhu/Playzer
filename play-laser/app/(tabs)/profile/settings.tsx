@@ -5,13 +5,6 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
 import { router } from "expo-router";
 
-/**
- * SettingsScreen Component - setting screen for the Playzer app
- * 
- * @returns {JSX.Element} - React component that renders the UI
- * 
- * provides "Log out" button that allows users to log out of the app and navigate back to the entry screen
- */
 export default function SettingsScreen() {
   return (
     <View style={styles.container}>

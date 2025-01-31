@@ -13,15 +13,13 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.playlaser"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.anonymous.playlaser"
+      }
     },
     "web": {
       "bundler": "metro",
@@ -30,7 +28,6 @@
     },
     "plugins": [
       "expo-router",
-      "react-native-ble-plx",
       "expo-font"
     ],
     "experiments": {

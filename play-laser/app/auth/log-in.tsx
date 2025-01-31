@@ -12,16 +12,7 @@ import { FirebaseError } from 'firebase/app';
 // import { fetchWorkouts } from "@/FirebaseConfig";
 import { countDocumentsInCollection } from "@/FirebaseConfig";
 
-/**
- * LogInScreen Component - log in screen for the Playzer app
- * 
- * @returns {JSX.Element} - React component that renders the UI
- * 
- * provides "Email" text input box that allows users to enter their email
- * provides "Password" text input box that allows users to enter their password
- * provides "Log in" button that logs users into the app if the entered information is valid
- */
-export default function LogInScreen() {
+export default function EntryScreen() {
     const navigation = useNavigation();
 
     const [email, setEmail] = useState("");

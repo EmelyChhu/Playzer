@@ -50,20 +50,22 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <NavigationContainer>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: Colors[colorScheme ?? 'light'].headerBackground,
-          },
-          headerTintColor: Colors[colorScheme ?? 'light'].text,
-        }}
-      >
-        <Stack.Screen name="index" options={{ headerShown: false }}  />
-        <Stack.Screen name="auth/sign-up" options={{ headerShown: true, title: "Sign Up", headerBackTitle: "Back" }}  />
-        <Stack.Screen name="auth/log-in" options={{ headerShown: true, title: "Log In", headerBackTitle: "Back" }}  />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-    </ThemeProvider>
+          screenOptions={{
+            headerStyle: {
+              backgroundColor: Colors[colorScheme ?? 'light'].headerBackground,
+            },
+            headerTintColor: Colors[colorScheme ?? 'light'].text,
+          }}
+        >
+          <Stack.Screen name="index" options={{ headerShown: false }}  />
+          <Stack.Screen name="auth/sign-up" options={{ headerShown: true, title: "Sign Up", headerBackTitle: "Back" }}  />
+          <Stack.Screen name="auth/log-in" options={{ headerShown: true, title: "Log In", headerBackTitle: "Back" }}  />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      </ThemeProvider>
+    </NavigationContainer>
   );
 }

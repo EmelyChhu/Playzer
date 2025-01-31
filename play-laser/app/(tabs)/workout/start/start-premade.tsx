@@ -5,15 +5,7 @@ import { PaperProvider, Text, Button } from 'react-native-paper';
 import { Workout, exampleWorkouts } from '@/types';
 import NavigationButton from '@/components/NavigationButton';
 
-/**
- * StartPremadeRoutinesScreen Component - screen that displays created premade routines
- * 
- * @returns {JSX.Element} - React component that renders the UI
- * 
- * provides 3 categories of premade routines: Basic, Random, and Sport-Specific (TODO)
- * provides a button for each premade routine that users can click to start that workout (`(tabs)/workout/start/start-routine`)
- */
-export default function StartPremadeRoutinesScreen() {
+export default function WorkoutScreen() {
   const workouts = exampleWorkouts;
 
   return (
