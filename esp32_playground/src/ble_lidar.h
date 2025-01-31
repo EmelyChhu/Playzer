@@ -35,6 +35,9 @@ public:
     uint8_t calculate_distance();
 
     void output_distance();
+    
+    void lidar_notify(uint8_t dist_ft);
+    // void lidar_notify(BLECharacteristic *pCharacteristic, uint8_t dist_ft);
 
     class MyCallbacks : public BLECharacteristicCallbacks {
         void onWrite(BLECharacteristic *pCharacteristic);
@@ -57,7 +60,7 @@ private:
     void BLE_init();
 
     // LiDAR Constants
-    HardwareSerial& TFMini = Serial1;
+    HardwareSerial& TFMini = Serial;
 };
 
 #endif // BLE_LIDAR_H

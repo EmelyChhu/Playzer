@@ -7,6 +7,7 @@ uint8_t BLE_LIDAR::rows;
 uint8_t BLE_LIDAR::num_pos;
 
 std::vector<uint8_t> BLE_LIDAR::positions;
+BLECharacteristic *pCharacteristic;
 
 void BLE_LIDAR::BLE_init(){
     TFMini.begin(115200, SERIAL_8N1, RX, TX); // start sensor serial data collection
@@ -80,6 +81,13 @@ void BLE_LIDAR::output_distance()
   
 }
 
+void BLE_LIDAR::lidar_notify(uint8_t dist_ft)
+{
+  uint16_t dist = uint16_t(dist_ft);
+  pCharacteristic->setValue(dist);
+  pCharacteristic->notify();
+}
+
 
 void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
   std::string value = pCharacteristic->getValue();
@@ -134,7 +142,6 @@ void BLE_LIDAR::BLE_setup(){
       BLECharacteristic::PROPERTY_NOTIFY
     );
 
-  pCharacteristic->setValue("Hello World says Sharika");
   pCharacteristic->setCallbacks(new MyCallbacks());
 
   pService->start();
