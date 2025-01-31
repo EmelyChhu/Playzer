@@ -4,6 +4,14 @@ import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
 import { PaperProvider, Text } from 'react-native-paper';
 
+/**
+ * HomeScreen Component - home screen for the Playzer app
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * displays welcome message
+ * provides navigation bar that allows users to navigate to the "Workout" and "Profile" tabs
+ */
 export default function HomeScreen() {
   return (
     <PaperProvider>

@@ -11,8 +11,15 @@ import { router } from 'expo-router';
 import React, { useState, useEffect } from 'react';
 import { fetchWorkouts } from "@/FirebaseConfig";
 
-
-export default function WorkoutScreen() {
+/**
+ * StartRoutineScreen Component - screen that provides information for a given workout routine
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * provides "Start Workout" button that will navigate to the screen to start the workout (`(tabs)/workout/start/connect-start`)
+ * provides the workout's duration, laser duration, duration between lasers, and a card for each laser position
+ */
+export default function StartRoutineScreen() {
   const colorScheme = useColorScheme();
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [minutes, setMinutes] = useState(0);
