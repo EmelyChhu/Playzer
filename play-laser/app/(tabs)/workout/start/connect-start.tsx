@@ -15,6 +15,16 @@ import DeviceModal from "./../../../device-connection-modal";
 import useBLE from "../../../../useBLE";
 import { fetchWorkouts } from "@/FirebaseConfig";
 
+/**
+ * ConnectStartScreen Component - screen that provides the flow for connecting to a device and starting a workout routine
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * ScreenState 1 - Connection: provides an interface to connect to the Playzer device
+ * ScreenState 2 - Sync Distance: provides a live feed of the device's distance from the wall using a LiDar sensor
+ * ScreenState 3 - Workout: provides an interface to begin a workout routine and a timer to track the progress
+ * ScreenState 4 Workout Complete: provides a message that the workout is completed and "Exit" button
+ */
 export default function ConnectStartScreen() {
   const colorScheme = useColorScheme();
   const {
@@ -39,11 +49,11 @@ export default function ConnectStartScreen() {
 
   useEffect(() => {
     const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
-    // console.log("Fetching workout with ID:", workoutId);
+    console.log("Fetching workout with ID:", workoutId);
 
     const loadWorkout = async () => {
       const fetchedWorkout = await fetchWorkouts(workoutId);
-      // console.log("Fetched workout:", fetchedWorkout);
+      console.log("Fetched workout:", fetchedWorkout);
       setWorkout(fetchedWorkout);
       if (fetchedWorkout) {
         setWorkoutDuration(fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration));
@@ -103,10 +113,19 @@ export default function ConnectStartScreen() {
     return data;
   }
 
+  /**
+   * ConnectionScreen Component - screen that provides the flow for connecting to a device
+   * 
+   * @returns {JSX.Element} - React component that renders the UI
+   * 
+   * provides "Connect device" button that opens the DeviceConnectionModal
+   * successful connection will change the ScreenState to 2
+   */
   function ConnectionScreen() {
     useEffect(() => {
       if (connectedDevice) {
         setScreenState(2);
+        console.log("Device connected.");
       }
     }, [connectedDevice]);
 
@@ -151,6 +170,14 @@ export default function ConnectStartScreen() {
     );
   }
   
+  /**
+   * SyncDistanceScreen Component - screen that allows users to determine the device's distance from the wall
+   * 
+   * @returns {JSX.Element} - React component that renders the UI
+   * 
+   * provides live feed of device's distance from the wall using the LiDar sensor
+   * provides "Confirm distance" button that will change the ScreenState to 3
+   */
   function SyncDistanceScreen() {
 
     return (
@@ -191,6 +218,15 @@ export default function ConnectStartScreen() {
     );
   }
   
+  /**
+   * WorkoutScreen Component - screen that provides the flow for starting a workout routine
+   * 
+   * @returns {JSX.Element} - React component that renders the UI
+   * 
+   * WorkoutState 1 - Start: provides "Start workout" button that will send a signal to the Playzer device to start the workout along with the workout information
+   * WorkoutState 2 - Running: displays the time elapsed and time remaining in the workout and provides a "Stop workout" button that will stop the stopwatches and send a signal to the device to stop the workout (TODO)
+   * WorkoutState 3 - Restart: provides a "Restart workout" button that will resend the signal to start the workout and restart the stopwatches
+   */
   function WorkoutScreen() {
     const [workoutState, setWorkoutState] = useState(1);   // possible states: 1 (start), 2 (running -> stop), 3 (restart)
     const [time, setTime] = useState(0);
@@ -231,6 +267,7 @@ export default function ConnectStartScreen() {
 
       if (connectedDevice) {
         sendData(connectedDevice, data);    // send workout data to device
+        console.log("Workout data sent to device:", data.toString(16));
       } else {
         console.log("Error: No device connected")
         setIsDialogVisible(true);
@@ -301,6 +338,13 @@ export default function ConnectStartScreen() {
     );
   }
   
+  /**
+   * WorkoutCompleteScreen Component - screen that notifies users they have completed the workout
+   * 
+   * @returns {JSX.Element} - React component that renders the UI
+   * 
+   * provides "Exit" button that will navigate to the Workout Screen (`(tabs)/workout/index`)
+   */
   function WorkoutCompleteScreen() {
     return (
       <View style={styles.container}>

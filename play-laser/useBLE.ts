@@ -32,6 +32,22 @@ interface BluetoothLowEnergyApi {
   setIsDialogVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+/**
+ * React Hook to manage Bluetooh Low Energy (BLE) connections
+ * 
+ * @returns {BluetoothLowEnergyApi} - object with functions and state variables for BLE interactions
+ * 
+ * @property {() => void} scanForPeripherals - scans for BLE devices
+ * @property {() => Promise<boolean>} requestPermissions - requests necessary Bluetooth permissions
+ * @property {(device: Device) => Promise<void>} connectToDevice - connects to the selected BLE device
+ * @property {Device[]} allDevices - list of discovered BLE devices
+ * @property {Device | null} connectedDevice - currently connected BLE device
+ * @property {() => void} disconnectFromDevice - disconnects from the connected BLE device
+ * @property {number} distance - last received distance measurement from the LiDar sensor
+ * @property {(device: Device, data: bigint) => Promise<void>} sendData - sends data to the connected BLE device
+ * @property {boolean} isDialogVisible - indicates if an error dialog should be displayed
+ * @property {(visible: boolean) => void} setIsDialogVisible - sets the visibility of the error dialog
+ */
 function useBLE(): BluetoothLowEnergyApi {
   const bleManager = useMemo(() => new BleManager(), []);
   const [allDevices, setAllDevices] = useState<Device[]>([]);
