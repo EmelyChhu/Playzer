@@ -9,6 +9,15 @@ import NavigationButton from '@/components/NavigationButton';
 import { Workout, exampleWorkouts } from '@/types';
 import { router } from 'expo-router';
 
+/**
+ * WorkoutScreen Component - workout screen for the Playzer app
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * provides "Start a Workout" button that allows users to navigate to the Start a Workout page (`(tabs)/workout/start/index`)
+ * provides "Premade" button that allows users to navigate to the View Premade Routines page (TODO)
+ * provides "Custom" button that allows users to navigate to the View Custom Routines page (`(tabs)/workout/view/view-custom`)
+ */
 export default function WorkoutScreen() {
   const colorScheme = useColorScheme();
   const workouts = exampleWorkouts;
@@ -31,13 +40,13 @@ export default function WorkoutScreen() {
         <View style={styles.routineButtonsContainer}>
           <NavigationButton
             size="medium"
-            text="Premade Routines"
+            text="Premade"
             icon="list"
           />
           <NavigationButton
             size="medium"
             path="./workout/view/"
-            text="Custom Routines"
+            text="Custom"
             icon="edit"
           />       
         </View>

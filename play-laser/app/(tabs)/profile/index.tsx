@@ -7,6 +7,15 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 
+/**
+ * ProfileScreen Component - profile screen for the Playzer app
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * displays the user's profile picture, name, and recent workouts (TODO)
+ * provides "Edit Profile" button that allows users to navigate to a screen to edit their profile (TODO)
+ * provides gear icon button that allows users to navigate to the Settings page (`(tabs)/profile/settings`)
+ */
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
 

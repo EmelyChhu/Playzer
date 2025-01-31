@@ -5,6 +5,15 @@ import { View } from '@/components/Themed';
 import { PaperProvider, Text, Button } from 'react-native-paper';
 import { router } from 'expo-router';
 
+/**
+ * EntryScreen Component - main entry screen for the Playzer app
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * displays welcome message
+ * provides "Sign up" button that navigates to the sign-up page (`/auth/sign-up`)
+ * provides "Log in" button that navigates to the log-in page (`/auth/log-in`)
+ */
 export default function EntryScreen() {
   return (
     <PaperProvider>

@@ -8,6 +8,17 @@ import { RelativePathString, router } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 
+/**
+ * NavigationButton Component - button with text, an icon, and the ability to navigate to a given page
+ * 
+ * @param {Object} props - component props
+ * @param {"medium" | "small"} props.size - size of the button
+ * @param {RelativePathString} [props.path] - relative path to navigate to when pressed (optional)
+ * @param {string} props.text - text displayed on the button.
+ * @param {string} [props.icon] - name of the FontAwesome icon to display (optional)
+ * 
+ * @returns {JSX.Element} - styled button that may include an icon and text
+ */
 export default function NavigationButton(
   props: {
     size: string,
