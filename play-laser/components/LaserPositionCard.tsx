@@ -8,6 +8,16 @@ import { LaserPositionCardProps, LaserGridProps } from '@/types';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 
+/**
+ * LaserPositionCard Component - card representing a laser position and the index of that laser within a workout routine
+ * 
+ * @param {LaserPositionCardProps} props - component props
+ * @param {Workout} props.workout - object for the given workout
+ * @param {number} props.laserPosition - the position of the laser within the grid
+ * @param {number} props.index - the index of the laser in the workout routine
+ * 
+ * @returns {JSX.Element} - styled card displaying a laser position within the grid
+ */
 export default function LaserPositionCard(
   props: LaserPositionCardProps
 ) {
@@ -29,6 +39,16 @@ export default function LaserPositionCard(
   );
 }
 
+/**
+ * LaserGrid Component - grid representation of laser positions in a workout routine where the laser position is highlighted
+ * 
+ * @param {LaserGridProps} props - component props
+ * @param {number} props.numColumns - number of columns in the workout grid
+ * @param {number} props.numRows - number of rows in the workout grid
+ * @param {number | undefined} props.laserPosition - position of the laser
+ * 
+ * @returns {JSX.Element} - grid of dots with the current laser position highlighted
+ */
 const LaserGrid: React.FC<LaserGridProps> = ({
   numColumns,
   numRows,

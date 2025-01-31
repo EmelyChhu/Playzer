@@ -5,6 +5,14 @@ import { View } from '@/components/Themed';
 import { PaperProvider, Text, Button } from 'react-native-paper';
 import { Workout, exampleWorkouts } from '@/types';
 
+/**
+ * ViewCustomRoutinesScreen Component - screen that displays created custom routines and the option to create a new routine
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * provides "Create" button that allows users to navigate to the Create Custom Routine page (`(tabs)/workout/view/create-custom`)
+ * provides a button for each custom routine that users can click to view that workout (TODO)
+ */
 export default function ViewCustomRoutinesScreen() {
   const workouts = exampleWorkouts;
 
