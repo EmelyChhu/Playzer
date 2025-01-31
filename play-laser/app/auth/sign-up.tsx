@@ -10,7 +10,7 @@ import { FIREBASE_AUTH } from '@/FirebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 /**
- * isValidPassword Function - checks whether a given email has a localPart@domain.com format
+ * isValidEmail Function - checks whether a given email has a localPart@domain.com format
  * 
  * @param {string} - user entered email
  * @returns {boolean} - if the email is valid
