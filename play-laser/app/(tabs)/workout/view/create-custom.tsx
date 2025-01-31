@@ -15,6 +15,16 @@ import { LaserPositionCardProps, LaserGridProps } from '@/types';
 import { addWorkout } from "@/FirebaseConfig";
 import { FIREBASE_AUTH } from "@/FirebaseConfig";
 
+/**
+ * CreateCustomRoutineScreen Component - screen that provides an interface for users to create and save a new custom routine
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * provides "Save Custom Routine" button that verifies whether the user input is valid and saves the new workout routine if it is
+ * provides "Laser" text input box that allows users to enter the duration of each laser
+ * provides "Between Lasers" text input box that allows users to enter the duration between each laser
+ * provides a grid of dots that the user can click to add laser positions
+ */
 export default function CreateCustomRoutineScreen() {
   const colorScheme = useColorScheme();
   const workouts = exampleWorkouts;
@@ -172,6 +182,17 @@ export default function CreateCustomRoutineScreen() {
   );
 }
 
+/**
+ * LaserGridInput Component - grid input component that allows users to input laser positions that are stored in the laserPositions state variable
+ * 
+ * @param {Object} props - component props
+ * @param {number} props.numColumns - number of columns in the grid
+ * @param {number} props.numRows - number of rows in the grid
+ * @param {number[]} [props.laserPositions] - current array of inputted laser positions
+ * @param {(positions: number[]) => void} [props.setLaserPositions] - function to update the array of inputted laser positions
+ * 
+ * @returns {JSX.Element} - pressable grid where each cell represents a selectable laser position
+ */
 const LaserGridInput: React.FC<LaserGridProps> = ({ numColumns, numRows, setLaserPositions, laserPositions }) => {
   const colorScheme = useColorScheme();
   

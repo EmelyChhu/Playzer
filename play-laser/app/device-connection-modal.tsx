@@ -13,6 +13,14 @@ import { Button } from 'react-native-paper';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 
+/**
+ * DeviceModalListItem Component - button that displays a nearby Playzer device and allows user to connect to them
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * displays the name of the device
+ * pressing the button will connect to the given device
+ */
 const DeviceModalListItem = (props) => {
   const colorScheme = useColorScheme();
   const { item, connectToPeripheral, closeModal } = props;
@@ -32,6 +40,15 @@ const DeviceModalListItem = (props) => {
   );
 };
 
+/**
+ * DeviceModal Component - screen that displays nearby Playzer devices and allows user to connect to them
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * displays instructional message
+ * displays button with the name of the device that connects the given device to the phone
+ * provides "Close connection window" button that closes the modal and navigates to the connect-start page (`/(tabs)/workout/start/connect-start.tsx`)
+ */
 const DeviceModal = (props) => {
   const colorScheme = useColorScheme();
   const { devices, visible, connectToPeripheral, closeModal } = props;
