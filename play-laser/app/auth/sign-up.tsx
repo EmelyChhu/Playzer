@@ -15,7 +15,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
  * @param {string} - user entered email
  * @returns {boolean} - if the email is valid
  */
-function isValidEmail(email : string) : boolean {
+export function isValidEmail(email : string) : boolean {
   const atIndex = email.indexOf("@");
   if (atIndex == -1 || atIndex == 0 || atIndex == email.length - 1) {
     return false;
@@ -34,7 +34,7 @@ function isValidEmail(email : string) : boolean {
  * @param {string} - user entered password
  * @returns {boolean} - if the password is valid
  */
-function isValidPassword(password : string) : boolean {
+export function isValidPassword(password : string) : boolean {
   return (password.length >= 8 ? true : false);
 }
 
