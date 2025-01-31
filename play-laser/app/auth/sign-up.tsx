@@ -10,7 +10,7 @@ import { FIREBASE_AUTH } from '@/FirebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 // returns true if the email has a localPart@domain.com
-function isValidEmail(email : string) : boolean {
+export function isValidEmail(email : string) : boolean {
   const atIndex = email.indexOf("@");
   if (atIndex == -1 || atIndex == 0 || atIndex == email.length - 1) {
     return false;
@@ -24,7 +24,7 @@ function isValidEmail(email : string) : boolean {
 }
 
 // returns true if the password is 8 or more characters long
-function isValidPassword(password : string) : boolean {
+export function isValidPassword(password : string) : boolean {
   return (password.length >= 8 ? true : false);
 }
 
