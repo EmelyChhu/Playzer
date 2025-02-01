@@ -1,4 +1,33 @@
 # Playzer
+
+### Alpha Build Completed Work
+- Hardware
+    - PCB designed and ordered
+    - Bluetooth device -> phone implemented
+    - Printed out laser and motor mounts
+    - LiDaR sensor integrated with the app
+
+- Software
+    - Refactored button and laser card components
+    - Refactored workout screen flow
+    - Added screen to display device distance from wall
+    - Integrated communication with LiDar sensor
+    - Added unit tests for sign in and backend methods
+
+- Bugs
+    - Software
+        - Submission button for Sign up, Log in, and Create a custom routine Screens
+            - The button for these screens should be disabled until text has been input in all boxes
+            - Currently there is an issue with the button’s background color when the isDisabled property is used, so all buttons have been enabled
+            - Logic and error handling have been implemented to prevent the user from submitting when inputted information is incorrect
+        - React Native Paper Button Component Light/Dark mode color schemes
+            - Currently there is an issue with the button’s background color and text switching properly when the user switches between Light and Dark mode that may be related to breaking change from Expo SDK 51 to 52
+            - A potential fix involves creating a custom themed element within the project
+    - Hardware
+        - LiDaR sensor delay
+            - There is a delay in the distance sensor information being updated. Even if the sensor sits in 1 position for a long time, it takes around 30-40 times of calling the getDistance() function for it to update to the right value. When the sensor position changes, there is a delay in that information being updated as well. 
+
+
 ### Design Prototype Completed Work
 - Hardware
     - Fixing the LiDaR sensor data collection
