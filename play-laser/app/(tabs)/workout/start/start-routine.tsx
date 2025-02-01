@@ -11,8 +11,15 @@ import { router } from 'expo-router';
 import React, { useState, useEffect } from 'react';
 import { fetchWorkouts } from "@/FirebaseConfig";
 
-
-export default function WorkoutScreen() {
+/**
+ * StartRoutineScreen Component - screen that provides information for a given workout routine
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * provides "Start Workout" button that will navigate to the screen to start the workout (`(tabs)/workout/start/connect-start`)
+ * provides the workout's duration, laser duration, duration between lasers, and a card for each laser position
+ */
+export default function StartRoutineScreen() {
   const colorScheme = useColorScheme();
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [minutes, setMinutes] = useState(0);
@@ -20,12 +27,13 @@ export default function WorkoutScreen() {
 
   useEffect(() => {
     const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
-    // console.log("Fetching workout with ID:", workoutId);
+    console.log("Fetching workout with ID:", workoutId);
 
     const loadWorkout = async () => {
       const fetchedWorkout = await fetchWorkouts(workoutId);
-      // console.log("Fetched workout:", fetchedWorkout);
+      console.log("Fetched workout:", fetchedWorkout);
       setWorkout(fetchedWorkout);
+      const workoutDuration = fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration);
       setMinutes(Math.floor(workoutDuration / 60));
       setSeconds(workoutDuration % 60);
     };
@@ -70,7 +78,7 @@ export default function WorkoutScreen() {
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Workout Duration: </Text>
-          {minutes > 0 && `${minutes} minutes`} {seconds} seconds
+          {minutes > 0 && `${minutes} minutes `}{seconds} seconds
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Laser Duration: </Text>
@@ -126,7 +134,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    marginLeft: 8,
+    // marginLeft: 8,
   },
   button: {
     width: '100%',
