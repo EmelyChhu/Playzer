@@ -41,7 +41,6 @@ const DeviceModalListItem: FC<DeviceModalListItemProps> = (props) => {
 
   const connectAndCloseModal = useCallback(() => {
     connectToPeripheral(item.item);
-    console.log("connected")
     closeModal();
   }, [closeModal, connectToPeripheral, item.item]);
 

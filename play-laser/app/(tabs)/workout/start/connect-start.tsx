@@ -179,6 +179,15 @@ export default function ConnectStartScreen() {
    * provides "Confirm distance" button that will change the ScreenState to 3
    */
   function SyncDistanceScreen() {
+    const handleRescanDistance = () => {
+      if (connectedDevice) {
+        sendData(connectedDevice, "RESCAN");    // send signal to rescan distance
+        console.log("Rescanning distance");
+      } else {
+        console.log("Error: No device connected")
+        setIsDialogVisible(true);
+      }
+    }
 
     return (
       <View style={styles.container}>
@@ -186,9 +195,20 @@ export default function ConnectStartScreen() {
           <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
             Position the device at the desired wall distance
           </Text>
-          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].button}]}>
-            {distance} ft
-          </Text>
+          <View style={styles.distanceContainer}>
+            <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].button}]}>
+              {distance} ft
+            </Text>
+            <Button 
+              style={styles.smallButton}
+              mode='contained'
+              onPress={() => handleRescanDistance()}
+            >
+              <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+                Rescan
+              </Text>
+            </Button>
+          </View>
         </View>
         <Button
           style={styles.button}
@@ -416,6 +436,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 16,
     gap: 32,
+  },
+  distanceContainer: {
+    flexDirection: 'row',
   },
   loadingText: {
     textAlign: 'center',

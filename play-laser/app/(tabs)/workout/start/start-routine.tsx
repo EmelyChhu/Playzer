@@ -33,8 +33,10 @@ export default function StartRoutineScreen() {
       const fetchedWorkout = await fetchWorkouts(workoutId);
       // console.log("Fetched workout:", fetchedWorkout);
       setWorkout(fetchedWorkout);
+      const workoutDuration = fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration);
       setMinutes(Math.floor(workoutDuration / 60));
       setSeconds(workoutDuration % 60);
+      // console.log(workoutDuration, minutes, seconds)
     };
     loadWorkout();
   }, []);
@@ -51,8 +53,6 @@ export default function StartRoutineScreen() {
       </PaperProvider>
     );
   }
-
-  const workoutDuration = workout.laserPositions.length * (workout.durationBetweenLasers + workout.laserDuration);
 
   return (
     <PaperProvider>
@@ -77,7 +77,7 @@ export default function StartRoutineScreen() {
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Workout Duration: </Text>
-          {minutes > 0 && `${minutes} minutes`} {seconds} seconds
+          {minutes > 0 && `${minutes} minutes` }{seconds} seconds
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Laser Duration: </Text>

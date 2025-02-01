@@ -26,7 +26,7 @@ interface BluetoothLowEnergyApi {
   distance: number;
   sendData(
     device: Device,
-    data: bigint,
+    data: string | bigint,
   ): Promise<void>;
   isDialogVisible: boolean;
   setIsDialogVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -196,13 +196,16 @@ function useBLE(): BluetoothLowEnergyApi {
     }
   };
 
-  const sendData = async (device: Device, data: bigint) => {
+  const sendData = async (device: Device, data: string | bigint) => {
     try {
+      const encodedData = typeof data === 'bigint' ? btoa(data.toString()) : btoa(data);
+
       await bleManager.writeCharacteristicWithoutResponseForDevice(
         device.id,
         SERVICE_UUID,
         NUM_CHARACTERISTIC_UUID,
-        btoa(`${data}`),
+        encodedData,
+        // btoa(`${data}`),
       );
     } catch (error) {
       console.log(error);
