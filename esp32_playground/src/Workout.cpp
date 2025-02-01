@@ -33,8 +33,8 @@ Workout::Workout() // creates default workout for testing
     num_positions = 12;
 
     positions.resize(12); 
-    for (size_t i = 0; i < num_positions; i++) {
-        positions[i] = i;
+    for (size_t i = 1; i < num_positions+1; i++) {
+        positions[i-1] = i;
     }
 
     duration_btwn_lasers_ms = 1 * 1000;
@@ -60,11 +60,11 @@ void Workout::calibrate(){
 }
 
 uint8_t Workout::decode_position_row(uint8_t *pos){
-    return (int)(*pos / columns);
+    return (int)((*pos - 1) / columns);
 } 
 
 uint8_t Workout::decode_position_col(uint8_t *pos){
-    return *pos % columns;
+    return (*pos - 1) % columns;
 } 
 
 void Workout::go_to_position(uint8_t *pos){
@@ -73,8 +73,8 @@ void Workout::go_to_position(uint8_t *pos){
     ledcWrite(PWM_CHANNEL_BOT_SERVO, BASE_DUTY_CYCLE + div_per_col*(base_col - decode_position_col(pos)));
     
     Serial.println("TOP duty cycle:");
-    Serial.println(BASE_DUTY_CYCLE - (base_row - div_per_row*decode_position_row(pos)));
-    ledcWrite(PWM_CHANNEL_TOP_SERVO, BASE_DUTY_CYCLE - div_per_row*(base_row - decode_position_row(pos)));
+    Serial.println(BASE_DUTY_CYCLE + div_per_row*(base_row - decode_position_row(pos)));
+    ledcWrite(PWM_CHANNEL_TOP_SERVO, BASE_DUTY_CYCLE + div_per_row*(base_row - decode_position_row(pos)));
 } 
 
 void Workout::return_to_base(){

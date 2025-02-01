@@ -1,4 +1,6 @@
 #include "ble_lidar.h"
+#include "string.h"
+using namespace std;
 
 uint8_t BLE_LIDAR::duration_btwn_lasers;
 uint8_t BLE_LIDAR::laser_duration;
@@ -7,7 +9,6 @@ uint8_t BLE_LIDAR::rows;
 uint8_t BLE_LIDAR::num_pos;
 
 std::vector<uint8_t> BLE_LIDAR::positions;
-BLECharacteristic *pCharacteristic;
 
 void BLE_LIDAR::BLE_init(){
     TFMini.begin(115200, SERIAL_8N1, RX, TX); // start sensor serial data collection
@@ -48,7 +49,7 @@ uint8_t BLE_LIDAR::calculate_distance()
   int centimeters = 0;
   int sum = 0;
 
-  for(int i = 0; i < 30; i++)
+  for(int i = 0; i < 500; i++)
   {
     getDistance(&centimeters);
     while(!centimeters && centimeters < 10000) 
@@ -59,7 +60,7 @@ uint8_t BLE_LIDAR::calculate_distance()
   }
 
   // get average
-  double avg_distance = sum / 30;  
+  double avg_distance = sum / 500;  
   
   // number of centimeters in 1 foot : 30.48
   uint8_t feet = uint8_t(avg_distance / 30.48);
@@ -81,12 +82,8 @@ void BLE_LIDAR::output_distance()
   
 }
 
-void BLE_LIDAR::lidar_notify(uint8_t dist_ft)
-{
-  uint16_t dist = uint16_t(dist_ft);
-  pCharacteristic->setValue(dist);
-  pCharacteristic->notify();
-}
+bool BLE_LIDAR::isInitialized()
+{ return pCharacteristic != nullptr; }
 
 
 void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
@@ -98,33 +95,44 @@ void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
     }
     Serial.println();
 
-    uint64_t dec_num = std::stoull(value.c_str());
-
-    num_pos = dec_num & 0x1F; // 5 bits
-    // array of the numbers
-    for (uint8_t i = 0; i < num_pos; i++)
+    if (value == "RESCAN")
     {
-      positions.push_back((dec_num >> 5 + (6*i)) & 0x3F); // each position is 6 bits
+      // send the lidar data
+      uint8_t dist_ft = lidar->calculate_distance();
+      lidar->lidar_notify(dist_ft);
+
+    }
+    else
+    {
+      uint64_t dec_num = std::stoull(value.c_str());
+
+      num_pos = dec_num & 0x1F; // 5 bits
+      // array of the numbers
+      for (uint8_t i = 0; i < num_pos; i++)
+      {
+        positions.push_back((dec_num >> 5 + (6*i)) & 0x3F); // each position is 6 bits
+      }
+
+      int after_lasers = 5 + (6 * num_pos);
+
+      cols = (dec_num >> after_lasers) & 0xF; // 4 bits
+      rows = (dec_num >> after_lasers + 4) & 0xF; // 4 bits
+      laser_duration = (dec_num >> after_lasers + 8) & 0xF; // 4 bits
+      duration_btwn_lasers = (dec_num >> after_lasers + 12) & 0xF; // 4 bits
+      
+      Serial.println("Number received:" + String(dec_num));
+      Serial.println("Duration Btwn Lasers: "+ String(duration_btwn_lasers) + "\t Laser Duration: "+ String(laser_duration));
+      Serial.println("Rows: "+ String(rows) + "\t Columns: "+ String(cols));
+      Serial.println("Number of Positions: "+ String(num_pos));
+
+      // print out the laser positions
+      Serial.print("Laser Positions: "); 
+      for (uint8_t i = 0; i < positions.size(); i++)
+      {
+        Serial.print(String(positions[i]) + " "); // each position is 6 bits
+      }
     }
 
-    int after_lasers = 5 + (6 * num_pos);
-
-    cols = (dec_num >> after_lasers) & 0xF; // 4 bits
-    rows = (dec_num >> after_lasers + 4) & 0xF; // 4 bits
-    laser_duration = (dec_num >> after_lasers + 8) & 0xF; // 4 bits
-    duration_btwn_lasers = (dec_num >> after_lasers + 12) & 0xF; // 4 bits
-    
-    Serial.println("Number received:" + String(dec_num));
-    Serial.println("Duration Btwn Lasers: "+ String(duration_btwn_lasers) + "\t Laser Duration: "+ String(laser_duration));
-    Serial.println("Rows: "+ String(rows) + "\t Columns: "+ String(cols));
-    Serial.println("Number of Positions: "+ String(num_pos));
-
-    // print out the laser positions
-    Serial.print("Laser Positions: "); 
-    for (uint8_t i = 0; i < positions.size(); i++)
-    {
-      Serial.print(String(positions[i]) + " "); // each position is 6 bits
-    }
   }
 }
 
@@ -134,15 +142,15 @@ void BLE_LIDAR::BLE_setup(){
   BLEServer *pServer = BLEDevice::createServer();
   BLEService *pService = pServer->createService(SERVICE_UUID);
   
-  BLECharacteristic *pCharacteristic =
+  pCharacteristic =
     pService->createCharacteristic(
       NUM_CHARACTERISTIC_UUID, 
       BLECharacteristic::PROPERTY_READ | 
       BLECharacteristic::PROPERTY_WRITE | 
       BLECharacteristic::PROPERTY_NOTIFY
     );
-
-  pCharacteristic->setCallbacks(new MyCallbacks());
+  pCharacteristic->setValue("hello world");
+  pCharacteristic->setCallbacks(new MyCallbacks(this));
 
   pService->start();
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
@@ -151,6 +159,17 @@ void BLE_LIDAR::BLE_setup(){
   pAdvertising->setMinPreferred(0x06);
   pAdvertising->setMinPreferred(0x12);
   BLEDevice::startAdvertising();
+}
+
+void BLE_LIDAR::lidar_notify(uint8_t dist_ft)
+{
+  if (this->pCharacteristic == nullptr) {
+        Serial.println("Characteristic not initialized");
+        return;
+    }
+  std::string dist = std::to_string(static_cast<int>(dist_ft));
+  pCharacteristic->setValue(dist);
+  pCharacteristic->notify();
 }
 
 void BLE_LIDAR::reset_workout(){

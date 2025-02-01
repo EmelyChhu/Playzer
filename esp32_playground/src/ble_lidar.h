@@ -22,13 +22,17 @@ public:
     static uint8_t cols;
     static uint8_t rows;
     static uint8_t num_pos;
+    BLECharacteristic *pCharacteristic;
 
     static std::vector<uint8_t> positions;
 
     BLE_LIDAR() { // Default constructor
+        pCharacteristic = nullptr;
         BLE_init();
         reset_workout();
     };
+
+    bool isInitialized();
 
     void getDistance(int* distance);
 
@@ -40,7 +44,12 @@ public:
     // void lidar_notify(BLECharacteristic *pCharacteristic, uint8_t dist_ft);
 
     class MyCallbacks : public BLECharacteristicCallbacks {
-        void onWrite(BLECharacteristic *pCharacteristic);
+        public:
+        MyCallbacks(BLE_LIDAR* lidarInstance) : lidar(lidarInstance) {} // Constructor to store instance
+        void onWrite(BLECharacteristic *pCharacteristic) override;
+
+        private:
+        BLE_LIDAR* lidar;  // Pointer to BLE_LIDAR instance
     };
 
     void reset_workout();
