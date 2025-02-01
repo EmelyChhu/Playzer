@@ -25,7 +25,7 @@ jest.mock('firebase/firestore', () => ({
   })),
 }));
   
-import { isValidEmail, isValidPassword } from './sign-up';
+import { isValidEmail, isValidPassword } from "../auth/sign-up";
 
 test('isValidEmail returns true for valid emails', () => {
   expect(isValidEmail('example@gmail.com')).toBe(true);
