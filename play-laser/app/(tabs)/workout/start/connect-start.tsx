@@ -24,7 +24,7 @@ import { fetchWorkouts } from "@/FirebaseConfig";
 export default function ConnectStartScreen() {
   const colorScheme = useColorScheme();
 
-  const connectedDevice = true;
+  const connectedDevice = false;
   const distance = 5;
 
   const [isDialogVisible, setIsDialogVisible] = useState<boolean>(false);
@@ -161,9 +161,20 @@ export default function ConnectStartScreen() {
           <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].text}]}>
             Position the device at the desired wall distance
           </Text>
-          <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].button}]}>
-            {distance} ft
-          </Text>
+          <View style={styles.distanceContainer}>
+            <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].button}]}>
+              {distance} ft
+            </Text>
+            <Button 
+              style={styles.smallButton}
+              mode='contained'
+              onPress={() => handleRescanDistance()}
+            >
+              <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+                Rescan
+              </Text>
+            </Button>
+          </View>
         </View>
         <Button
           style={styles.button}
@@ -389,6 +400,9 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 32,
   },
+  distanceContainer: {
+    flexDirection: 'row',
+  },
   loadingText: {
     textAlign: 'center',
   },
@@ -419,7 +433,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   smallButton: {
-    width: 100,
+    width: 110,
     height: 48,
     marginVertical: 16,
     marginLeft: 32,

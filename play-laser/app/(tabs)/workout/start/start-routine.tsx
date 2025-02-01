@@ -27,12 +27,13 @@ export default function StartRoutineScreen() {
 
   useEffect(() => {
     const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
-    // console.log("Fetching workout with ID:", workoutId);
+    console.log("Fetching workout with ID:", workoutId);
 
     const loadWorkout = async () => {
       const fetchedWorkout = await fetchWorkouts(workoutId);
-      // console.log("Fetched workout:", fetchedWorkout);
+      console.log("Fetched workout:", fetchedWorkout);
       setWorkout(fetchedWorkout);
+      const workoutDuration = fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration);
       setMinutes(Math.floor(workoutDuration / 60));
       setSeconds(workoutDuration % 60);
     };
@@ -77,7 +78,7 @@ export default function StartRoutineScreen() {
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Workout Duration: </Text>
-          {minutes > 0 && `${minutes} minutes`} {seconds} seconds
+          {minutes > 0 && `${minutes} minutes `}{seconds} seconds
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Laser Duration: </Text>
