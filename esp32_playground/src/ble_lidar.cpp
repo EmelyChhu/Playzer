@@ -82,9 +82,16 @@ void BLE_LIDAR::output_distance()
   
 }
 
-bool BLE_LIDAR::isInitialized()
-{ return pCharacteristic != nullptr; }
+void BLE_LIDAR::MyCallbacks::onConnect(BLEServer *pServer)
+{
+  // FIX THIS LATER
+  lidar->deviceConnected = true;
+}
 
+void BLE_LIDAR::MyCallbacks::onDisconnect(BLEServer *pServer)
+{
+  lidar->deviceConnected = false;
+}
 
 void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
   std::string value = pCharacteristic->getValue();
@@ -95,6 +102,7 @@ void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
     }
     Serial.println();
 
+    // app requesting LiDaR
     if (value == "RESCAN")
     {
       // send the lidar data
@@ -102,6 +110,7 @@ void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
       lidar->lidar_notify(dist_ft);
 
     }
+    // app is sending workout data
     else
     {
       uint64_t dec_num = std::stoull(value.c_str());

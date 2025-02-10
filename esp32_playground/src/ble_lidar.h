@@ -25,14 +25,14 @@ public:
     BLECharacteristic *pCharacteristic;
 
     static std::vector<uint8_t> positions;
+    bool deviceConnected; // TODO: might need to change this later idk
 
     BLE_LIDAR() { // Default constructor
         pCharacteristic = nullptr;
+        deviceConnected = false;
         BLE_init();
         reset_workout();
     };
-
-    bool isInitialized();
 
     void getDistance(int* distance);
 
@@ -41,15 +41,17 @@ public:
     void output_distance();
     
     void lidar_notify(uint8_t dist_ft);
-    // void lidar_notify(BLECharacteristic *pCharacteristic, uint8_t dist_ft);
 
     class MyCallbacks : public BLECharacteristicCallbacks {
         public:
         MyCallbacks(BLE_LIDAR* lidarInstance) : lidar(lidarInstance) {} // Constructor to store instance
         void onWrite(BLECharacteristic *pCharacteristic) override;
+        void onConnect(BLEServer* pServer);
+        void onDisconnect(BLEServer* pServer);
 
         private:
         BLE_LIDAR* lidar;  // Pointer to BLE_LIDAR instance
+
     };
 
     void reset_workout();
@@ -68,7 +70,7 @@ private:
 
     void BLE_init();
 
-    // LiDAR Constants
+    // LiDAR Constants - serial port
     HardwareSerial& TFMini = Serial;
 };
 

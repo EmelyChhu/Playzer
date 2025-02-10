@@ -55,8 +55,6 @@ void Workout::calibrate(){
     uint8_t distance_ft = 0; // placeholder
     div_per_col = 5;  // placeholder
     div_per_row = 6;  // placeholder
-
-
 }
 
 uint8_t Workout::decode_position_row(uint8_t *pos){
