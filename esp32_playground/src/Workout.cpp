@@ -82,6 +82,13 @@ void Workout::return_to_base(){
 }
 
 void Workout::execute(){
+    if (positions[0] == 63){ // checking if positions should be random
+        for (uint8_t i = 0; i < num_positions; i++){
+            std::srand(std::time(0));
+            positions[i] = (std::rand() % 32) + 1;
+        }
+    }
+
     for (uint8_t i = 0; i < num_positions; i++){
 
         Serial.println("position:");
