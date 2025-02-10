@@ -106,7 +106,7 @@ void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
     if (value == "RESCAN")
     {
       // send the lidar data
-      uint8_t dist_ft = lidar->calculate_distance();
+      dist_ft = lidar->calculate_distance();
       lidar->lidar_notify(dist_ft);
 
     }

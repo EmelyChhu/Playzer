@@ -22,6 +22,7 @@ public:
     static uint8_t cols;
     static uint8_t rows;
     static uint8_t num_pos;
+    static uint8_t dist_ft;
     BLECharacteristic *pCharacteristic;
 
     static std::vector<uint8_t> positions;
