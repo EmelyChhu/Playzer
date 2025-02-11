@@ -14,7 +14,13 @@ import NavigationButton from '@/components/NavigationButton';
  * provides a button for each premade routine that users can click to start that workout (`(tabs)/workout/start/start-routine`)
  */
 export default function StartPremadeRoutinesScreen() {
+  // get list of workouts
   const workouts = exampleWorkouts;
+
+  // separate workouts into each cateogry
+  const basicWorkouts = workouts.filter(workout => workout.type === "Basic");
+  const randomWorkouts = workouts.filter(workout => workout.type === "Random");
+  const sportSpecificWorkouts = workouts.filter(workout => workout.type === "Sport-Specific");
 
   return (
     <PaperProvider>
@@ -30,19 +36,14 @@ export default function StartPremadeRoutinesScreen() {
         </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal>
-            <NavigationButton
-              size="small"
-              path="./start-routine"
-              text="Basic 1"
-            />
-            <NavigationButton
-              size="small"
-              text="Basic 2"
-            />
-            <NavigationButton
-              size="small"
-              text="Basic 3"
-            />
+            {basicWorkouts.map((workout, index) => (
+              <NavigationButton
+                key={index}
+                size="small"
+                text={workout.name}
+                path={`./start-routine?workoutId=${workout.id}`}
+              />
+            ))}
           </ScrollView>
         </View>
         <Text style={styles.subtitle} variant="titleLarge">
@@ -50,18 +51,14 @@ export default function StartPremadeRoutinesScreen() {
         </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
-            <NavigationButton
-              size="small"
-              text="Random 1"
-            />
-            <NavigationButton
-              size="small"
-              text="Random 2"
-            />
-            <NavigationButton
-              size="small"
-              text="Random 3"
-            />
+            {randomWorkouts.map((workout, index) => (
+              <NavigationButton
+                key={index}
+                size="small"
+                text={workout.name}
+                path={`./start-routine?workoutId=${workout.id}`}
+              />
+            ))}
           </ScrollView>
         </View>
         <Text style={styles.subtitle} variant="titleLarge">
@@ -69,21 +66,14 @@ export default function StartPremadeRoutinesScreen() {
         </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
-            <NavigationButton
-              size="small"
-              text="Random 1"
-              icon="soccer-ball-o"
-            />
-            <NavigationButton
-              size="small"
-              text="Random 2"
-              icon="circle"
-            />
-            <NavigationButton
-              size="small"
-              text="Random 3"
-              icon="soccer-ball-o"
-            />
+            {sportSpecificWorkouts.map((workout, index) => (
+              <NavigationButton
+                key={index}
+                size="small"
+                text={workout.name}
+                path={`./start-routine?workoutId=${workout.id}`}
+              />
+            ))}
           </ScrollView>
         </View>
       </View>

@@ -8,12 +8,13 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { BleManager } from 'react-native-ble-plx';
 import { useState, useEffect, useRef } from 'react';
 import { btoa, atob } from 'react-native-quick-base64';
-import { Workout } from '@/types';
+import { Workout, randomWorkout } from '@/types';
 import { router } from 'expo-router';
 
 import DeviceModal from "./../../../device-connection-modal";
 import useBLE from "../../../../useBLE";
 import { fetchWorkouts } from "@/FirebaseConfig";
+import { useLocalSearchParams } from 'expo-router';
 
 /**
  * ConnectStartScreen Component - screen that provides the flow for connecting to a device and starting a workout routine
@@ -47,8 +48,10 @@ export default function ConnectStartScreen() {
   const [workoutDuration, setWorkoutDuration] = useState(150);
   const [screenState, setScreenState] = useState(1);    // possible states: 1 (connection), 2 (sync distance), 3 (workout), 4 (workout complete)
 
+  const { workoutId } = useLocalSearchParams();
+
   useEffect(() => {
-    const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
+    // const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
     console.log("Fetching workout with ID:", workoutId);
 
     const loadWorkout = async () => {
@@ -59,7 +62,12 @@ export default function ConnectStartScreen() {
         setWorkoutDuration(fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration));
       }
     };
-    loadWorkout();
+
+    if (workoutId != "RANDOM") {
+      loadWorkout();
+    } else {
+      setWorkout(randomWorkout);
+    }
   }, []);
 
   if(!workout) {
@@ -100,14 +108,14 @@ export default function ConnectStartScreen() {
     data |= BigInt(workout.numRows);  // 4 bits for numRows
     data <<= BigInt(4);
     data |= BigInt(workout.numColumns);  // 4 bits for numColumns
-    data <<= BigInt(6);
+    data <<= BigInt(5);
 
     for (let i = workout.laserPositions.length - 1; i >= 0; i--) {
-      data |= BigInt(workout.laserPositions[i]); // 6 bits for each laserPosition
-      data <<= BigInt(6);
+      data |= BigInt(workout.laserPositions[i]); // 5 bits for each laserPosition
+      data <<= BigInt(5);
     }
     
-    data >>= BigInt(1);
+    // data >>= BigInt(1);
     data |= BigInt(workout.laserPositions.length);  // 5 bits for number of laserPositions
     
     return data;
@@ -282,10 +290,10 @@ export default function ConnectStartScreen() {
     const handleStartWorkout = () => {
       setWorkoutState(2);   // set workout state to running
       setTime(0);
-      const data = encodeWorkoutData(workout);
-      console.log(data.toString(16));
 
       if (connectedDevice) {
+        const data = encodeWorkoutData(workout);
+        console.log(data.toString(16));
         sendData(connectedDevice, data);    // send workout data to device
         console.log("Workout data sent to device:", data.toString(16));
       } else {

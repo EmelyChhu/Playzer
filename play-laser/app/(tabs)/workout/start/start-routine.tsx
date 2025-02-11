@@ -10,6 +10,7 @@ import { router } from 'expo-router';
 
 import React, { useState, useEffect } from 'react';
 import { fetchWorkouts } from "@/FirebaseConfig";
+import { useLocalSearchParams } from 'expo-router';
 
 /**
  * StartRoutineScreen Component - screen that provides information for a given workout routine
@@ -24,10 +25,12 @@ export default function StartRoutineScreen() {
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
+  
+  const { workoutId } = useLocalSearchParams();
 
   useEffect(() => {
-    const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
-    // console.log("Fetching workout with ID:", workoutId);
+    // const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
+    console.log("Fetching workout with ID:", workoutId);
 
     const loadWorkout = async () => {
       const fetchedWorkout = await fetchWorkouts(workoutId);
@@ -66,7 +69,7 @@ export default function StartRoutineScreen() {
         <Button
           style={styles.button}
           mode='contained'
-          onPress={() => router.push("./connect-start")}
+          onPress={() => router.push(`./connect-start?workoutId=${workoutId}`)}
         >
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             Start Workout
@@ -77,7 +80,7 @@ export default function StartRoutineScreen() {
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Workout Duration: </Text>
-          {minutes > 0 && `${minutes} minutes` }{seconds} seconds
+          {minutes > 0 && `${minutes} minutes `}{seconds} seconds
         </Text>
         <Text variant="bodyMedium">
           <Text style={{ fontWeight: 'bold' }}>Laser Duration: </Text>
