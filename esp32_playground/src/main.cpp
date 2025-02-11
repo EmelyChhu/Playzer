@@ -28,7 +28,11 @@ void loop() {
 
     if(bluetooth_obj->deviceConnected)
     {
-        while (!bluetooth_obj->get_C() && !bluetooth_obj->get_R()){}
+        while (!bluetooth_obj->get_C() && !bluetooth_obj->get_R())
+        {
+            // polls the distance to get an accurate lidar sensor reading
+            bluetooth_obj->getDistance(&bluetooth_obj->lidar_distance_cm);
+        }
 
         Workout test_workout;
         // test_workout = Workout();
