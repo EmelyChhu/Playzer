@@ -153,16 +153,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  inputContainer: {
-    width: '100%',
-    height: 50,
-    flexDirection: 'row',
-  },
-  input: {
-    width: '48%',
-    marginRight: 8,
-    height: 40,
-  },
   largeInput: {
     width: '100%',
     marginRight: 8,
