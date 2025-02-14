@@ -39,6 +39,14 @@ export default function WorkoutStackLayout() {
         }} 
       />
       <Stack.Screen 
+        name="start-random"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Random Routine Settings",
+          headerBackTitle: "Back",
+        }} 
+      />
+      <Stack.Screen 
         name="connect-start"
         options={{ 
           headerShown: true,

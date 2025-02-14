@@ -48,7 +48,7 @@ export default function ConnectStartScreen() {
   const [workoutDuration, setWorkoutDuration] = useState(150);
   const [screenState, setScreenState] = useState(1);    // possible states: 1 (connection), 2 (sync distance), 3 (workout), 4 (workout complete)
 
-  const { workoutId } = useLocalSearchParams();
+  const { workoutId, laserDuration, durationBetweenLasers, numLaserPositions } = useLocalSearchParams();
 
   useEffect(() => {
     // const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
@@ -66,6 +66,9 @@ export default function ConnectStartScreen() {
     if (workoutId != "RANDOM") {
       loadWorkout();
     } else {
+      randomWorkout.laserDuration = Number(laserDuration);
+      randomWorkout.durationBetweenLasers = Number(durationBetweenLasers);
+      randomWorkout.laserPositions = Array(Number(numLaserPositions)).fill(0);
       setWorkout(randomWorkout);
     }
   }, []);
@@ -293,9 +296,9 @@ export default function ConnectStartScreen() {
 
       if (connectedDevice) {
         const data = encodeWorkoutData(workout);
-        console.log(data.toString(16));
         sendData(connectedDevice, data);    // send workout data to device
         console.log("Workout data sent to device:", data.toString(16));
+        console.log("Workout sent to device:", workout);
       } else {
         console.log("Error: No device connected")
         setIsDialogVisible(true);
@@ -421,8 +424,6 @@ export default function ConnectStartScreen() {
     </PaperProvider>
   );
 }
-
-// sync distance), 3 (workout), 4 (workout complete)
 
 const styles = StyleSheet.create({
   container: {

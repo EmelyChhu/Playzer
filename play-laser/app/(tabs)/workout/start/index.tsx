@@ -37,7 +37,7 @@ export default function WorkoutStartScreen() {
             icon="edit"
           />
         </View>
-        <Button style={styles.button} mode='contained' onPress={() => router.push(`./start/connect-start?workoutId=RANDOM`)}>
+        <Button style={styles.button} mode='contained' onPress={() => router.push("./start/start-random")}>
           <Text style={[styles.text, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             Device Randomized
           </Text>

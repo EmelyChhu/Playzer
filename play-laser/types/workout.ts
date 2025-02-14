@@ -134,13 +134,13 @@ export const randomWorkout: Workout = {
     id: "0",
     name: "Device Randomized",
     type: "Random",
-    durationBetweenLasers: 1,
-    laserDuration: 2,
+    durationBetweenLasers: 0,
+    laserDuration: 0,
     numColumns: 8,
-    numRows: 4,
+    numRows: 15,
     numPositions: 32,
-    laserPositions: [63, 63, 63, 63],
-    description: "This is a sport-specific tennis workout.",
+    laserPositions: [],
+    description: "This is a device randomized workout.",
 }
 
 export const exampleWorkouts: Workout[] = [exampleWorkout1, exampleWorkout2, exampleWorkout3, exampleWorkout4, exampleWorkout5, exampleWorkout6, exampleWorkout7, exampleWorkout8, exampleWorkout9];
