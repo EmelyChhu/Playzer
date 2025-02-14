@@ -31,7 +31,7 @@ export default function ViewCustomRoutinesScreen() {
         <View style={styles.routineButtonsContainer}>
           <NavigationButton
             size="small"
-            path="./create-custom"
+            path="./create-custom-1"
             text="Create"
             icon="plus"
           />

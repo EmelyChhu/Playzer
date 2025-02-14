@@ -11,12 +11,13 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { Workout, exampleWorkouts } from '@/types';
 import { router } from 'expo-router';
 import { LaserPositionCardProps, LaserGridProps } from '@/types';
+import { useLocalSearchParams } from 'expo-router';
 
 import { addWorkout } from "@/FirebaseConfig";
 import { FIREBASE_AUTH } from "@/FirebaseConfig";
 
 /**
- * CreateCustomRoutineScreen Component - screen that provides an interface for users to create and save a new custom routine
+ * CreateCustomRoutine2Screen Component - screen that provides the second page for users to create and save a new custom routine
  * 
  * @returns {JSX.Element} - React component that renders the UI
  * 
@@ -25,9 +26,11 @@ import { FIREBASE_AUTH } from "@/FirebaseConfig";
  * provides "Between Lasers" text input box that allows users to enter the duration between each laser
  * provides a grid of dots that the user can click to add laser positions
  */
-export default function CreateCustomRoutineScreen() {
+export default function CreateCustomRoutine2Screen() {
   const colorScheme = useColorScheme();
   const workouts = exampleWorkouts;
+
+  const { name, description } = useLocalSearchParams();
 
   const [workoutDuration, setWorkoutDuration] = useState(0);
   const [durationBetweenLasers, setDurationBetweenLasers] = useState("");
@@ -88,16 +91,16 @@ export default function CreateCustomRoutineScreen() {
     if (!convFail) {
       const newCustomWorkout = {
         id: "0",
-        name: "Custom 1",
+        name: name,
         type: "Custom",
-        durationBetweenLasers: {durationBetweenLasers},
-        laserDuration: {laserDuration},
+        durationBetweenLasers: durationBetweenLasers,
+        laserDuration: laserDuration,
         numColumns: 8,
         numRows: 4,
         numPositions: 32,
-        laserPositions: {laserPositions},
+        laserPositions: laserPositions,
         creatorId: FIREBASE_AUTH.currentUser?.uid,
-        description: "This is a newly created custom workout routine."
+        description: description
       }
       await addWorkout(newCustomWorkout);
       console.log("Saved Custom Routine:", newCustomWorkout);
@@ -120,7 +123,7 @@ export default function CreateCustomRoutineScreen() {
     <PaperProvider>
       <View style={styles.container}>
         <Text style={styles.title} variant="headlineMedium">
-          Create a Routine
+          Routine Settings and Content
         </Text>
         <Text variant="bodyMedium">
           Input the workout settings and click on the grid to add laser positions.
@@ -197,7 +200,7 @@ const LaserGridInput: React.FC<LaserGridProps> = ({ numColumns, numRows, setLase
   const colorScheme = useColorScheme();
   
   const handleLaserPositionPress = (row: number, column: number) => {
-    const newPosition = row * 8 + column + 1;
+    const newPosition = row * 8 + column;
     if (setLaserPositions && laserPositions) {
       setLaserPositions([...laserPositions, newPosition]);
     }
