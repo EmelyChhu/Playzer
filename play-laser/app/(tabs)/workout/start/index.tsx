@@ -67,7 +67,6 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     height: 48,
-    marginVertical: 16,
     alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
