@@ -93,13 +93,13 @@ void Workout::return_to_base(){
 void Workout::execute(){
     // rows == 15 indicates random workout
     if (rows == 15){ // checking if positions should be random
+        rows = 4;
+        
         for (uint8_t i = 0; i < num_positions; i++){
             std::srand(std::time(0));
             positions[i] = (std::rand() % 32);
         }
 
-        laser_duration_ms = 4000;
-        duration_btwn_lasers_ms = 2000;
     }
 
     for (uint8_t i = 0; i < num_positions; i++){
