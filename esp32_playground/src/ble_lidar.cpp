@@ -42,45 +42,44 @@ void BLE_LIDAR::getDistance(int* distance) {
   }  
 }
 
-uint8_t BLE_LIDAR::calculate_distance()
+double BLE_LIDAR::calculate_distance()
 {
   // get the average distance here, polls it 
   // Retrieve LiDAR Distance in centimeters
-  int centimeters = 0;
   int sum = 0;
 
-  for(int i = 0; i < 500; i++)
+  for(int i = 0; i < 100; i++)
   {
-    getDistance(&centimeters);
-    while(!centimeters && centimeters < 10000) 
+    getDistance(&lidar_distance_cm);
+    while(!lidar_distance_cm && lidar_distance_cm < 10000) 
     {
-      getDistance(&centimeters);
+      getDistance(&lidar_distance_cm);
     }
-    sum += centimeters;
+    sum += lidar_distance_cm;
   }
 
   // get average
-  double avg_distance = sum / 500;  
+  double avg_distance = sum / 100;  
   
   // number of centimeters in 1 foot : 30.48
-  uint8_t feet = uint8_t(avg_distance / 30.48);
+  double feet = avg_distance / 30.48;
   Serial.println("\t AVG Distance in feet: "+ String(feet));
   return feet;
 } 
 
-void BLE_LIDAR::output_distance()
-{
-  // Retrieve LiDAR Distance in centimeters
-  int distance = 0;
+// THIS FUNCTION IS NOT BEING USED, CAN DELETE LATER
+// void BLE_LIDAR::output_distance()
+// {
+//   // Retrieve LiDAR Distance in centimeters
 
-  getDistance(&distance);
-  while(!distance && distance < 10000) {
-    getDistance(&distance);
-  }
+//   getDistance(&lidar_distance_cm);
+//   while(!lidar_distance_cm && lidar_distance_cm < 10000) {
+//     getDistance(&lidar_distance_cm);
+//   }
 
-  Serial.print("Distance in centimeters: "+ String(distance));
+//   Serial.print("Distance in centimeters: "+ String(lidar_distance_cm));
   
-}
+// }
 
 void BLE_LIDAR::MyCallbacks::onConnect(BLEServer *pServer)
 {
@@ -106,23 +105,25 @@ void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
     if (value == "RESCAN")
     {
       // send the lidar data
-      dist_ft = lidar->calculate_distance();
+      double dist_ft = lidar->calculate_distance();
       lidar->lidar_notify(dist_ft);
-
     }
     // app is sending workout data
     else
     {
-      uint64_t dec_num = std::stoull(value.c_str());
+      // split number into 2 64 bit uint numbers to account for 20 positions
+      uint64_t dec_num = std::stoull(value.c_str()); // this concatenates the first 64 bits 
+      // get the next 64 bits (next 16 numbers from the string)
+      
 
       num_pos = dec_num & 0x1F; // 5 bits
       // array of the numbers
       for (uint8_t i = 0; i < num_pos; i++)
       {
-        positions.push_back((dec_num >> 5 + (6*i)) & 0x3F); // each position is 6 bits
+        positions.push_back((dec_num >> 5 + (5*i)) & 0x1F); // each position is 5 bits
       }
 
-      int after_lasers = 5 + (6 * num_pos);
+      int after_lasers = 5 + (5 * num_pos);
 
       cols = (dec_num >> after_lasers) & 0xF; // 4 bits
       rows = (dec_num >> after_lasers + 4) & 0xF; // 4 bits
@@ -138,7 +139,7 @@ void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
       Serial.print("Laser Positions: "); 
       for (uint8_t i = 0; i < positions.size(); i++)
       {
-        Serial.print(String(positions[i]) + " "); // each position is 6 bits
+        Serial.print(String(positions[i]) + " "); // each position is 5 bits
       }
     }
 
@@ -170,13 +171,13 @@ void BLE_LIDAR::BLE_setup(){
   BLEDevice::startAdvertising();
 }
 
-void BLE_LIDAR::lidar_notify(uint8_t dist_ft)
+void BLE_LIDAR::lidar_notify(double dist_ft)
 {
   if (this->pCharacteristic == nullptr) {
         Serial.println("Characteristic not initialized");
         return;
     }
-  std::string dist = std::to_string(static_cast<int>(dist_ft));
+  std::string dist = std::to_string(dist_ft);
   pCharacteristic->setValue(dist);
   pCharacteristic->notify();
 }

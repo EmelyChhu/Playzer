@@ -22,26 +22,27 @@ public:
     static uint8_t cols;
     static uint8_t rows;
     static uint8_t num_pos;
-    static uint8_t dist_ft;
     BLECharacteristic *pCharacteristic;
 
     static std::vector<uint8_t> positions;
-    bool deviceConnected; // TODO: might need to change this later idk
+    bool deviceConnected; 
+    int lidar_distance_cm;
 
     BLE_LIDAR() { // Default constructor
         pCharacteristic = nullptr;
         deviceConnected = false;
+        lidar_distance_cm = 0;
         BLE_init();
         reset_workout();
     };
 
     void getDistance(int* distance);
 
-    uint8_t calculate_distance();
+    double calculate_distance();
 
     void output_distance();
     
-    void lidar_notify(uint8_t dist_ft);
+    void lidar_notify(double dist_ft);
 
     class MyCallbacks : public BLECharacteristicCallbacks {
         public:
