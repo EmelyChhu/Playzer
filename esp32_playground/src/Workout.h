@@ -27,7 +27,7 @@ private:
 
     void return_to_base();
 
-    void calibrate();
+    void calibrate(uint8_t dist_ft);
 
 public:
     // Default constructor

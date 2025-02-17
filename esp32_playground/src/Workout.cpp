@@ -49,20 +49,31 @@ Workout::Workout() // creates default workout for testing
 
 }
 
-void Workout::calibrate(){
-
-    // get distance away in feet from lidar
-    uint8_t distance_ft = 0; // placeholder
-    div_per_col = 5;  // placeholder
-    div_per_row = 6;  // placeholder
+void Workout::calibrate(uint8_t dist_ft){
+    if (dist_ft < 5){
+        div_per_col = 5;  // placeholder
+        div_per_row = 6;  // placeholder
+    } else if (dist_ft < 10){
+        div_per_col = 4;
+        div_per_row = 5;
+    } else if (dist_ft < 15){
+        div_per_col = 3;
+        div_per_row = 4;
+    } else if (dist_ft < 20){
+        div_per_col = 2;
+        div_per_row = 3;
+    } else{
+        div_per_col = 1;
+        div_per_row = 2;
+    }
 }
 
 uint8_t Workout::decode_position_row(uint8_t *pos){
-    return (int)((*pos - 1) / columns);
+    return (int)((*pos - 1) / columns); // 1-indexed
 } 
 
 uint8_t Workout::decode_position_col(uint8_t *pos){
-    return (*pos - 1) % columns;
+    return (*pos - 1) % columns; // 1-indexed
 } 
 
 void Workout::go_to_position(uint8_t *pos){

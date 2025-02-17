@@ -40,6 +40,8 @@ void loop() {
                                 bluetooth_obj->get_P(), 
                                 bluetooth_obj->get_NP());
 
+        test_workout.calibrate();
+
         test_workout.execute();
 
         bluetooth_obj->reset_workout();
