@@ -27,8 +27,6 @@ private:
 
     void return_to_base();
 
-    void calibrate(uint8_t dist_ft);
-
 public:
     // Default constructor
     Workout();
@@ -37,6 +35,7 @@ public:
     Workout(uint8_t id, uint16_t duration_btwn, uint16_t lsr_duration, 
     uint8_t cols, uint8_t rows, std::vector<uint8_t> pos, u_int8_t num_positions);
 
+    void calibrate(double dist_ft);
 
     void execute();
 

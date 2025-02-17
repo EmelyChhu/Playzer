@@ -21,8 +21,6 @@ id(id), columns(cols), rows(rows), positions(pos), num_positions(num_positions)
     base_col = (int)(columns / 2);
     base_row = rows - 1;
 
-    calibrate();
-
 }
 
 Workout::Workout() // creates default workout for testing
@@ -49,7 +47,7 @@ Workout::Workout() // creates default workout for testing
 
 }
 
-void Workout::calibrate(uint8_t dist_ft){
+void Workout::calibrate(double dist_ft){
     if (dist_ft < 5){
         div_per_col = 5;  
         div_per_row = 6; 
