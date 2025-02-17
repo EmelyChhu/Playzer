@@ -48,14 +48,21 @@ public:
         public:
         MyCallbacks(BLE_LIDAR* lidarInstance) : lidar(lidarInstance) {} // Constructor to store instance
         void onWrite(BLECharacteristic *pCharacteristic) override;
-        void onConnect(BLEServer* pServer);
-        void onDisconnect(BLEServer* pServer);
 
         private:
         BLE_LIDAR* lidar;  // Pointer to BLE_LIDAR instance
 
     };
 
+    class MyServerCallbacks : public BLEServerCallbacks {
+        public:
+        MyServerCallbacks(BLE_LIDAR* lidarInstance) : lidar(lidarInstance) {} // Constructor to store instance
+        void onConnect(BLEServer* pServer);
+        void onDisconnect(BLEServer* pServer);
+
+        private:
+        BLE_LIDAR* lidar;  // Pointer to BLE_LIDAR instance
+    };
     void reset_workout();
 
     uint8_t get_DBL();

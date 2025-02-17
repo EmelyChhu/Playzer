@@ -81,15 +81,16 @@ double BLE_LIDAR::calculate_distance()
   
 // }
 
-void BLE_LIDAR::MyCallbacks::onConnect(BLEServer *pServer)
+void BLE_LIDAR::MyServerCallbacks::onConnect(BLEServer *pServer)
 {
   // FIX THIS LATER
   lidar->deviceConnected = true;
 }
 
-void BLE_LIDAR::MyCallbacks::onDisconnect(BLEServer *pServer)
+void BLE_LIDAR::MyServerCallbacks::onDisconnect(BLEServer *pServer)
 {
   lidar->deviceConnected = false;
+  pServer->startAdvertising(); // restart advertising
 }
 
 void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
@@ -150,6 +151,7 @@ void BLE_LIDAR::BLE_setup(){
   // BLE Setup
   BLEDevice::init("Playzer");
   BLEServer *pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks(this));
   BLEService *pService = pServer->createService(SERVICE_UUID);
   
   pCharacteristic =
