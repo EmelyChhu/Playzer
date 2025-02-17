@@ -94,10 +94,11 @@ void Workout::execute(){
     // rows == 15 indicates random workout
     if (rows == 15){ // checking if positions should be random
         rows = 4;
-        
+        base_row = rows-1;
+        std::srand(std::time(0));
+
         for (uint8_t i = 0; i < num_positions; i++){
-            std::srand(std::time(0));
-            positions[i] = (std::rand() % 32);
+            positions[i] = (std::rand() % 32) + 1;
         }
 
     }

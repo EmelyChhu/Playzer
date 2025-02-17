@@ -128,8 +128,8 @@ void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
 
       cols = (dec_num >> after_lasers) & 0xF; // 4 bits
       rows = (dec_num >> after_lasers + 4) & 0xF; // 4 bits
-      laser_duration = (dec_num >> after_lasers + 8) & 0xF; // 4 bits
-      duration_btwn_lasers = (dec_num >> after_lasers + 12) & 0xF; // 4 bits
+      duration_btwn_lasers = (dec_num >> after_lasers + 8) & 0xF; // 4 bits
+      laser_duration = (dec_num >> after_lasers + 12) & 0xF; // 4 bits
       
       Serial.println("Number received:" + String(dec_num));
       Serial.println("Duration Btwn Lasers: "+ String(duration_btwn_lasers) + "\t Laser Duration: "+ String(laser_duration));
