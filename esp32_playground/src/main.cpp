@@ -44,7 +44,7 @@ void loop() {
                                 bluetooth_obj->get_P(), 
                                 bluetooth_obj->get_NP());
 
-        test_workout.calibrate();
+        test_workout.calibrate(bluetooth_obj->calculate_distance());
 
         test_workout.execute();
 
