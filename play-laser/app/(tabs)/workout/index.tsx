@@ -40,12 +40,13 @@ export default function WorkoutScreen() {
         <View style={styles.routineButtonsContainer}>
           <NavigationButton
             size="medium"
+            path="./workout/view/view-premade"
             text="Premade"
             icon="list"
           />
           <NavigationButton
             size="medium"
-            path="./workout/view/"
+            path="./workout/view/view-custom"
             text="Custom"
             icon="edit"
           />       

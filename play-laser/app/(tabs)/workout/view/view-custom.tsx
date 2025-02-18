@@ -2,8 +2,10 @@ import { StyleSheet, ScrollView } from 'react-native';
 
 import NavigationButton from '@/components/NavigationButton';
 import { View } from '@/components/Themed';
-import { PaperProvider, Text, Button } from 'react-native-paper';
+import { PaperProvider, Text, Button, ActivityIndicator } from 'react-native-paper';
 import { Workout, exampleWorkouts } from '@/types';
+import { getWorkoutTypeDocs } from "@/FirebaseConfig";
+import React, { useState, useEffect } from 'react';
 
 /**
  * ViewCustomRoutinesScreen Component - screen that displays created custom routines and the option to create a new routine
@@ -11,10 +13,35 @@ import { Workout, exampleWorkouts } from '@/types';
  * @returns {JSX.Element} - React component that renders the UI
  * 
  * provides "Create" button that allows users to navigate to the Create Custom Routine page (`(tabs)/workout/view/create-custom`)
- * provides a button for each custom routine that users can click to view that workout (TODO)
+ * provides a button for each custom routine that users can click to view that workout (`(tabs)/workout/view/view-routine`)
  */
 export default function ViewCustomRoutinesScreen() {
-  const workouts = exampleWorkouts;
+  const [customWorkouts, setCustomWorkouts] = useState<string[][]>();
+  
+  useEffect(() => {
+      const loadWorkouts = async () => {
+        // RETURNS ARRAY OF ALL WORKOUTS [[type, name, doc id], ...] 
+        // const workouts = getWorkoutDocuments();
+
+        // RETURNS ARRAY BY WORKOUT TYPE [[name, doc id], ...]
+        const fetchedCustomWorkouts = await getWorkoutTypeDocs("Custom");
+        setCustomWorkouts(fetchedCustomWorkouts);
+      };
+      loadWorkouts();
+    }, []);
+
+  if(!customWorkouts) {
+    return (
+      <PaperProvider>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText} variant="displayLarge">
+            Loading workouts...
+          </Text>
+          <ActivityIndicator animating={true} size={100}/>
+        </View>
+      </PaperProvider>
+    );
+  }
 
   return (
     <PaperProvider>
@@ -40,20 +67,22 @@ export default function ViewCustomRoutinesScreen() {
           Created
         </Text>
         <View style={styles.routineButtonsContainer}>
-          <ScrollView horizontal style={styles.routineButtonsContainer}>
-            <NavigationButton
-              size="small"
-              text="Custom 1"
-            />
-            <NavigationButton
-              size="small"
-              text="Custom 2"
-            />
-            <NavigationButton
-              size="small"
-              text="Custom 3"
-            />
-          </ScrollView>
+          {customWorkouts.length == 0 ?
+            <Text style={styles.emptyStateText} variant="bodyLarge">
+              You haven't created a custom workout yet! Create a workout to see it here.
+            </Text>
+            :
+            <ScrollView horizontal style={styles.routineButtonsContainer}>
+              {customWorkouts.map((workout, index) => (
+                <NavigationButton
+                  key={index}
+                  size="small"
+                  text={workout[0]}
+                  path={`./view-routine?workoutId=${workout[1]}`}
+                />
+              ))}
+            </ScrollView>
+          }
         </View>
       </View>
     </PaperProvider>
@@ -79,4 +108,17 @@ const styles = StyleSheet.create({
   routineButtonsContainer: {
     height: 92,
   },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    gap: 32,
+  },
+  loadingText: {
+    textAlign: 'center',
+  },
+  emptyStateText: {
+    marginTop: 4,
+  }
 });
