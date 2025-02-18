@@ -14,3 +14,8 @@ export type LaserGridProps = {
   setLaserPositions?: React.Dispatch<React.SetStateAction<number[]>>,
   laserPositions?: number[],
 }
+
+export type PreviousWorkoutProps = {
+  date: Date,
+  workoutId: string,
+}

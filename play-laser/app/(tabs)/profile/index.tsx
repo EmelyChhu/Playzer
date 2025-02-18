@@ -21,7 +21,7 @@ export default function ProfileScreen() {
   const colorScheme = useColorScheme();
   const date = new Date(2025, 1, 17);
   // const recentWorkouts = [[date, "1"], [date, "1"]];
-  const recentWorkouts =[];
+  const recentWorkouts = [];
 
   return (
     <PaperProvider>
