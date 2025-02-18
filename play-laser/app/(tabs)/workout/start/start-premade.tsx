@@ -1,9 +1,11 @@
 import { StyleSheet, ScrollView } from 'react-native';
 
 import { View } from '@/components/Themed';
-import { PaperProvider, Text, Button } from 'react-native-paper';
+import { PaperProvider, Text, Button, ActivityIndicator } from 'react-native-paper';
 import { Workout, exampleWorkouts } from '@/types';
 import NavigationButton from '@/components/NavigationButton';
+import { getWorkoutTypeDocs } from "@/FirebaseConfig";
+import React, { useState, useEffect } from 'react';
 
 /**
  * StartPremadeRoutinesScreen Component - screen that displays created premade routines
@@ -14,13 +16,39 @@ import NavigationButton from '@/components/NavigationButton';
  * provides a button for each premade routine that users can click to start that workout (`(tabs)/workout/start/start-routine`)
  */
 export default function StartPremadeRoutinesScreen() {
-  // get list of workouts
-  const workouts = exampleWorkouts;
+  const [basicWorkouts, setBasicWorkouts] = useState<string[][]>();
+  const [randomWorkouts, setRandomWorkouts] = useState<string[][]>();
+  const [sportSpecificWorkouts, setSportSpecificWorkouts] = useState<string[][]>();
 
-  // separate workouts into each cateogry
-  const basicWorkouts = workouts.filter(workout => workout.type === "Basic");
-  const randomWorkouts = workouts.filter(workout => workout.type === "Random");
-  const sportSpecificWorkouts = workouts.filter(workout => workout.type === "Sport-Specific");
+  useEffect(() => {
+      const loadWorkouts = async () => {
+        // RETURNS ARRAY OF ALL WORKOUTS [[type, name, doc id], ...] 
+        // const workouts = getWorkoutDocuments();
+
+        // RETURNS ARRAY BY WORKOUT TYPE [[name, doc id], ...]
+        const fetchedBasicWorkouts = await getWorkoutTypeDocs("Basic");
+        const fetchedRandomWorkouts = await getWorkoutTypeDocs("Random");
+        const fetchedSportSpecificWorkouts = await getWorkoutTypeDocs("Sport-Specific");
+
+        setBasicWorkouts(fetchedBasicWorkouts);
+        setRandomWorkouts(fetchedRandomWorkouts);
+        setSportSpecificWorkouts(fetchedSportSpecificWorkouts);
+      };
+      loadWorkouts();
+    }, []);
+
+  if(!basicWorkouts || !randomWorkouts || !sportSpecificWorkouts) {
+    return (
+      <PaperProvider>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText} variant="displayLarge">
+            Loading workouts...
+          </Text>
+          <ActivityIndicator animating={true} size={100}/>
+        </View>
+      </PaperProvider>
+    );
+  }
 
   return (
     <PaperProvider>
@@ -40,8 +68,8 @@ export default function StartPremadeRoutinesScreen() {
               <NavigationButton
                 key={index}
                 size="small"
-                text={workout.name}
-                path={`./start-routine?workoutId=${workout.id}`}
+                text={workout[0]}
+                path={`./start-routine?workoutId=${workout[1]}`}
               />
             ))}
           </ScrollView>
@@ -55,8 +83,8 @@ export default function StartPremadeRoutinesScreen() {
               <NavigationButton
                 key={index}
                 size="small"
-                text={workout.name}
-                path={`./start-routine?workoutId=${workout.id}`}
+                text={workout[0]}
+                path={`./start-routine?workoutId=${workout[1]}`}
               />
             ))}
           </ScrollView>
@@ -70,8 +98,8 @@ export default function StartPremadeRoutinesScreen() {
               <NavigationButton
                 key={index}
                 size="small"
-                text={workout.name}
-                path={`./start-routine?workoutId=${workout.id}`}
+                text={workout[0]}
+                path={`./start-routine?workoutId=${workout[1]}`}
               />
             ))}
           </ScrollView>
@@ -99,5 +127,15 @@ const styles = StyleSheet.create({
   },
   routineButtonsContainer: {
     height: 92,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    gap: 32,
+  },
+  loadingText: {
+    textAlign: 'center',
   },
 });
