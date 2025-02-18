@@ -41,6 +41,21 @@ export default function ConnectStartScreen() {
     setIsDialogVisible,
   } = useBLE();
 
+  const connectedDeviceRef = useRef(connectedDevice); 
+
+  useEffect(() => {
+    connectedDeviceRef.current = connectedDevice;
+  }, [connectedDevice]);
+
+  useEffect(() => {
+    return () => {
+      if (connectedDeviceRef.current) {
+        console.log("Disconnecting from device due to user navigating away from page.");
+        disconnectFromDevice();
+      }
+    };
+  }, []);
+
   // const connectedDevice = true;
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -70,6 +85,7 @@ export default function ConnectStartScreen() {
       randomWorkout.durationBetweenLasers = Number(durationBetweenLasers);
       randomWorkout.laserPositions = Array(Number(numLaserPositions)).fill(0);
       setWorkout(randomWorkout);
+      setWorkoutDuration(randomWorkout.laserPositions.length * (randomWorkout.durationBetweenLasers + randomWorkout.laserDuration));
     }
   }, []);
 
@@ -118,7 +134,6 @@ export default function ConnectStartScreen() {
       data <<= BigInt(5);
     }
     
-    // data >>= BigInt(1);
     data |= BigInt(workout.laserPositions.length);  // 5 bits for number of laserPositions
     
     return data;
@@ -208,7 +223,7 @@ export default function ConnectStartScreen() {
           </Text>
           <View style={styles.distanceContainer}>
             <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].button}]}>
-              {distance} ft
+              {distance.toFixed(1)} ft
             </Text>
             <Button 
               style={styles.smallButton}
