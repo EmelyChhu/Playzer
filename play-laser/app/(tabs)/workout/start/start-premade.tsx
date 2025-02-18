@@ -12,7 +12,7 @@ import React, { useState, useEffect } from 'react';
  * 
  * @returns {JSX.Element} - React component that renders the UI
  * 
- * provides 3 categories of premade routines: Basic, Random, and Sport-Specific (TODO)
+ * provides 3 categories of premade routines: Basic, Random, and Sport-Specific
  * provides a button for each premade routine that users can click to start that workout (`(tabs)/workout/start/start-routine`)
  */
 export default function StartPremadeRoutinesScreen() {

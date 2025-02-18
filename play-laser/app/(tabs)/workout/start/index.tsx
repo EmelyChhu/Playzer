@@ -33,6 +33,7 @@ export default function WorkoutStartScreen() {
           />
           <NavigationButton
             size="medium"
+            path="./start/start-custom"
             text="Custom"
             icon="edit"
           />
