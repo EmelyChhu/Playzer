@@ -87,11 +87,11 @@ export default function CreateCustomRoutineScreen() {
     }
     if (!convFail) {
       const newCustomWorkout = {
-        id: "4",
+        id: "0",
         name: "Custom 1",
         type: "Custom",
         durationBetweenLasers: {durationBetweenLasers},
-        laserDuration: {laserDuration},
+        laserDuration: laserDuration,
         numColumns: 8,
         numRows: 4,
         numPositions: 32,

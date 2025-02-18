@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth"; 
+import { getAuth, onAuthStateChanged } from "firebase/auth"; 
 import { getFirestore, 
   collection, getDocs, addDoc,
   doc, getDoc,
@@ -28,41 +28,28 @@ const firebaseConfig = {
 export const FIREBASE_APP = initializeApp(firebaseConfig);
 export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
 export const FIREBASE_DB = getFirestore(FIREBASE_APP);
-//const analytics = getAnalytics(app);
 
 const FirebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_API_KEY,
 };
 
-export const fetchWorkouts = async (workoutId: string): Promise<Workout | null> => { 
+export const fetchWorkouts = async (DocId: string): Promise<Workout | null> => { 
   // verify that the collection exist, remove async parameters
-  /*
-  const workoutsCollection = collection(db, 'Workout')
   try {
-    const querySnapshot = await getDocs(workoutsCollection)
-    querySnapshot.forEach((doc) => {
-      console.log(`Document ID: ${doc.id}`, doc.data());
-    });*/
+    const workoutDocRef = doc(FIREBASE_DB, "Workout", DocId);
+    const workoutDocSnap = await getDoc(workoutDocRef);
 
-  // call for the premade workouts
-  const workoutsDocRef = collection(FIREBASE_DB, "Workout");
-  const workoutsQuery = query(workoutsDocRef, where("id", "==", workoutId));
-  // console.log("Fetching workout from path:", workoutsDocRef.path);
-  try {
-    const querySnapshot = await getDocs(workoutsQuery);
-    if (querySnapshot.empty) {
+    if (!workoutDocSnap.exists()) {
       console.log("No such document!");
       return null;
     }
 
-    const workoutDoc = querySnapshot.docs[0];
-    const workoutData = workoutDoc.data();
-    // console.log("Workout Data:", workoutData);
+    const workoutData = workoutDocSnap.data();
 
     const workout: Workout = {
       id: workoutData.id || "0", // defaults to 0 if none is provided
       name: workoutData.name || "Unnamed Workout",  
-      type: workoutData.type || "Unknown",  
+      type: workoutData.type || "Unknown Type",  
       durationBetweenLasers: workoutData.durationBetweenLasers || 1,  
       laserDuration: workoutData.laserDuration || 1,
       numColumns: workoutData.numColumns || 8,
@@ -90,6 +77,76 @@ export const addWorkout = async (workoutData: any) => {
   }
   catch (error) {
     console.error("Error adding workout:", error);
+  }
+};
+
+// Return an array containing arrays of Workout [type, name, doc id]
+export const getWorkoutDocuments = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(FIREBASE_DB, "Workout"));
+
+    if (querySnapshot.empty) {
+      console.log("No workout documents found!");
+      return [];
+    }
+
+    const workouts = querySnapshot.docs.map(doc => ([
+      doc.data().type || "Unknown Type",
+      doc.data().name || "Unnamed Workout",
+      doc.id
+    ]));
+
+    console.log(workouts);
+    return workouts;
+  } 
+
+  catch (error) {
+    console.error("Error fetching Workout document IDs:", error);
+    return [];
+  }
+};
+
+// Returns an array of arrays of Workout [name, doc id]
+export const getWorkoutTypeDocs = async (workoutType: string) => {
+  try {
+    const workoutsDocRef = collection(FIREBASE_DB, "Workout");
+    const user = FIREBASE_AUTH.currentUser?.uid;
+    let q;
+
+    if (workoutType === "Custom") {
+      console.log("UID:", user);
+
+      if(!user) {
+        console.log("No user found!");
+        return [];
+       }
+       
+      q = query( workoutsDocRef, 
+        where("creatorId", "==", user)
+      );
+    }
+    else {
+    q = query(workoutsDocRef, 
+      where("type", "==", workoutType));
+    }
+
+    const querySnapshot = await getDocs(q);
+
+    if(querySnapshot.empty) {
+      console.log("No workouts found for user:", user);
+      return [];
+    }
+
+    const userWorkouts = querySnapshot.docs.map(doc => [
+      doc.data().name || "Unnamed Workout",
+      doc.id
+    ]);
+    return userWorkouts;
+  }
+
+  catch(error) {
+    console.error("Error fetching workouts: ", error);
+    return [];
   }
 };
 
