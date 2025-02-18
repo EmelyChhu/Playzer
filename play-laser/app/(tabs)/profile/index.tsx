@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
@@ -6,6 +6,7 @@ import { Text, Button, PaperProvider } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
+import { PreviousWorkoutProps } from '@/types';
 
 /**
  * ProfileScreen Component - profile screen for the Playzer app
@@ -18,28 +19,77 @@ import { useColorScheme } from '@/components/useColorScheme';
  */
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
+  const date = new Date(2025, 1, 17);
+  // const recentWorkouts = [[date, "1"], [date, "1"]];
+  const recentWorkouts =[];
 
   return (
     <PaperProvider>
       <View style={styles.container}>
         <View style={[styles.profileContainer, {backgroundColor: Colors[colorScheme ?? 'light'].headerBackground}]}>
           <FontAwesome
-                style={styles.icon}
-                name="user-circle"
-                size={75}
-                color={Colors[colorScheme ?? 'light'].button}
-              />
+            style={styles.icon}
+            name="user-circle"
+            size={75}
+            color={Colors[colorScheme ?? 'light'].button}
+          />
           <Text style={styles.title}>User</Text>
           <Button style={styles.editButton} mode="contained">Edit Profile</Button>
         </View>
         <View style={styles.recentWorkoutsContainer}>
           <Text style={styles.header}>Recent Workouts</Text>
-            <Text variant="bodyLarge">
+          {recentWorkouts.length == 0 ? 
+            <Text style={styles.emptyStateText} variant="bodyLarge">
               You haven't completed a workout yet! Complete a workout to see it here.
             </Text>
+            :
+            <View style={styles.scrollViewContainer}>
+              <ScrollView>
+                {recentWorkouts.map((workout, index) => (
+                  <PreviousWorkoutCard
+                    key={index}
+                    date={workout[0]}
+                    workoutId={workout[1]}
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          }
         </View>
       </View>
     </PaperProvider>
+  );
+}
+
+/**
+ * PreviousWorkoutCard Component - card with date and name of previous workout
+ * 
+ * @param {Object} props - component props
+ * @param {Date} props.date - date of workout
+ * @param {string} [props.workoutId] - documentId of workout
+ * 
+ * @returns {JSX.Element} - styled card that includes icon and text
+ */
+const PreviousWorkoutCard: React.FC<PreviousWorkoutProps> = ({date, workoutId}) => {
+  const colorScheme = useColorScheme();
+
+  return (
+    <View style={[styles.card, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
+      <FontAwesome
+        style={styles.workoutIcon}
+        name="crosshairs"
+        size={50}
+        color={Colors[colorScheme ?? 'light'].buttonText}
+      />
+      <View style={styles.infoContainer}>
+        <Text style={[styles.dateText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+          {date.toLocaleDateString()}
+        </Text>
+        <Text style={[styles.workoutNameText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+          Basic 1
+        </Text>
+      </View>
+    </View>
   );
 }
 
@@ -49,15 +99,30 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
   },
+  scrollViewContainer: {
+    flex: 1,
+    width: '100%',
+    marginTop: 4,
+    marginBottom: 150,
+  },
+  infoContainer: {
+    flex: 1,
+    // width: '100%',
+    flexDirection: 'column',
+    backgroundColor: 'transparent',
+  },
   profileContainer: {
     width: '100%',
-    height: 250,
+    height: 225,
     alignItems: 'center',
     justifyContent: 'center',
   },
   recentWorkoutsContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 24,
+    width: '100%',
+    height: '100%',
+    // backgroundColor: 'white',
+    // paddingVertical: 24,
   },
   title: {
     fontSize: 20,
@@ -73,6 +138,10 @@ const styles = StyleSheet.create({
   icon: {
     marginBottom: 8,
   },
+  workoutIcon: {
+    marginLeft: 8,
+    marginRight: 14,
+  },
   editButton: {
     width: 200,
   },
@@ -81,5 +150,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'left',
     marginBottom: 12,
-  }
+    marginTop: 24,
+  },
+  emptyStateText: {
+    // marginHorizontal: 16,
+  },
+  card: {
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: '100%',
+    padding: 8,
+    borderRadius: 16,
+    marginBottom: 12,
+    height: 75,
+  },
+  dateText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'left',
+  },
+  workoutNameText: {
+    fontSize: 18,
+    textAlign: 'left',
+  },
 });
