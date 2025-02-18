@@ -65,6 +65,10 @@ export default function CreateCustomRoutine2Screen() {
     setLaserDuration(laserDuration);
   }, [laserDuration]);
 
+  const handleNavigateBack = () => {
+    router.replace(`./view-custom`);
+  }
+
   const handleSaveRoutine = async () => {
     const numLaserDuration = parseFloat(laserDuration);
     const numDurationBetweenLasers = parseFloat(durationBetweenLasers);
@@ -93,8 +97,8 @@ export default function CreateCustomRoutine2Screen() {
         id: "0",
         name: name,
         type: "Custom",
-        durationBetweenLasers: durationBetweenLasers,
-        laserDuration: laserDuration,
+        durationBetweenLasers: numDurationBetweenLasers,
+        laserDuration: numLaserDuration,
         numColumns: 8,
         numRows: 4,
         numPositions: 32,
@@ -104,10 +108,9 @@ export default function CreateCustomRoutine2Screen() {
       }
       await addWorkout(newCustomWorkout);
       console.log("Saved Custom Routine:", newCustomWorkout);
-      setButtonText("Workout Saved!");
+      setButtonText("Workout Saved! Exit");
       setIsSaved(true);
       // setButtonDisabled(true);
-      // navigate back to "View Custom Routines Page"
     }
   }
 
@@ -128,7 +131,7 @@ export default function CreateCustomRoutine2Screen() {
         <Text variant="bodyMedium">
           Input the workout settings and click on the grid to add laser positions.
         </Text>
-        <Button style={styles.saveButton} mode='contained' onPress={handleSaveRoutine}>
+        <Button style={styles.saveButton} mode='contained' onPress={buttonText == "Workout Saved! Exit" ? handleNavigateBack : handleSaveRoutine}>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             {buttonText}
           </Text>
@@ -256,7 +259,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    marginLeft: 8,
   },
   saveButton: {
     width: '100%',
