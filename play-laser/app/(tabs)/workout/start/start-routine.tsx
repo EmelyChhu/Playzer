@@ -9,7 +9,8 @@ import { Workout } from '@/types';
 import { router } from 'expo-router';
 
 import React, { useState, useEffect } from 'react';
-import { fetchWorkouts } from "@/FirebaseConfig";
+import { fetchWorkouts, getWorkoutDocuments, getWorkoutTypeDocs } from "@/FirebaseConfig";
+
 
 /**
  * StartRoutineScreen Component - screen that provides information for a given workout routine
@@ -26,12 +27,21 @@ export default function StartRoutineScreen() {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
-    const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
-    console.log("Fetching workout with ID:", workoutId);
+    const workoutId = "QTTJdK3H0jS6yLcAItvg"; // TESTING ROUTINES
 
     const loadWorkout = async () => {
       const fetchedWorkout = await fetchWorkouts(workoutId);
-      console.log("Fetched workout:", fetchedWorkout);
+      
+      // RETURNS ALL INFO ON DOCUMENT CALLED
+      // console.log("Fetched workout:", fetchedWorkout);
+
+      // RETURNS ARRAY OF ALL WORKOUTS [[type, name, doc id], ...] 
+      // getWorkoutDocuments();
+
+      // RETURNS ARRAY BY WORKOUT TYPE [[name, doc id], ...]
+      // const typeWorkouts = await getWorkoutTypeDocs("Basic");
+      // console.log(typeWorkouts);
+
       setWorkout(fetchedWorkout);
       const workoutDuration = fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration);
       setMinutes(Math.floor(workoutDuration / 60));
