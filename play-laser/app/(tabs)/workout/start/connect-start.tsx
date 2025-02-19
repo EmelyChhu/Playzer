@@ -41,21 +41,6 @@ export default function ConnectStartScreen() {
     setIsDialogVisible,
   } = useBLE();
 
-  const connectedDeviceRef = useRef(connectedDevice); 
-
-  useEffect(() => {
-    connectedDeviceRef.current = connectedDevice;
-  }, [connectedDevice]);
-
-  useEffect(() => {
-    return () => {
-      if (connectedDeviceRef.current) {
-        console.log("Disconnecting from device due to user navigating away from page.");
-        disconnectFromDevice();
-      }
-    };
-  }, []);
-
   // const connectedDevice = true;
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -129,8 +114,13 @@ export default function ConnectStartScreen() {
     data |= BigInt(workout.numColumns);  // 4 bits for numColumns
     data <<= BigInt(5);
 
-    for (let i = workout.laserPositions.length - 1; i >= 0; i--) {
-      data |= BigInt(workout.laserPositions[i]); // 5 bits for each laserPosition
+    for (let i = 19; i >= 0; i--) {
+      if (i <= workout.laserPositions.length - 1) {
+        data |= BigInt(workout.laserPositions[i]); // 5 bits for each laserPosition
+      }
+      if (i == 11) {
+        data <<= BigInt(4);
+      }
       data <<= BigInt(5);
     }
     
@@ -148,6 +138,7 @@ export default function ConnectStartScreen() {
    * successful connection will change the ScreenState to 2
    */
   function ConnectionScreen() {
+    console.log("device:", connectedDevice);
     useEffect(() => {
       if (connectedDevice) {
         setScreenState(2);
