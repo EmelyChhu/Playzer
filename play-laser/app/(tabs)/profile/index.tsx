@@ -6,6 +6,8 @@ import { Text, Button, PaperProvider } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
+import { useEffect, useState } from 'react';
+import { fetchUsers, FIREBASE_AUTH } from '@/FirebaseConfig';
 
 /**
  * ProfileScreen Component - profile screen for the Playzer app
@@ -18,6 +20,21 @@ import { useColorScheme } from '@/components/useColorScheme';
  */
 export default function ProfileScreen() {
   const colorScheme = useColorScheme();
+  const [name, setName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDisplayName = async () => {
+      const user = FIREBASE_AUTH.currentUser;
+      if (user) {
+        const fetchedName = await fetchUsers(user.uid);
+        setName(fetchedName); // Update state with the fetched name
+      } else {
+        setName("User"); // Default text if no user is logged in
+      }
+    };
+
+    fetchDisplayName();
+  }, [])
 
   return (
     <PaperProvider>
@@ -29,7 +46,7 @@ export default function ProfileScreen() {
                 size={75}
                 color={Colors[colorScheme ?? 'light'].button}
               />
-          <Text style={styles.title}>User</Text>
+          <Text style={styles.title}>{name || "User"}</Text>
           <Button style={styles.editButton} mode="contained">Edit Profile</Button>
         </View>
         <View style={styles.recentWorkoutsContainer}>

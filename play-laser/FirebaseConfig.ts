@@ -1,9 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth"; 
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "firebase/auth"; 
 import { getFirestore, 
   collection, getDocs, addDoc,
-  doc, getDoc,
+  doc, getDoc, setDoc,
   query, where 
 } from "firebase/firestore";
 import { Workout } from '@/types';
@@ -31,6 +31,44 @@ export const FIREBASE_DB = getFirestore(FIREBASE_APP);
 
 const FirebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_API_KEY,
+};
+
+export const addUsers = async (name: string, email: string, password: string) => {
+  try {
+    const credentials = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+    const user = credentials.user;
+
+    // PUT NAME INTO FIRESTORE 
+    await setDoc(doc(FIREBASE_DB, "Users", user.uid), {
+      name: name
+  });
+
+  console.log("User registered successfully:", user.uid);
+  return user;
+  }
+  
+  catch (error) {
+    console.error("Error signing up:", error);
+  }
+};
+
+export const fetchUsers = async (userId: string): Promise<string | null> => {
+  try {
+    const userDocRef = doc(FIREBASE_DB, "Users", userId);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if(!userDocSnap.exists()) {
+      console.log("No user found!");
+      return null;
+    }
+
+    const userData = userDocSnap.data();
+    return userData.name || "Unnamed User";
+  }
+  catch(error) {
+    console.error("Error fetching user name:", error);
+    return null;
+  }
 };
 
 export const fetchWorkouts = async (DocId: string): Promise<Workout | null> => { 

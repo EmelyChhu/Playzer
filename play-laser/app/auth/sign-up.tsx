@@ -6,8 +6,8 @@ import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 
-import { FIREBASE_AUTH } from '@/FirebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { FIREBASE_AUTH, addUsers } from '@/FirebaseConfig';
+// import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 /**
  * isValidName Function - checks whether a given name is a valid string that doesn't contain numbers or special characters aside from - and space
@@ -82,8 +82,9 @@ export default function SignUpScreen() {
       if (validName && validEmail && validPassword) {
         setButtonDisabled(false);
         try {
-          const response = await createUserWithEmailAndPassword(auth, email, password);
-          console.log(response);
+          // const response = await createUserWithEmailAndPassword(auth, email, password);
+          // console.log(response);
+          addUsers(name, email, password);
           alert('Account created succesfully!')
           router.push("../(tabs)/home")
         }
