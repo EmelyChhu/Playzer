@@ -10,6 +10,16 @@ import { FIREBASE_AUTH } from '@/FirebaseConfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 /**
+ * isValidName Function - checks whether a given name is a valid string that doesn't contain numbers or special characters aside from - and space
+ * 
+ * @param {string} - user entered name
+ * @returns {boolean} - if the name is valid
+ */
+export function isValidName(name : string) : boolean {
+  return /^[A-Za-z]+([ -][A-Za-z]+)*$/.test(name.trim());
+}
+
+/**
  * isValidEmail Function - checks whether a given email has a localPart@domain.com format
  * 
  * @param {string} - user entered email
@@ -49,23 +59,27 @@ export function isValidPassword(password : string) : boolean {
  */
 export default function SignUpScreen() {
     const navigation = useNavigation();
-
+    
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [validNameInput, setValidNameInput] = useState(true);
     const [validEmailInput, setValidEmailInput] = useState(true);
     const [validPasswordInput, setValidPasswordInput] = useState(true);
 
     const auth = FIREBASE_AUTH;
 
     const handleSignUp = async () => {
+      const validName = isValidName(name)
       const validEmail = isValidEmail(email)
       const validPassword = isValidPassword(password)
-
+      
+      setValidNameInput(validName);
       setValidEmailInput(validEmail);
       setValidPasswordInput(validPassword);
 
-      if (validEmail && validPassword) {
+      if (validName && validEmail && validPassword) {
         setButtonDisabled(false);
         try {
           const response = await createUserWithEmailAndPassword(auth, email, password);
@@ -84,10 +98,10 @@ export default function SignUpScreen() {
     }
 
     useEffect(() => {
-      if (email != "" && password != "") {
+      if (name != "" && email != "" && password != "") {
           setButtonDisabled(false);
       }
-    }, [email, password]);
+    }, [name, email, password]);
 
   return (
     <PaperProvider>
@@ -95,6 +109,20 @@ export default function SignUpScreen() {
         <Text style={styles.title} variant="displaySmall">
           Create an Account
         </Text>
+        <Text style={styles.label} variant="titleMedium">
+          Full Name
+        </Text>
+        <View style={styles.inputContainer}>
+            <TextInput
+                style={styles.input}
+                mode="outlined"
+                error={validNameInput ? false : true}
+                textColor={validNameInput ? undefined : "pink"}
+                label="Name"
+                value={name}
+                onChangeText={setName}/>
+        </View>
+        {!validNameInput ? <Text style={styles.errorText}>Please enter a string with 1+ characters.</Text> : null}
         <Text style={styles.label} variant="titleMedium">
           Email
         </Text>
