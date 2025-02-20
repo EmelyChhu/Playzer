@@ -27,9 +27,10 @@ export default function ProfileScreen() {
       const user = FIREBASE_AUTH.currentUser;
       if (user) {
         const fetchedName = await fetchUsers(user.uid);
-        setName(fetchedName); // Update state with the fetched name
-      } else {
-        setName("User"); // Default text if no user is logged in
+        setName(fetchedName); 
+      } 
+      else {
+        setName("User");
       }
     };
 
