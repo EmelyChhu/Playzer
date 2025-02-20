@@ -175,10 +175,13 @@ export const getWorkoutTypeDocs = async (workoutType: string) => {
       return [];
     }
 
-    const userWorkouts = querySnapshot.docs.map(doc => [
-      doc.data().name || "Unnamed Workout",
-      doc.id
-    ]);
+    const userWorkouts = querySnapshot.docs.map(doc => {
+      const name = doc.data().name || "Unnamed Workout";
+      const match = name.match(/\d+/); 
+      const num = match ? parseInt(match[0], 10) : Infinity; 
+      return { name, id: doc.id, num };
+    })
+      .sort((a, b) => a.num - b.num).map(workout => [workout.name, workout.id]);
     return userWorkouts;
   }
 

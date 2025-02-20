@@ -27,7 +27,7 @@ export default function StartRoutineScreen() {
   const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
-    const workoutId = "QTTJdK3H0jS6yLcAItvg"; // TESTING ROUTINES
+    const workoutId = "BZa3BZs25YKy14acgWxD"; // TESTING ROUTINES
 
     const loadWorkout = async () => {
       const fetchedWorkout = await fetchWorkouts(workoutId);
@@ -39,8 +39,8 @@ export default function StartRoutineScreen() {
       // getWorkoutDocuments();
 
       // RETURNS ARRAY BY WORKOUT TYPE [[name, doc id], ...]
-      // const typeWorkouts = await getWorkoutTypeDocs("Basic");
-      // console.log(typeWorkouts);
+      const typeWorkouts = await getWorkoutTypeDocs("Sport-Specific");
+      console.log(typeWorkouts);
 
       setWorkout(fetchedWorkout);
       const workoutDuration = fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration);
