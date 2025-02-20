@@ -62,14 +62,14 @@ export default function StartRandomRoutineScreen() {
     setErrorDurationBetweenLasers(false);
     setErrorNumLaserPositions(false);
 
-    if (!(!isNaN(numLaserDuration) && Number.isInteger(numLaserDuration) && numLaserDuration >= 1 && numLaserDuration <= 30)) {
+    if (!(!isNaN(numLaserDuration) && Number.isInteger(numLaserDuration) && numLaserDuration >= 1 && numLaserDuration <= 15)) {
       convFail = true;
-      setErrorMessage("Please enter an integer between 1-30.");
+      setErrorMessage("Please enter an integer between 1-15.");
       setErrorLaserDuration(true);
     }
-    if (!(!isNaN(numDurationBetweenLasers) && Number.isInteger(numDurationBetweenLasers) && numDurationBetweenLasers >= 1 && numDurationBetweenLasers <= 30)) {
+    if (!(!isNaN(numDurationBetweenLasers) && Number.isInteger(numDurationBetweenLasers) && numDurationBetweenLasers >= 1 && numDurationBetweenLasers <= 15)) {
       convFail = true;
-      setErrorMessage("Please enter an integer between 1-30.");
+      setErrorMessage("Please enter an integer between 1-15.");
       setErrorDurationBetweenLasers(true);
     }
     if (!(!isNaN(numLaserPositions) && Number.isInteger(numLaserPositions) && numLaserPositions >= 1 && numLaserPositions <= 20)) {
