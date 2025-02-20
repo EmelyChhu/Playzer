@@ -12,7 +12,7 @@ import { Workout, randomWorkout } from '@/types';
 import { router } from 'expo-router';
 
 import DeviceModal from "./../../../device-connection-modal";
-import useBLE from "../../../../useBLE";
+import { useBLEContext } from "@/BLEContext"
 import { fetchWorkouts } from "@/FirebaseConfig";
 import { useLocalSearchParams } from 'expo-router';
 
@@ -34,19 +34,22 @@ export default function ConnectStartScreen() {
     allDevices,
     connectToDevice,
     connectedDevice,
+    setConnectedDevice,
     distance,
     disconnectFromDevice,
     sendData,
     isDialogVisible,
     setIsDialogVisible,
-  } = useBLE();
+    screenState,
+    setScreenState
+  } = useBLEContext();
 
   // const connectedDevice = true;
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [workoutDuration, setWorkoutDuration] = useState(150);
-  const [screenState, setScreenState] = useState(1);    // possible states: 1 (connection), 2 (sync distance), 3 (workout), 4 (workout complete)
+  
 
   const { workoutId, laserDuration, durationBetweenLasers, numLaserPositions } = useLocalSearchParams();
 
@@ -119,7 +122,7 @@ export default function ConnectStartScreen() {
         data |= BigInt(workout.laserPositions[i]); // 5 bits for each laserPosition
       }
       if (i == 11) {
-        data <<= BigInt(4);
+        data <<= BigInt(7);
       }
       data <<= BigInt(5);
     }
@@ -197,12 +200,15 @@ export default function ConnectStartScreen() {
    */
   function SyncDistanceScreen() {
     const handleRescanDistance = () => {
+      console.log("device", connectedDevice)
       if (connectedDevice) {
         sendData(connectedDevice, "RESCAN");    // send signal to rescan distance
         console.log("Rescanning distance");
       } else {
         console.log("Error: No device connected")
+        setConnectedDevice(null);
         setIsDialogVisible(true);
+        setScreenState(1);
       }
     }
 
@@ -308,6 +314,7 @@ export default function ConnectStartScreen() {
       } else {
         console.log("Error: No device connected")
         setIsDialogVisible(true);
+        setScreenState(1);
       }
     }
 

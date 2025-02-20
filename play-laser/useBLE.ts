@@ -22,6 +22,7 @@ interface BluetoothLowEnergyApi {
   connectToDevice: (deviceId: Device) => Promise<void>;
   disconnectFromDevice: () => void;
   connectedDevice: Device | null;
+  setConnectedDevice: React.Dispatch<React.SetStateAction<Device | null>>;
   allDevices: Device[];
   distance: number;
   sendData(
@@ -30,6 +31,8 @@ interface BluetoothLowEnergyApi {
   ): Promise<void>;
   isDialogVisible: boolean;
   setIsDialogVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  screenState: number;
+  setScreenState: React.Dispatch<React.SetStateAction<number>>;
 }
 
 /**
@@ -54,6 +57,7 @@ function useBLE(): BluetoothLowEnergyApi {
   const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
   const [distance, setDistance] = useState<number>(0);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [screenState, setScreenState] = useState(1);    // possible states: 1 (connection), 2 (sync distance), 3 (workout), 4 (workout complete)
 
   const requestAndroid31Permissions = async () => {
     // const bluetoothScanPermission = await PermissionsAndroid.request(
@@ -147,7 +151,7 @@ function useBLE(): BluetoothLowEnergyApi {
 
   const connectToDevice = async (device: Device) => {
     try {
-      const deviceConnection = await bleManager.connectToDevice(device.id, { requestMTU: 41 });
+      const deviceConnection = await bleManager.connectToDevice(device.id, { requestMTU: 42 });
       setConnectedDevice(deviceConnection);
       await deviceConnection.discoverAllServicesAndCharacteristics();
       bleManager.stopDeviceScan();
@@ -173,6 +177,8 @@ function useBLE(): BluetoothLowEnergyApi {
     if (error) {
       console.log(error);
       setIsDialogVisible(true);
+      setConnectedDevice(null);
+      setScreenState(1);
       return -1;
     } else if (!characteristic?.value) {
       console.log("No Data was recieved");
@@ -210,6 +216,8 @@ function useBLE(): BluetoothLowEnergyApi {
     } catch (error) {
       console.log(error);
       setIsDialogVisible(true);
+      setConnectedDevice(null);
+      setScreenState(1);
     }
   };
 
@@ -219,11 +227,14 @@ function useBLE(): BluetoothLowEnergyApi {
     connectToDevice,
     allDevices,
     connectedDevice,
+    setConnectedDevice,
     disconnectFromDevice,
     distance,
     sendData,
     isDialogVisible,
     setIsDialogVisible,
+    screenState,
+    setScreenState,
   };
 }
 
