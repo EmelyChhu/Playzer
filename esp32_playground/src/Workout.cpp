@@ -19,7 +19,7 @@ id(id), columns(cols), rows(rows), positions(pos), num_positions(num_positions)
     laser_duration_ms = lsr_duration * 1000;
 
     base_col = (int)(columns / 2);
-    base_row = rows - 1;
+    base_row = rows;
 
 }
 
@@ -39,7 +39,7 @@ Workout::Workout() // creates default workout for testing
     laser_duration_ms = 2 * 1000;
 
     base_col = (int)(columns / 2);
-    base_row = rows - 1;
+    base_row = rows;
 
     div_per_col = 5;
     div_per_row = 6;
@@ -49,20 +49,20 @@ Workout::Workout() // creates default workout for testing
 
 void Workout::calibrate(double dist_ft){
     if (dist_ft < 5){
-        div_per_col = 5;  
-        div_per_row = 6; 
+        div_per_col = 7;  
+        div_per_row = 8; 
     } else if (dist_ft < 10){
+        div_per_col = 6;
+        div_per_row = 7;
+    } else if (dist_ft < 15){
+        div_per_col = 5;
+        div_per_row = 6;
+    } else if (dist_ft < 20){
         div_per_col = 4;
         div_per_row = 5;
-    } else if (dist_ft < 15){
+    } else{
         div_per_col = 3;
         div_per_row = 4;
-    } else if (dist_ft < 20){
-        div_per_col = 2;
-        div_per_row = 3;
-    } else{
-        div_per_col = 1;
-        div_per_row = 2;
     }
 }
 
@@ -94,7 +94,7 @@ void Workout::execute(){
     // rows == 15 indicates random workout
     if (rows == 15){ // checking if positions should be random
         rows = 4;
-        base_row = rows-1;
+        base_row = rows;
         std::srand(std::time(0));
 
         for (uint8_t i = 0; i < num_positions; i++){

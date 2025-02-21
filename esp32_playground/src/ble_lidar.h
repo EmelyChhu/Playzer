@@ -6,6 +6,8 @@
 #include <BLEUtils.h>
 #include <BLEServer.h>
 #include <HardwareSerial.h>
+#include <stdint.h>
+#include <sys/_stdint.h>
 
 
 // UUID Generator: https://www.uuidgenerator.net/

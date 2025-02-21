@@ -67,36 +67,22 @@ double BLE_LIDAR::calculate_distance()
   return feet;
 } 
 
-// THIS FUNCTION IS NOT BEING USED, CAN DELETE LATER
-// void BLE_LIDAR::output_distance()
-// {
-//   // Retrieve LiDAR Distance in centimeters
-
-//   getDistance(&lidar_distance_cm);
-//   while(!lidar_distance_cm && lidar_distance_cm < 10000) {
-//     getDistance(&lidar_distance_cm);
-//   }
-
-//   Serial.print("Distance in centimeters: "+ String(lidar_distance_cm));
-  
-// }
-
 void BLE_LIDAR::MyServerCallbacks::onConnect(BLEServer *pServer)
 {
-  // FIX THIS LATER
+  Serial.println("Phone connected");
   lidar->deviceConnected = true;
 }
 
 void BLE_LIDAR::MyServerCallbacks::onDisconnect(BLEServer *pServer)
 {
   lidar->deviceConnected = false;
+  Serial.println("Phone disconnected, restarting advertising");
   pServer->startAdvertising(); // restart advertising
 }
 
 void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
   std::string value = pCharacteristic->getValue();
   if (value.length() > 0) {
-    // convert data received to a 64 bit integer
     for (int i = 0; i < value.length(); i++) {
       Serial.print(value[i]);  // Print each character or byte
     }
@@ -112,10 +98,16 @@ void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
     // app is sending workout data
     else
     {
-      // split number into 2 64 bit uint numbers to account for 20 positions
-      uint64_t dec_num = std::stoull(value.c_str()); // this concatenates the first 64 bits 
-      // get the next 64 bits (next 16 numbers from the string)
-      
+      uint64_t dec_num = std::stoull(value.c_str()); 
+
+      // if (dec_num & 0x1 == 0)
+      // {
+      //   // first uint64 being sent
+      // }
+      // else
+      // {
+      //   // second uint64 being sent
+      // }
 
       num_pos = dec_num & 0x1F; // 5 bits
       // array of the numbers
