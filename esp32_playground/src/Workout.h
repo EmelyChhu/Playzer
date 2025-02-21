@@ -12,6 +12,7 @@ private:
     uint8_t rows;
     std::vector<uint8_t> positions;
     uint8_t num_positions;
+    uint8_t positions_index;
 
     uint8_t base_row;
     uint8_t base_col;
@@ -25,7 +26,6 @@ private:
 
     uint8_t decode_position_col(uint8_t *pos);
 
-    void return_to_base();
 
 public:
     // Default constructor
@@ -36,8 +36,10 @@ public:
     uint8_t cols, uint8_t rows, std::vector<uint8_t> pos, u_int8_t num_positions);
 
     void calibrate(double dist_ft);
+    void checkRandom();
 
-    void execute();
+    bool execute();
+    void return_to_base();
 
     ~Workout() {
         positions.clear(); // Free allocated memory

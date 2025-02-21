@@ -24,6 +24,8 @@ public:
     static uint8_t cols;
     static uint8_t rows;
     static uint8_t num_pos;
+    static bool stopWorkout; 
+
     BLECharacteristic *pCharacteristic;
 
     static std::vector<uint8_t> positions;
@@ -66,6 +68,7 @@ public:
         BLE_LIDAR* lidar;  // Pointer to BLE_LIDAR instance
     };
     void reset_workout();
+    bool stop();
 
     uint8_t get_DBL();
 

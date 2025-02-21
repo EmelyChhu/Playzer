@@ -64,7 +64,10 @@ void loop() {
 
         test_workout.calibrate(bluetooth_obj->calculate_distance());
 
-        test_workout.execute();
+        test_workout.checkRandom();
+
+        while(!bluetooth_obj->stop() && test_workout.execute())
+        test_workout.return_to_base();
 
         bluetooth_obj->reset_workout();
     }

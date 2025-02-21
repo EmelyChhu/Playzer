@@ -20,6 +20,7 @@ id(id), columns(cols), rows(rows), positions(pos), num_positions(num_positions)
 
     base_col = (int)(columns / 2);
     base_row = rows;
+    positions_index = 0;
 
 }
 
@@ -29,6 +30,7 @@ Workout::Workout() // creates default workout for testing
     columns = 6;
     rows = 4;
     num_positions = 12;
+    positions_index = 0;
 
     positions.resize(12); 
     for (size_t i = 1; i < num_positions+1; i++) {
@@ -90,7 +92,7 @@ void Workout::return_to_base(){
     ledcWrite(PWM_CHANNEL_TOP_SERVO, BASE_DUTY_CYCLE);
 }
 
-void Workout::execute(){
+void Workout::checkRandom(){
     // rows == 15 indicates random workout
     if (rows == 15){ // checking if positions should be random
         rows = 4;
@@ -102,24 +104,30 @@ void Workout::execute(){
         }
 
     }
+}
 
-    for (uint8_t i = 0; i < num_positions; i++){
-
-        Serial.println("position:");
-        Serial.println(positions[i]);
-
-        go_to_position(&(positions[i]));
-
-        delay(MOVEMENT_DELAY);
-
-        turn_on_laser();
-
-        delay(laser_duration_ms);
-
-        turn_off_laser();
-
-        delay(duration_btwn_lasers_ms);
-
+bool Workout::execute(){
+    if (positions_index >= num_positions){
         return_to_base();
+        return false;
     }
+
+    Serial.println("position:");
+    Serial.println(positions[positions_index]);
+
+    go_to_position(&(positions[positions_index]));
+
+    delay(MOVEMENT_DELAY);
+
+    turn_on_laser();
+
+    delay(laser_duration_ms);
+
+    turn_off_laser();
+
+    delay(duration_btwn_lasers_ms);
+
+    positions_index++;
+
+    return true;
 }

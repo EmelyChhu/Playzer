@@ -7,6 +7,8 @@ uint8_t BLE_LIDAR::laser_duration;
 uint8_t BLE_LIDAR::cols;
 uint8_t BLE_LIDAR::rows;
 uint8_t BLE_LIDAR::num_pos;
+bool BLE_LIDAR::stopWorkout;
+
 
 std::vector<uint8_t> BLE_LIDAR::positions;
 
@@ -82,6 +84,8 @@ void BLE_LIDAR::MyServerCallbacks::onDisconnect(BLEServer *pServer)
 
 void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
   std::string value = pCharacteristic->getValue();
+  stopWorkout = false;
+
   if (value.length() > 0) {
     for (int i = 0; i < value.length(); i++) {
       Serial.print(value[i]);  // Print each character or byte
@@ -94,6 +98,10 @@ void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
       // send the lidar data
       double dist_ft = lidar->calculate_distance();
       lidar->lidar_notify(dist_ft);
+    }
+
+    else if (value == "STOP"){
+      stopWorkout = true;
     }
     // app is sending workout data
     else
@@ -182,7 +190,11 @@ void BLE_LIDAR::reset_workout(){
   cols = 0;
   rows = 0;
   num_pos = 0;
+  stopWorkout = false;
   positions.clear();
+}
+bool BLE_LIDAR::stop(){
+  return stopWorkout;
 }
 
 uint8_t BLE_LIDAR::get_DBL(){
