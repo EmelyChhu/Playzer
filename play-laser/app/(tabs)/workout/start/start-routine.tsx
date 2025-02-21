@@ -9,7 +9,7 @@ import { Workout } from '@/types';
 import { router } from 'expo-router';
 
 import React, { useState, useEffect } from 'react';
-import { fetchWorkouts, getWorkoutDocuments, getWorkoutTypeDocs } from "@/FirebaseConfig";
+import { fetchWorkouts, getWorkoutDocuments, getWorkoutTypeDocs, fetchRecent, addRecent } from "@/FirebaseConfig";
 
 
 /**
@@ -39,8 +39,16 @@ export default function StartRoutineScreen() {
       // getWorkoutDocuments();
 
       // RETURNS ARRAY BY WORKOUT TYPE [[name, doc id], ...]
-      const typeWorkouts = await getWorkoutTypeDocs("Sport-Specific");
-      console.log(typeWorkouts);
+      // const typeWorkouts = await getWorkoutTypeDocs("Basic");
+      // console.log(typeWorkouts);
+
+      // RETURNS ARRAY [doc id, name, date]
+      // const recent = await fetchRecent("BZa3BZs25YKy14acgWxD");
+      // console.log(recent);
+
+      // STORE RECENT WORKOUT INTO USER ID [doc id, name, date]
+      // const recentWorkout = await addRecent("K8T5pVw6bXTU1qW3aWVb");
+      // console.log(recentWorkout);
 
       setWorkout(fetchedWorkout);
       const workoutDuration = fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration);

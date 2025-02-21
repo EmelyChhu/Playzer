@@ -4,7 +4,7 @@ import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "fir
 import { getFirestore, 
   collection, getDocs, addDoc,
   doc, getDoc, setDoc,
-  query, where 
+  query, where, updateDoc, arrayUnion 
 } from "firebase/firestore";
 import { Workout } from '@/types';
 
@@ -103,6 +103,79 @@ export const fetchWorkouts = async (DocId: string): Promise<Workout | null> => {
   catch (error) {
     console.error("Error fetching workouts:", error);
     return null;
+  }
+};
+
+export const fetchRecent = async (DocId: string)=> {
+  try {
+    const workoutDocRef = doc(FIREBASE_DB, "Workout", DocId);
+    const workoutDocSnap = await getDoc(workoutDocRef);
+
+    if (!workoutDocSnap.exists()) {
+      console.log(`Workout not found.}`);
+      return [];
+    }
+
+    const workoutData = workoutDocSnap.data();
+    const workoutName = workoutData.name || "Unnamed Workout";
+
+    // YYYY-MM-DD 
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    return[DocId, workoutName, currentDate];
+  }
+  catch (error) {
+    console.error("Error fetching recent workout details:", error);
+    return [];
+  }
+};
+
+export const addRecent = async (DocId: string) => {
+  try {
+    // console.log("ATTEMPTING TO STORE RECENT WORKOUT")
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      console.log("No user logged in.");
+      return;
+    }
+
+    const userDocRef = doc(FIREBASE_DB, "Users", user.uid);
+    const workoutDocRef = doc(FIREBASE_DB, "Workout", DocId);
+
+    const userDocSnap = await getDoc(userDocRef);
+    if (!userDocSnap.exists()) {
+      await setDoc(userDocRef, { workoutHistory: [] });
+    }
+
+    const workoutDocSnap = await getDoc(workoutDocRef);
+    if (!workoutDocSnap.exists()) {
+      console.log(`No workout found with ID: ${DocId}`);
+      return;
+    }
+
+    const workoutData = workoutDocSnap.data();
+    const workoutName = workoutData.name || "Unnamed Workout";
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    let workoutHistory = [];
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      workoutHistory = userData.workoutHistory || [];
+    }
+
+    const newEntry = { id: DocId, name: workoutName, date: currentDate };
+    const updatedHistory = [newEntry, ...workoutHistory];
+    console.log(updatedHistory);
+
+    // const updatedHistory = [[DocId, workoutName, currentDate], ...workoutHistory];
+
+    // PUT HISTORY INTO FIRESTORE
+    await setDoc(userDocRef, { workoutHistory: updatedHistory }, { merge: true });
+
+    console.log("Recent workout stored successfully!");
+  }
+  catch (error) {
+    console.log("Error saving recent workout:", error);
   }
 };
 
