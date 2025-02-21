@@ -106,26 +106,30 @@ export const fetchWorkouts = async (DocId: string): Promise<Workout | null> => {
   }
 };
 
-export const fetchRecent = async (DocId: string)=> {
+export const fetchHistory = async (UserDocId: string)=> {
   try {
-    const workoutDocRef = doc(FIREBASE_DB, "Workout", DocId);
-    const workoutDocSnap = await getDoc(workoutDocRef);
+    console.log("WORKOUT HISTORY:");
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      console.log("No user logged in.");
+      return;
+    }
 
-    if (!workoutDocSnap.exists()) {
-      console.log(`Workout not found.}`);
+    const userDocRef = doc(FIREBASE_DB, "Users", user.uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (!userDocSnap.exists()) {
+      console.log("User document does not exist.");
       return [];
     }
 
-    const workoutData = workoutDocSnap.data();
-    const workoutName = workoutData.name || "Unnamed Workout";
-
-    // YYYY-MM-DD 
-    const currentDate = new Date().toISOString().split("T")[0];
-
-    return[DocId, workoutName, currentDate];
-  }
+    const userData = userDocSnap.data();
+    const workoutHistory = userData.workoutHistory || [];
+    console.log(workoutHistory);
+    return workoutHistory;
+  } 
   catch (error) {
-    console.error("Error fetching recent workout details:", error);
+    console.error("Error fetching workout history:", error);
     return [];
   }
 };

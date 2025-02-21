@@ -9,7 +9,7 @@ import { Workout } from '@/types';
 import { router } from 'expo-router';
 
 import React, { useState, useEffect } from 'react';
-import { fetchWorkouts, getWorkoutDocuments, getWorkoutTypeDocs, fetchRecent, addRecent } from "@/FirebaseConfig";
+import { fetchWorkouts, getWorkoutDocuments, getWorkoutTypeDocs, fetchHistory, addRecent } from "@/FirebaseConfig";
 
 
 /**
@@ -43,8 +43,8 @@ export default function StartRoutineScreen() {
       // console.log(typeWorkouts);
 
       // RETURNS ARRAY [doc id, name, date]
-      // const recent = await fetchRecent("BZa3BZs25YKy14acgWxD");
-      // console.log(recent);
+      const recent = await fetchHistory("Lcd0m9l5ukdHFs2mmRhwNpXCl423");
+      console.log(recent);
 
       // STORE RECENT WORKOUT INTO USER ID [doc id, name, date]
       // const recentWorkout = await addRecent("K8T5pVw6bXTU1qW3aWVb");
