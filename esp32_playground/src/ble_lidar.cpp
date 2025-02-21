@@ -108,39 +108,66 @@ void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
     {
       uint64_t dec_num = std::stoull(value.c_str()); 
 
-      // if (dec_num & 0x1 == 0)
-      // {
-      //   // first uint64 being sent
-      // }
-      // else
-      // {
-      //   // second uint64 being sent
-      // }
-
-      num_pos = dec_num & 0x1F; // 5 bits
-      // array of the numbers
-      for (uint8_t i = 0; i < num_pos; i++)
+      // first uint64 being sent
+      if (!(dec_num & 0x1))
       {
-        positions.push_back((dec_num >> 5 + (5*i)) & 0x1F); // each position is 5 bits
+        num_pos = (dec_num >> 1) & 0x1F; // 5 bits
+
+        // up to 11 positions
+        if(num_pos <= 11)
+        {
+          for (uint8_t i = 0; i < num_pos; i++)
+          {
+            positions.push_back((dec_num >> 6 + (5*i)) & 0x1F); // each position is 5 bits
+          }
+        }
+        else if (num_pos > 11)
+        {
+          for (uint8_t i = 0; i < 11; i++)
+          {
+            positions.push_back((dec_num >> 6 + (5*i)) & 0x1F); // each position is 5 bits
+          }
+        }
+
+        Serial.println("Number of Positions: "+ String(num_pos));
+        // print out the laser positions
+        Serial.print("Laser Positions: "); 
+        for (uint8_t i = 0; i < positions.size(); i++)
+        {
+          Serial.print(String(positions[i]) + " "); // each position is 5 bits
+        }
+        Serial.println();
       }
-
-      int after_lasers = 5 + (5 * num_pos);
-
-      cols = (dec_num >> after_lasers) & 0xF; // 4 bits
-      rows = (dec_num >> after_lasers + 4) & 0xF; // 4 bits
-      duration_btwn_lasers = (dec_num >> after_lasers + 8) & 0xF; // 4 bits
-      laser_duration = (dec_num >> after_lasers + 12) & 0xF; // 4 bits
-      
-      Serial.println("Number received:" + String(dec_num));
-      Serial.println("Duration Btwn Lasers: "+ String(duration_btwn_lasers) + "\t Laser Duration: "+ String(laser_duration));
-      Serial.println("Rows: "+ String(rows) + "\t Columns: "+ String(cols));
-      Serial.println("Number of Positions: "+ String(num_pos));
-
-      // print out the laser positions
-      Serial.print("Laser Positions: "); 
-      for (uint8_t i = 0; i < positions.size(); i++)
+      // second uint64 being sent
+      else if (dec_num & 0x1)
       {
-        Serial.print(String(positions[i]) + " "); // each position is 5 bits
+        // if num positions is > 11, get the rest of the positions
+        if(num_pos > 11)
+        {
+          for (uint8_t i = 0; i < num_pos - 11; i++)
+          {
+            positions.push_back((dec_num >> 1 + (5*i)) & 0x1F); // each position is 5 bits
+          }
+        }
+
+        // get the rest of the data
+        cols = (dec_num >> 46) & 0xF; // 4 bits
+        rows = (dec_num >> 46 + 4) & 0xF; // 4 bits
+        duration_btwn_lasers = (dec_num >> 46 + 8) & 0xF; // 4 bits
+        laser_duration = (dec_num >> 46 + 12) & 0xF; // 4 bits
+
+        Serial.println("Number received:" + String(dec_num));
+        Serial.println("Duration Btwn Lasers: "+ String(duration_btwn_lasers) + "\t Laser Duration: "+ String(laser_duration));
+        Serial.println("Rows: "+ String(rows) + "\t Columns: "+ String(cols));
+        
+
+        // print out the laser positions
+        Serial.print("Laser Positions: "); 
+        for (uint8_t i = 0; i < positions.size(); i++)
+        {
+          Serial.print(String(positions[i]) + " "); // each position is 5 bits
+        }
+        Serial.println();
       }
     }
 
