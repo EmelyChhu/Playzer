@@ -16,6 +16,7 @@ export type LaserGridProps = {
 }
 
 export type PreviousWorkoutProps = {
-  date: Date,
+  date: string,
   workoutId: string,
+  name: string,
 }

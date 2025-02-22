@@ -67,7 +67,9 @@ export default function LogInScreen() {
 
     useEffect(() => {
         if (email != "" && password != "") {
-            setButtonDisabled(false);
+          setButtonDisabled(false);
+        } else {
+          setButtonDisabled(true);
         }
     }, [email, password]);
 
@@ -104,7 +106,7 @@ export default function LogInScreen() {
                 error={!!errorMessage}/>
           </View>
           {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-        <Button style={styles.button} mode="contained" onPress={handleLogIn}>
+        <Button style={styles.button} mode="contained" onPress={handleLogIn} disabled={buttonDisabled}>
             Log in
         </Button>
       </View>

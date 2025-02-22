@@ -7,6 +7,9 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { PreviousWorkoutProps } from '@/types';
+import { useEffect, useState, useCallback } from 'react';
+import { fetchUsers, FIREBASE_AUTH, fetchHistory } from '@/FirebaseConfig';
+import { useFocusEffect } from '@react-navigation/native';
 
 /**
  * ProfileScreen Component - profile screen for the Playzer app
@@ -21,7 +24,29 @@ export default function ProfileScreen() {
   const colorScheme = useColorScheme();
   const date = new Date(2025, 1, 17);
   // const recentWorkouts = [[date, "1"], [date, "1"]];
-  const recentWorkouts = [];
+  // const recentWorkouts = await fetchRecent("BZa3BZs25YKy14acgWxD");
+  const [name, setName] = useState<string | null>(null);
+  const [recentWorkouts, setRecentWorkouts] = useState<string[][]>([]);
+
+  console.log(recentWorkouts);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchDisplayNameAndHistory = async () => {
+        const user = FIREBASE_AUTH.currentUser;
+        if (user) {
+          const fetchedName = await fetchUsers(user.uid);
+          setName(fetchedName);
+          const fetchedRecentWorkouts = await fetchHistory(user.uid);
+          setRecentWorkouts(fetchedRecentWorkouts);
+        } else {
+          setName("User");
+          setRecentWorkouts([]);
+        }
+      };
+  
+      fetchDisplayNameAndHistory();
+    }, [])
+  );
 
   return (
     <PaperProvider>
@@ -33,7 +58,7 @@ export default function ProfileScreen() {
             size={75}
             color={Colors[colorScheme ?? 'light'].button}
           />
-          <Text style={styles.title}>User</Text>
+          <Text style={styles.title}>{name || "User"}</Text>
           <Button style={styles.editButton} mode="contained">Edit Profile</Button>
         </View>
         <View style={styles.recentWorkoutsContainer}>
@@ -48,8 +73,9 @@ export default function ProfileScreen() {
                 {recentWorkouts.map((workout, index) => (
                   <PreviousWorkoutCard
                     key={index}
-                    date={workout[0]}
-                    workoutId={workout[1]}
+                    date={workout.date}
+                    workoutId={workout.workoutId}
+                    name={workout.name}
                   />
                 ))}
               </ScrollView>
@@ -66,12 +92,18 @@ export default function ProfileScreen() {
  * 
  * @param {Object} props - component props
  * @param {Date} props.date - date of workout
- * @param {string} [props.workoutId] - documentId of workout
+ * @param {string} props.workoutId - documentId of workout
+ * @param {string} props.name - name of workout
  * 
  * @returns {JSX.Element} - styled card that includes icon and text
  */
-const PreviousWorkoutCard: React.FC<PreviousWorkoutProps> = ({date, workoutId}) => {
+const PreviousWorkoutCard: React.FC<PreviousWorkoutProps> = ({date, workoutId, name}) => {
   const colorScheme = useColorScheme();
+
+  const formatDate = (date: string) => {
+    const [year, month, day] = date.split('-')
+    return `${month}/${day}/${year}`;
+  }
 
   return (
     <View style={[styles.card, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
@@ -83,10 +115,10 @@ const PreviousWorkoutCard: React.FC<PreviousWorkoutProps> = ({date, workoutId}) 
       />
       <View style={styles.infoContainer}>
         <Text style={[styles.dateText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
-          {date.toLocaleDateString()}
+          {formatDate(date)}
         </Text>
         <Text style={[styles.workoutNameText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
-          Basic 1
+          {name}
         </Text>
       </View>
     </View>
