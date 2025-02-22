@@ -1,4 +1,34 @@
 # Playzer
+### Beta Build Completed Work
+- Software
+    - Add device-randomized workout flow
+    - User can start a workout with completely random positions
+    - User inputs values for desired laserDuration, durationBetweenLasers, and number of laser positions
+    - Add options for custom workout creation
+    - User can now input a name and description for new custom workouts
+    - Extend workout flow for all workouts
+    - Generates buttons for all workouts rather than only one workout
+    - User can view/start all premade and custom workouts
+    - Add PreviousWorkoutCard component
+    - Create base component for user workout history
+    - Displays card for each completed workout by the user
+    - Add name field to account creation flow
+    - Create Users database that stores user’s name and workout history
+    - Displays user’s name on Profile screen
+    - Rework flow to connect and disconnect from the device
+    - If the device disconnects, they are navigated back to the connection screen and can reconnect
+    - Made connectedDevice a global variable so users only have to connect once during a session
+- Hardware
+    - Added support for up to 20 position
+    - Increased maximum number of positions from 7 to 2
+    - Increased bluetooth maximum transmission to 42 bytes for large data send
+    - Fixed the lidar rescan bug -- works as intended when hitting the rescan butto
+    - Bluetooth connection connect and disconnect fully implemented
+    - Easy for the user to connect and disconnect from the Playzer and vice vers
+    - Added support for stop to stop the Playzer once the user requests to sto
+    - Soldered the hardware components to the PC
+    - Validated the PCB
+    - Modeled 3d printed enclosure to package the device
 
 ### Alpha Build Completed Work
 - Hardware
