@@ -15,6 +15,14 @@ export default function WorkoutStackLayout() {
         headerTintColor: Colors[colorScheme ?? 'light'].text,
       }}>
       <Stack.Screen 
+        name="view-premade"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Premade Routines",
+          headerBackTitle: "Back",
+        }} 
+      />
+      <Stack.Screen 
         name="view-custom"
         options={{ 
           headerShown: true,
@@ -23,10 +31,26 @@ export default function WorkoutStackLayout() {
         }} 
       />
       <Stack.Screen 
-        name="create-custom"
+        name="create-custom-1"
         options={{ 
           headerShown: true,
           headerTitle: "Create a Routine",
+          headerBackTitle: "Back",
+        }} 
+      />
+      <Stack.Screen 
+        name="create-custom-2"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Create a Routine",
+          headerBackTitle: "Back",
+        }} 
+      />
+      <Stack.Screen 
+        name="view-routine"
+        options={{ 
+          headerShown: true,
+          headerTitle: "View Routine",
           headerBackTitle: "Back",
         }} 
       />

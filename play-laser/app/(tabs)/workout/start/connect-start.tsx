@@ -5,11 +5,16 @@ import { View } from '@/components/Themed';
 import { PaperProvider, Button, TextInput, Text, ActivityIndicator, Portal, Dialog } from 'react-native-paper';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
+// import { BleManager } from 'react-native-ble-plx';
 import { useState, useEffect, useRef } from 'react';
-import { Workout } from '@/types';
+// import { btoa, atob } from 'react-native-quick-base64';
+import { Workout, randomWorkout } from '@/types';
 import { router } from 'expo-router';
+
 import DeviceModal from "./../../../device-connection-modal";
-import { fetchWorkouts } from "@/FirebaseConfig";
+// import { useBLEContext } from "@/BLEContext"
+import { fetchWorkouts, addRecent } from "@/FirebaseConfig";
+import { useLocalSearchParams } from 'expo-router';
 
 /**
  * ConnectStartScreen Component - screen that provides the flow for connecting to a device and starting a workout routine
@@ -23,18 +28,35 @@ import { fetchWorkouts } from "@/FirebaseConfig";
  */
 export default function ConnectStartScreen() {
   const colorScheme = useColorScheme();
+  // const {
+  //   requestPermissions,
+  //   scanForPeripherals,
+  //   allDevices,
+  //   connectToDevice,
+  //   connectedDevice,
+  //   setConnectedDevice,
+  //   distance,
+  //   disconnectFromDevice,
+  //   sendData,
+  //   isDialogVisible,
+  //   setIsDialogVisible,
+  //   screenState,
+  //   setScreenState
+  // } = useBLEContext();
 
-  const connectedDevice = false;
-  const distance = 5;
+  const connectedDevice = true;
+  const distance = 10;
 
-  const [isDialogVisible, setIsDialogVisible] = useState<boolean>(false);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [workoutDuration, setWorkoutDuration] = useState(150);
-  const [screenState, setScreenState] = useState(1);    // possible states: 1 (connection), 2 (sync distance), 3 (workout), 4 (workout complete)
+  const [screenState, setScreenState] = useState(1);
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  
+  const { workoutId, laserDuration, durationBetweenLasers, numLaserPositions } = useLocalSearchParams();
 
   useEffect(() => {
-    const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE  
+    // const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
     console.log("Fetching workout with ID:", workoutId);
 
     const loadWorkout = async () => {
@@ -45,7 +67,16 @@ export default function ConnectStartScreen() {
         setWorkoutDuration(fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration));
       }
     };
-    loadWorkout();
+
+    if (workoutId != "RANDOM") {
+      loadWorkout();
+    } else {
+      randomWorkout.laserDuration = Number(laserDuration);
+      randomWorkout.durationBetweenLasers = Number(durationBetweenLasers);
+      randomWorkout.laserPositions = Array(Number(numLaserPositions)).fill(0);
+      setWorkout(randomWorkout);
+      setWorkoutDuration(randomWorkout.laserPositions.length * (randomWorkout.durationBetweenLasers + randomWorkout.laserDuration));
+    }
   }, []);
 
   if(!workout) {
@@ -61,15 +92,23 @@ export default function ConnectStartScreen() {
     );
   }
 
+  const scanForDevices = async () => {
+    // const isPermissionsEnabled = await requestPermissions();
+    // if (isPermissionsEnabled) {
+    //   scanForPeripherals();
+    // }
+  };
+
   const hideModal = () => {
     setIsModalVisible(false);
   };
 
   const openModal = async () => {
+    scanForDevices();
     setIsModalVisible(true);
   };
-  
-  const encodeWorkoutData = (workout: Workout): bigint => {
+
+  const encodeWorkoutData2 = (workout: Workout): bigint => {
     let data = BigInt(0);
 
     data |= BigInt(workout.laserDuration) << BigInt(4);  // 4 bits for laserDuration
@@ -78,15 +117,32 @@ export default function ConnectStartScreen() {
     data |= BigInt(workout.numRows);  // 4 bits for numRows
     data <<= BigInt(4);
     data |= BigInt(workout.numColumns);  // 4 bits for numColumns
-    data <<= BigInt(6);
+    data <<= BigInt(5);
 
-    for (let i = workout.laserPositions.length - 1; i >= 0; i--) {
-      data |= BigInt(workout.laserPositions[i]); // 6 bits for each laserPosition
-      data <<= BigInt(6);
+    for (let i = 19; i >= 11; i--) {
+      if (i <= workout.laserPositions.length - 1) {
+        data |= BigInt(workout.laserPositions[i]); // 5 bits for each laserPosition
+      }
+      data <<= BigInt(5);
+    }
+    data >>= BigInt(4);
+    data |= BigInt(1);  // 1 bit for data packet 1
+    
+    return data;
+  }
+
+  const encodeWorkoutData1 = (workout: Workout): bigint => {
+    let data = BigInt(0);
+    for (let i = 10; i >= 0; i--) {
+      if (i <= workout.laserPositions.length - 1) {
+        data |= BigInt(workout.laserPositions[i]); // 5 bits for each laserPosition
+      }
+      data <<= BigInt(5);
     }
     
-    data >>= BigInt(1);
     data |= BigInt(workout.laserPositions.length);  // 5 bits for number of laserPositions
+    data <<= BigInt(1);
+    data |= BigInt(0);  // 1 bit for data packet 1
     
     return data;
   }
@@ -100,9 +156,11 @@ export default function ConnectStartScreen() {
    * successful connection will change the ScreenState to 2
    */
   function ConnectionScreen() {
+    console.log("device:", connectedDevice);
     useEffect(() => {
       if (connectedDevice) {
         setScreenState(2);
+        console.log("Device connected.");
       }
     }, [connectedDevice]);
 
@@ -144,8 +202,8 @@ export default function ConnectStartScreen() {
       </View>
     );
   }
-
-   /**
+  
+  /**
    * SyncDistanceScreen Component - screen that allows users to determine the device's distance from the wall
    * 
    * @returns {JSX.Element} - React component that renders the UI
@@ -154,6 +212,18 @@ export default function ConnectStartScreen() {
    * provides "Confirm distance" button that will change the ScreenState to 3
    */
   function SyncDistanceScreen() {
+    const handleRescanDistance = () => {
+      console.log("device", connectedDevice)
+      if (connectedDevice) {
+        // sendData(connectedDevice, "RESCAN");    // send signal to rescan distance
+        console.log("Rescanning distance");
+      } else {
+        console.log("Error: No device connected")
+        // setConnectedDevice(null);
+        // setIsDialogVisible(true);
+        setScreenState(1);
+      }
+    }
 
     return (
       <View style={styles.container}>
@@ -163,7 +233,7 @@ export default function ConnectStartScreen() {
           </Text>
           <View style={styles.distanceContainer}>
             <Text style={[styles.infoText, {color: Colors[colorScheme ?? 'light'].button}]}>
-              {distance} ft
+              {distance.toFixed(1)} ft
             </Text>
             <Button 
               style={styles.smallButton}
@@ -203,8 +273,8 @@ export default function ConnectStartScreen() {
       </View>
     );
   }
-
-   /**
+  
+  /**
    * WorkoutScreen Component - screen that provides the flow for starting a workout routine
    * 
    * @returns {JSX.Element} - React component that renders the UI
@@ -218,7 +288,7 @@ export default function ConnectStartScreen() {
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-
+  
     useEffect(() => {
       if (workoutState == 2) {
         if (time < workoutDuration) {
@@ -226,7 +296,7 @@ export default function ConnectStartScreen() {
             setTime(prevTime => prevTime + 1);
           }, 1000);
           setIntervalId(id);
-
+    
           return () => {
             clearInterval(id);
           };
@@ -237,7 +307,7 @@ export default function ConnectStartScreen() {
           }
         }
       }
-
+    
       return () => {
         if (intervalId) {
           clearInterval(intervalId);
@@ -245,29 +315,41 @@ export default function ConnectStartScreen() {
       };
     }, [workoutState, time, workoutDuration]);
 
-    const handleStartWorkout = () => {
-      setWorkoutState(2);   // set workout state to running
-      setTime(0);
-      const data = encodeWorkoutData(workout);
-      console.log(data.toString(16));
-
+    const handleStartWorkout = async () => {
       if (connectedDevice) {
-        // send workout data to device
+        const data1 = encodeWorkoutData1(workout);
+        // sendData(connectedDevice, data1);    // send workout data packet 1 to device
+        console.log("Workout data 1 sent to device:", data1.toString(16));
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const data2 = encodeWorkoutData2(workout);
+        // sendData(connectedDevice, data2);    // send workout data packet 2 to device
+        console.log("Workout data 2 sent to device:", data2.toString(16));
+
+        console.log("Workout sent to device:", workout);
       } else {
         console.log("Error: No device connected")
         setIsDialogVisible(true);
+        setScreenState(1);
       }
+      
+      setWorkoutState(2);   // set workout state to running
+      setTime(0);
     }
 
     const handleStopWorkout = () => {
       setWorkoutState(3);   // set workout state to stop
-
-      // TODO: send signal to device to stop
-      // if (connectedDevice) {
-      //   sendData(connectedDevice, data);
-      // } else {
-      //   console.log("Error: No device connected")
-      // }
+      
+      if (connectedDevice) {
+        // sendData(connectedDevice, "STOP");    // send signal to stop workout
+        console.log("Stopping workout");
+      } else {
+        console.log("Error: No device connected")
+        // setConnectedDevice(null);
+        setIsDialogVisible(true);
+        setScreenState(1);
+      }
     }
 
     return (
@@ -322,7 +404,7 @@ export default function ConnectStartScreen() {
       </View>
     );
   }
-
+  
   /**
    * WorkoutCompleteScreen Component - screen that notifies users they have completed the workout
    * 
@@ -331,6 +413,13 @@ export default function ConnectStartScreen() {
    * provides "Exit" button that will navigate to the Workout Screen (`(tabs)/workout/index`)
    */
   function WorkoutCompleteScreen() {
+    const handleExit = async () => {
+      setScreenState(1);
+      const recentWorkout = await addRecent(workoutId);
+      console.log(recentWorkout);
+      router.push("../../workout");
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.infoContainer}>
@@ -341,10 +430,10 @@ export default function ConnectStartScreen() {
         <Button
           style={styles.button}
           mode='contained'
-          onPress={() => router.push("../../workout")}
+          onPress={() => handleExit()}
         >
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
-            Exit
+            Exit and Save
           </Text>
         </Button>
       </View>
@@ -433,7 +522,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   smallButton: {
-    width: 110,
+    width: 105,
     height: 48,
     marginVertical: 16,
     marginLeft: 32,

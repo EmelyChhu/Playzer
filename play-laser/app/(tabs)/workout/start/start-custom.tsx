@@ -8,12 +8,11 @@ import { getWorkoutTypeDocs } from "@/FirebaseConfig";
 import React, { useState, useEffect } from 'react';
 
 /**
- * ViewCustomRoutinesScreen Component - screen that displays created custom routines and the option to create a new routine
+ * StartCustomRoutinesScreen Component - screen that displays created custom routines and the option to create a new routine
  * 
  * @returns {JSX.Element} - React component that renders the UI
  * 
- * provides "Create" button that allows users to navigate to the Create Custom Routine page (`(tabs)/workout/view/create-custom`)
- * provides a button for each custom routine that users can click to view that workout (`(tabs)/workout/view/view-routine`)
+ * provides a button for each custom routine that users can click to start that workout (`(tabs)/workout/start/start-routine`)
  */
 export default function ViewCustomRoutinesScreen() {
   const [customWorkouts, setCustomWorkouts] = useState<string[][]>();
@@ -53,17 +52,6 @@ export default function ViewCustomRoutinesScreen() {
           View routines you've created or create your own.
         </Text>
         <Text style={styles.subtitle} variant="titleLarge">
-          New
-        </Text>
-        <View style={styles.routineButtonsContainer}>
-          <NavigationButton
-            size="small"
-            path="./create-custom-1"
-            text="Create"
-            icon="plus"
-          />
-        </View>
-        <Text style={styles.subtitle} variant="titleLarge">
           Created
         </Text>
         <View style={styles.routineButtonsContainer}>
@@ -78,7 +66,7 @@ export default function ViewCustomRoutinesScreen() {
                   key={index}
                   size="small"
                   text={workout[0]}
-                  path={`./view-routine?workoutId=${workout[1]}`}
+                  path={`./start-routine?workoutId=${workout[1]}`}
                 />
               ))}
             </ScrollView>

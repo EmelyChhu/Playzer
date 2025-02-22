@@ -58,6 +58,7 @@
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "jest-expo": "~52.0.3",
+    "metro": "^0.81.1",
     "react-test-renderer": "18.2.0",
     "ts-jest": "^29.2.5",
     "typescript": "~5.3.3"
