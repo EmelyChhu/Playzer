@@ -1,4 +1,71 @@
 # Playzer
+### Beta Build Completed Work
+- Software
+    - Add device-randomized workout flow
+    - User can start a workout with completely random positions
+    - User inputs values for desired laserDuration, durationBetweenLasers, and number of laser positions
+    - Add options for custom workout creation
+    - User can now input a name and description for new custom workouts
+    - Extend workout flow for all workouts
+    - Generates buttons for all workouts rather than only one workout
+    - User can view/start all premade and custom workouts
+    - Add PreviousWorkoutCard component
+    - Create base component for user workout history
+    - Displays card for each completed workout by the user
+    - Add name field to account creation flow
+    - Create Users database that stores user’s name and workout history
+    - Displays user’s name on Profile screen
+    - Rework flow to connect and disconnect from the device
+    - If the device disconnects, they are navigated back to the connection screen and can reconnect
+    - Made connectedDevice a global variable so users only have to connect once during a session
+- Hardware
+    - Added support for up to 20 position
+    - Increased maximum number of positions from 7 to 2
+    - Increased bluetooth maximum transmission to 42 bytes for large data send
+    - Fixed the lidar rescan bug -- works as intended when hitting the rescan butto
+    - Bluetooth connection connect and disconnect fully implemented
+    - Easy for the user to connect and disconnect from the Playzer and vice vers
+    - Added support for stop to stop the Playzer once the user requests to sto
+    - Soldered the hardware components to the PC
+    - Validated the PCB
+    - Modeled 3d printed enclosure to package the device
+
+### Alpha Build Completed Work
+- Hardware
+    - PCB designed and ordered
+    - Bluetooth device -> phone implemented
+    - Printed out laser and motor mounts
+    - LiDaR sensor integrated with the app
+
+- Software
+    - Refactored button and laser card components
+    - Refactored workout screen flow
+    - Added screen to display device distance from wall
+    - Integrated communication with LiDar sensor
+    - Added unit tests for sign in and backend methods
+ 
+- Bugs
+    - Software
+        - If the user presses the button to save a custom workout repeatedly in the first few seconds, it will save the workout multiple times
+        - Currently the button is disabled after the workout is fully saved, but a fix will disable it once the save button is pressed once
+    - Hardware
+        - Not applicable :)
+
+
+- Bugs
+    - Software
+        - Submission button for Sign up, Log in, and Create a custom routine Screens
+            - The button for these screens should be disabled until text has been input in all boxes
+            - Currently there is an issue with the button’s background color when the isDisabled property is used, so all buttons have been enabled
+            - Logic and error handling have been implemented to prevent the user from submitting when inputted information is incorrect
+        - React Native Paper Button Component Light/Dark mode color schemes
+            - Currently there is an issue with the button’s background color and text switching properly when the user switches between Light and Dark mode that may be related to breaking change from Expo SDK 51 to 52
+            - A potential fix involves creating a custom themed element within the project
+    - Hardware
+        - LiDaR sensor delay
+            - There is a delay in the distance sensor information being updated. Even if the sensor sits in 1 position for a long time, it takes around 30-40 times of calling the getDistance() function for it to update to the right value. When the sensor position changes, there is a delay in that information being updated as well. 
+
+
 ### Design Prototype Completed Work
 - Hardware
     - Fixing the LiDaR sensor data collection
