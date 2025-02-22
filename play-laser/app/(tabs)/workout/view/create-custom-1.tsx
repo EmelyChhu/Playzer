@@ -82,7 +82,7 @@ export default function CreateCustomRoutine1Screen() {
         <Text variant="bodyMedium">
           Input information about your new custom routine.
         </Text>
-        <Button style={styles.saveButton} mode='contained' onPress={handleSaveRoutine}>
+        <Button style={styles.saveButton} mode='contained' onPress={handleSaveRoutine} disabled={buttonDisabled}>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             Next
           </Text>

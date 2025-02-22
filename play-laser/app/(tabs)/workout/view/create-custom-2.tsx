@@ -115,12 +115,12 @@ export default function CreateCustomRoutine2Screen() {
   }
 
   useEffect(() => {
-    if (durationBetweenLasers !== "" && laserDuration !== "" && laserPositions.length >= 5) {
+    if (durationBetweenLasers != "" && laserDuration != "" && laserPositions.length >= 1) {
       setButtonDisabled(false);
     } else {
       setButtonDisabled(true);
     }
-  }, [durationBetweenLasers, laserDuration]);
+  }, [durationBetweenLasers, laserDuration, laserPositions]);
 
   return (
     <PaperProvider>
@@ -131,7 +131,7 @@ export default function CreateCustomRoutine2Screen() {
         <Text variant="bodyMedium">
           Input the workout settings and click on the grid to add laser positions.
         </Text>
-        <Button style={styles.saveButton} mode='contained' onPress={buttonText == "Workout Saved! Exit" ? handleNavigateBack : handleSaveRoutine}>
+        <Button style={styles.saveButton} mode='contained' onPress={buttonText == "Workout Saved! Exit" ? handleNavigateBack : handleSaveRoutine} disabled={buttonDisabled}>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             {buttonText}
           </Text>
