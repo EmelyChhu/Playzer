@@ -43,6 +43,14 @@
     - Added screen to display device distance from wall
     - Integrated communication with LiDar sensor
     - Added unit tests for sign in and backend methods
+ 
+- Bugs
+    - Software
+        - If the user presses the button to save a custom workout repeatedly in the first few seconds, it will save the workout multiple times
+        - Currently the button is disabled after the workout is fully saved, but a fix will disable it once the save button is pressed once
+    - Hardware
+        - Not applicable :)
+
 
 - Bugs
     - Software
