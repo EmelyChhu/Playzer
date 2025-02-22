@@ -1,10 +1,10 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth"; 
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "firebase/auth"; 
 import { getFirestore, 
   collection, getDocs, addDoc,
-  doc, getDoc,
-  query, where 
+  doc, getDoc, setDoc,
+  query, where, updateDoc, arrayUnion 
 } from "firebase/firestore";
 import { Workout } from '@/types';
 
@@ -31,6 +31,44 @@ export const FIREBASE_DB = getFirestore(FIREBASE_APP);
 
 const FirebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_API_KEY,
+};
+
+export const addUsers = async (name: string, email: string, password: string) => {
+  try {
+    const credentials = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+    const user = credentials.user;
+
+    // PUT NAME INTO FIRESTORE 
+    await setDoc(doc(FIREBASE_DB, "Users", user.uid), {
+      name: name
+  });
+
+  console.log("User registered successfully:", user.uid);
+  return user;
+  }
+  
+  catch (error) {
+    console.error("Error signing up:", error);
+  }
+};
+
+export const fetchUsers = async (userId: string): Promise<string | null> => {
+  try {
+    const userDocRef = doc(FIREBASE_DB, "Users", userId);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if(!userDocSnap.exists()) {
+      console.log("No user found!");
+      return null;
+    }
+
+    const userData = userDocSnap.data();
+    return userData.name || "Unnamed User";
+  }
+  catch(error) {
+    console.error("Error fetching user name:", error);
+    return null;
+  }
 };
 
 export const fetchWorkouts = async (DocId: string): Promise<Workout | null> => { 
@@ -65,6 +103,83 @@ export const fetchWorkouts = async (DocId: string): Promise<Workout | null> => {
   catch (error) {
     console.error("Error fetching workouts:", error);
     return null;
+  }
+};
+
+export const fetchHistory = async (UserDocId: string)=> {
+  try {
+    console.log("WORKOUT HISTORY:");
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      console.log("No user logged in.");
+      return;
+    }
+
+    const userDocRef = doc(FIREBASE_DB, "Users", user.uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (!userDocSnap.exists()) {
+      console.log("User document does not exist.");
+      return [];
+    }
+
+    const userData = userDocSnap.data();
+    const workoutHistory = userData.workoutHistory || [];
+    console.log(workoutHistory);
+    return workoutHistory;
+  } 
+  catch (error) {
+    console.error("Error fetching workout history:", error);
+    return [];
+  }
+};
+
+export const addRecent = async (DocId: string) => {
+  try {
+    // console.log("ATTEMPTING TO STORE RECENT WORKOUT")
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      console.log("No user logged in.");
+      return;
+    }
+
+    const userDocRef = doc(FIREBASE_DB, "Users", user.uid);
+    const workoutDocRef = doc(FIREBASE_DB, "Workout", DocId);
+
+    const userDocSnap = await getDoc(userDocRef);
+    if (!userDocSnap.exists()) {
+      await setDoc(userDocRef, { workoutHistory: [] });
+    }
+
+    const workoutDocSnap = await getDoc(workoutDocRef);
+    if (!workoutDocSnap.exists()) {
+      console.log(`No workout found with ID: ${DocId}`);
+      return;
+    }
+
+    const workoutData = workoutDocSnap.data();
+    const workoutName = workoutData.name || "Unnamed Workout";
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    let workoutHistory = [];
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      workoutHistory = userData.workoutHistory || [];
+    }
+
+    const newEntry = { id: DocId, name: workoutName, date: currentDate };
+    const updatedHistory = [newEntry, ...workoutHistory];
+    console.log(updatedHistory);
+
+    // const updatedHistory = [[DocId, workoutName, currentDate], ...workoutHistory];
+
+    // PUT HISTORY INTO FIRESTORE
+    await setDoc(userDocRef, { workoutHistory: updatedHistory }, { merge: true });
+
+    console.log("Recent workout stored successfully!");
+  }
+  catch (error) {
+    console.log("Error saving recent workout:", error);
   }
 };
 
@@ -137,10 +252,13 @@ export const getWorkoutTypeDocs = async (workoutType: string) => {
       return [];
     }
 
-    const userWorkouts = querySnapshot.docs.map(doc => [
-      doc.data().name || "Unnamed Workout",
-      doc.id
-    ]);
+    const userWorkouts = querySnapshot.docs.map(doc => {
+      const name = doc.data().name || "Unnamed Workout";
+      const match = name.match(/\d+/); 
+      const num = match ? parseInt(match[0], 10) : Infinity; 
+      return { name, id: doc.id, num };
+    })
+      .sort((a, b) => a.num - b.num).map(workout => [workout.name, workout.id]);
     return userWorkouts;
   }
 

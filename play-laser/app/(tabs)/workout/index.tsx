@@ -26,7 +26,7 @@ export default function WorkoutScreen() {
     <PaperProvider>
       <View style={styles.container}>
         <Text style={styles.title} variant="titleLarge">Quick Start</Text>
-        <Button style={styles.button} mode='contained' contentStyle={styles.buttonContainer} onPress={() => router.push("./workout/start")}>
+        <Button style={styles.button} mode='contained' onPress={() => router.push("./workout/start")}>
           <View style={styles.buttonContainer}>
             <FontAwesome
               name="crosshairs"
@@ -40,12 +40,13 @@ export default function WorkoutScreen() {
         <View style={styles.routineButtonsContainer}>
           <NavigationButton
             size="medium"
+            path="./workout/view/view-premade"
             text="Premade"
             icon="list"
           />
           <NavigationButton
             size="medium"
-            path="./workout/view/"
+            path="./workout/view/view-custom"
             text="Custom"
             icon="edit"
           />       
@@ -82,7 +83,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'transparent',
-    paddingTop: 2,  // TODO: make vertical centering automatic
+    // paddingTop: 5,  // TODO: make vertical centering automatic
+    marginTop: 3,
   },
   routineButtonsContainer: {
     flexDirection: 'row',

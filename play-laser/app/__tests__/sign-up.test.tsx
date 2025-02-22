@@ -25,7 +25,7 @@ jest.mock('firebase/firestore', () => ({
   })),
 }));
   
-import { isValidEmail, isValidPassword } from "../auth/sign-up";
+import { isValidEmail, isValidPassword, isValidName } from "../auth/sign-up";
 
 test('isValidEmail returns true for valid emails', () => {
   expect(isValidEmail('example@gmail.com')).toBe(true);
@@ -47,4 +47,18 @@ test('isValidPassword returns true for valid passwords', () => {
 test('isValidPassword returns false for invalid passwords', () => {
   expect(isValidPassword('hi')).toBe(false);
   expect(isValidPassword('1234567')).toBe(false);
+});
+
+test('isValidName returns true for valid names', () => {
+  expect(isValidName('Albert the Gator')).toBe(true);
+  expect(isValidName('alberta')).toBe(true);
+  expect(isValidName('Albert The-Gator')).toBe(true);
+  expect(isValidName('Alberta gator')).toBe(true);
+});
+
+test('isValidName returns false for invalid names', () => {
+  expect(isValidName('')).toBe(false);
+  expect(isValidName('Albert+Gator')).toBe(false);
+  expect(isValidName('alberta352')).toBe(false);
+  expect(isValidName('Albert!')).toBe(false);
 });

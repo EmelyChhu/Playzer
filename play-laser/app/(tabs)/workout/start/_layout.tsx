@@ -31,10 +31,26 @@ export default function WorkoutStackLayout() {
         }} 
       />
       <Stack.Screen 
+        name="start-custom"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Custom Routines",
+          headerBackTitle: "Back",
+        }} 
+      />
+      <Stack.Screen 
         name="start-routine"
         options={{ 
           headerShown: true,
           headerTitle: "Routine",
+          headerBackTitle: "Back",
+        }} 
+      />
+      <Stack.Screen 
+        name="start-random"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Random Routine Settings",
           headerBackTitle: "Back",
         }} 
       />
