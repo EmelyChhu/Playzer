@@ -1,20 +1,54 @@
 import { StyleSheet, ScrollView } from 'react-native';
 
 import { View } from '@/components/Themed';
-import { PaperProvider, Text, Button } from 'react-native-paper';
+import { PaperProvider, Text, Button, ActivityIndicator } from 'react-native-paper';
 import { Workout, exampleWorkouts } from '@/types';
 import NavigationButton from '@/components/NavigationButton';
+import { getWorkoutTypeDocs } from "@/FirebaseConfig";
+import React, { useState, useEffect } from 'react';
 
 /**
  * StartPremadeRoutinesScreen Component - screen that displays created premade routines
  * 
  * @returns {JSX.Element} - React component that renders the UI
  * 
- * provides 3 categories of premade routines: Basic, Random, and Sport-Specific (TODO)
+ * provides 3 categories of premade routines: Basic, Random, and Sport-Specific
  * provides a button for each premade routine that users can click to start that workout (`(tabs)/workout/start/start-routine`)
  */
 export default function StartPremadeRoutinesScreen() {
-  const workouts = exampleWorkouts;
+  const [basicWorkouts, setBasicWorkouts] = useState<string[][]>();
+  const [randomWorkouts, setRandomWorkouts] = useState<string[][]>();
+  const [sportSpecificWorkouts, setSportSpecificWorkouts] = useState<string[][]>();
+
+  useEffect(() => {
+      const loadWorkouts = async () => {
+        // RETURNS ARRAY OF ALL WORKOUTS [[type, name, doc id], ...] 
+        // const workouts = getWorkoutDocuments();
+
+        // RETURNS ARRAY BY WORKOUT TYPE [[name, doc id], ...]
+        const fetchedBasicWorkouts = await getWorkoutTypeDocs("Basic");
+        const fetchedRandomWorkouts = await getWorkoutTypeDocs("Random");
+        const fetchedSportSpecificWorkouts = await getWorkoutTypeDocs("Sport-Specific");
+
+        setBasicWorkouts(fetchedBasicWorkouts);
+        setRandomWorkouts(fetchedRandomWorkouts);
+        setSportSpecificWorkouts(fetchedSportSpecificWorkouts);
+      };
+      loadWorkouts();
+    }, []);
+
+  if(!basicWorkouts || !randomWorkouts || !sportSpecificWorkouts) {
+    return (
+      <PaperProvider>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText} variant="displayLarge">
+            Loading workouts...
+          </Text>
+          <ActivityIndicator animating={true} size={100}/>
+        </View>
+      </PaperProvider>
+    );
+  }
 
   return (
     <PaperProvider>
@@ -30,19 +64,14 @@ export default function StartPremadeRoutinesScreen() {
         </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal>
-            <NavigationButton
-              size="small"
-              path="./start-routine"
-              text="Basic 1"
-            />
-            <NavigationButton
-              size="small"
-              text="Basic 2"
-            />
-            <NavigationButton
-              size="small"
-              text="Basic 3"
-            />
+            {basicWorkouts.map((workout, index) => (
+              <NavigationButton
+                key={index}
+                size="small"
+                text={workout[0]}
+                path={`./start-routine?workoutId=${workout[1]}`}
+              />
+            ))}
           </ScrollView>
         </View>
         <Text style={styles.subtitle} variant="titleLarge">
@@ -50,18 +79,14 @@ export default function StartPremadeRoutinesScreen() {
         </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
-            <NavigationButton
-              size="small"
-              text="Random 1"
-            />
-            <NavigationButton
-              size="small"
-              text="Random 2"
-            />
-            <NavigationButton
-              size="small"
-              text="Random 3"
-            />
+            {randomWorkouts.map((workout, index) => (
+              <NavigationButton
+                key={index}
+                size="small"
+                text={workout[0]}
+                path={`./start-routine?workoutId=${workout[1]}`}
+              />
+            ))}
           </ScrollView>
         </View>
         <Text style={styles.subtitle} variant="titleLarge">
@@ -69,21 +94,14 @@ export default function StartPremadeRoutinesScreen() {
         </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
-            <NavigationButton
-              size="small"
-              text="Random 1"
-              icon="soccer-ball-o"
-            />
-            <NavigationButton
-              size="small"
-              text="Random 2"
-              icon="circle"
-            />
-            <NavigationButton
-              size="small"
-              text="Random 3"
-              icon="soccer-ball-o"
-            />
+            {sportSpecificWorkouts.map((workout, index) => (
+              <NavigationButton
+                key={index}
+                size="small"
+                text={workout[0]}
+                path={`./start-routine?workoutId=${workout[1]}`}
+              />
+            ))}
           </ScrollView>
         </View>
       </View>
@@ -109,5 +127,15 @@ const styles = StyleSheet.create({
   },
   routineButtonsContainer: {
     height: 92,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    gap: 32,
+  },
+  loadingText: {
+    textAlign: 'center',
   },
 });

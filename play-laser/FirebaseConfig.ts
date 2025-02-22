@@ -1,10 +1,10 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth"; 
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "firebase/auth"; 
 import { getFirestore, 
   collection, getDocs, addDoc,
-  doc, getDoc,
-  query, where 
+  doc, getDoc, setDoc,
+  query, where, updateDoc, arrayUnion 
 } from "firebase/firestore";
 import { Workout } from '@/types';
 
@@ -28,41 +28,66 @@ const firebaseConfig = {
 export const FIREBASE_APP = initializeApp(firebaseConfig);
 export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
 export const FIREBASE_DB = getFirestore(FIREBASE_APP);
-//const analytics = getAnalytics(app);
 
 const FirebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_API_KEY,
 };
 
-export const fetchWorkouts = async (workoutId: string): Promise<Workout | null> => { 
-  // verify that the collection exist, remove async parameters
-  /*
-  const workoutsCollection = collection(db, 'Workout')
+export const addUsers = async (name: string, email: string, password: string) => {
   try {
-    const querySnapshot = await getDocs(workoutsCollection)
-    querySnapshot.forEach((doc) => {
-      console.log(`Document ID: ${doc.id}`, doc.data());
-    });*/
+    const credentials = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+    const user = credentials.user;
 
-  // call for the premade workouts
-  const workoutsDocRef = collection(FIREBASE_DB, "Workout");
-  const workoutsQuery = query(workoutsDocRef, where("id", "==", workoutId));
-  // console.log("Fetching workout from path:", workoutsDocRef.path);
+    // PUT NAME INTO FIRESTORE 
+    await setDoc(doc(FIREBASE_DB, "Users", user.uid), {
+      name: name
+  });
+
+  console.log("User registered successfully:", user.uid);
+  return user;
+  }
+  
+  catch (error) {
+    console.error("Error signing up:", error);
+  }
+};
+
+export const fetchUsers = async (userId: string): Promise<string | null> => {
   try {
-    const querySnapshot = await getDocs(workoutsQuery);
-    if (querySnapshot.empty) {
+    const userDocRef = doc(FIREBASE_DB, "Users", userId);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if(!userDocSnap.exists()) {
+      console.log("No user found!");
+      return null;
+    }
+
+    const userData = userDocSnap.data();
+    return userData.name || "Unnamed User";
+  }
+  catch(error) {
+    console.error("Error fetching user name:", error);
+    return null;
+  }
+};
+
+export const fetchWorkouts = async (DocId: string): Promise<Workout | null> => { 
+  // verify that the collection exist, remove async parameters
+  try {
+    const workoutDocRef = doc(FIREBASE_DB, "Workout", DocId);
+    const workoutDocSnap = await getDoc(workoutDocRef);
+
+    if (!workoutDocSnap.exists()) {
       console.log("No such document!");
       return null;
     }
 
-    const workoutDoc = querySnapshot.docs[0];
-    const workoutData = workoutDoc.data();
-    // console.log("Workout Data:", workoutData);
+    const workoutData = workoutDocSnap.data();
 
     const workout: Workout = {
       id: workoutData.id || "0", // defaults to 0 if none is provided
       name: workoutData.name || "Unnamed Workout",  
-      type: workoutData.type || "Unknown",  
+      type: workoutData.type || "Unknown Type",  
       durationBetweenLasers: workoutData.durationBetweenLasers || 1,  
       laserDuration: workoutData.laserDuration || 1,
       numColumns: workoutData.numColumns || 8,
@@ -81,6 +106,83 @@ export const fetchWorkouts = async (workoutId: string): Promise<Workout | null> 
   }
 };
 
+export const fetchHistory = async (UserDocId: string)=> {
+  try {
+    console.log("WORKOUT HISTORY:");
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      console.log("No user logged in.");
+      return;
+    }
+
+    const userDocRef = doc(FIREBASE_DB, "Users", user.uid);
+    const userDocSnap = await getDoc(userDocRef);
+
+    if (!userDocSnap.exists()) {
+      console.log("User document does not exist.");
+      return [];
+    }
+
+    const userData = userDocSnap.data();
+    const workoutHistory = userData.workoutHistory || [];
+    console.log(workoutHistory);
+    return workoutHistory;
+  } 
+  catch (error) {
+    console.error("Error fetching workout history:", error);
+    return [];
+  }
+};
+
+export const addRecent = async (DocId: string) => {
+  try {
+    // console.log("ATTEMPTING TO STORE RECENT WORKOUT")
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      console.log("No user logged in.");
+      return;
+    }
+
+    const userDocRef = doc(FIREBASE_DB, "Users", user.uid);
+    const workoutDocRef = doc(FIREBASE_DB, "Workout", DocId);
+
+    const userDocSnap = await getDoc(userDocRef);
+    if (!userDocSnap.exists()) {
+      await setDoc(userDocRef, { workoutHistory: [] });
+    }
+
+    const workoutDocSnap = await getDoc(workoutDocRef);
+    if (!workoutDocSnap.exists()) {
+      console.log(`No workout found with ID: ${DocId}`);
+      return;
+    }
+
+    const workoutData = workoutDocSnap.data();
+    const workoutName = workoutData.name || "Unnamed Workout";
+    const currentDate = new Date().toISOString().split("T")[0];
+
+    let workoutHistory = [];
+    if (userDocSnap.exists()) {
+      const userData = userDocSnap.data();
+      workoutHistory = userData.workoutHistory || [];
+    }
+
+    const newEntry = { id: DocId, name: workoutName, date: currentDate };
+    const updatedHistory = [newEntry, ...workoutHistory];
+    console.log(updatedHistory);
+
+    // const updatedHistory = [[DocId, workoutName, currentDate], ...workoutHistory];
+
+    // PUT HISTORY INTO FIRESTORE
+    await setDoc(userDocRef, { workoutHistory: updatedHistory }, { merge: true });
+
+    console.log("Recent workout stored successfully!");
+  }
+  catch (error) {
+    console.log("Error saving recent workout:", error);
+  }
+};
+
 export const addWorkout = async (workoutData: any) => {
   const workoutsCollectionRef = collection(FIREBASE_DB, "Workout");
 
@@ -90,6 +192,79 @@ export const addWorkout = async (workoutData: any) => {
   }
   catch (error) {
     console.error("Error adding workout:", error);
+  }
+};
+
+// Return an array containing arrays of Workout [type, name, doc id]
+export const getWorkoutDocuments = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(FIREBASE_DB, "Workout"));
+
+    if (querySnapshot.empty) {
+      console.log("No workout documents found!");
+      return [];
+    }
+
+    const workouts = querySnapshot.docs.map(doc => ([
+      doc.data().type || "Unknown Type",
+      doc.data().name || "Unnamed Workout",
+      doc.id
+    ]));
+
+    console.log(workouts);
+    return workouts;
+  } 
+
+  catch (error) {
+    console.error("Error fetching Workout document IDs:", error);
+    return [];
+  }
+};
+
+// Returns an array of arrays of Workout [name, doc id]
+export const getWorkoutTypeDocs = async (workoutType: string) => {
+  try {
+    const workoutsDocRef = collection(FIREBASE_DB, "Workout");
+    const user = FIREBASE_AUTH.currentUser?.uid;
+    let q;
+
+    if (workoutType === "Custom") {
+      console.log("UID:", user);
+
+      if(!user) {
+        console.log("No user found!");
+        return [];
+       }
+       
+      q = query( workoutsDocRef, 
+        where("creatorId", "==", user)
+      );
+    }
+    else {
+    q = query(workoutsDocRef, 
+      where("type", "==", workoutType));
+    }
+
+    const querySnapshot = await getDocs(q);
+
+    if(querySnapshot.empty) {
+      console.log("No workouts found for user:", user);
+      return [];
+    }
+
+    const userWorkouts = querySnapshot.docs.map(doc => {
+      const name = doc.data().name || "Unnamed Workout";
+      const match = name.match(/\d+/); 
+      const num = match ? parseInt(match[0], 10) : Infinity; 
+      return { name, id: doc.id, num };
+    })
+      .sort((a, b) => a.num - b.num).map(workout => [workout.name, workout.id]);
+    return userWorkouts;
+  }
+
+  catch(error) {
+    console.error("Error fetching workouts: ", error);
+    return [];
   }
 };
 
