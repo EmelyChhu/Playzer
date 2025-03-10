@@ -17,7 +17,7 @@ import { useLocalSearchParams } from 'expo-router';
  * 
  * @returns {JSX.Element} - React component that renders the UI
  * 
- * provides "Start Workout" button that will navigate to the screen to start the workout (`(tabs)/workout/start/connect-start`)
+ * provides "Start Workout" button that will navigate to the screen to start the workout (`(tabs)/workout/connect-start`)
  * provides the workout's duration, laser duration, duration between lasers, and a card for each laser position
  */
 export default function StartRoutineScreen() {
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     // marginLeft: 8,
   },
   button: {
-    width: '100%',
+    width: '50%',
     height: 48,
     marginVertical: 16,
     alignSelf: 'center',

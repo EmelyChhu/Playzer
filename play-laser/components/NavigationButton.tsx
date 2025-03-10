@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { View } from '@/components/Themed';
-import { PaperProvider, Text, Button } from 'react-native-paper';import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { PaperProvider, Text, Button } from 'react-native-paper';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { RelativePathString, router } from 'expo-router';
 
 import Colors from '@/constants/Colors';

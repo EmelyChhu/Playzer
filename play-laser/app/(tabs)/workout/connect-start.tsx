@@ -11,7 +11,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Workout, randomWorkout } from '@/types';
 import { router } from 'expo-router';
 
-import DeviceModal from "./../../../device-connection-modal";
+import DeviceModal from "../../device-connection-modal";
 // import { useBLEContext } from "@/BLEContext"
 import { fetchWorkouts, addRecent } from "@/FirebaseConfig";
 import { useLocalSearchParams } from 'expo-router';

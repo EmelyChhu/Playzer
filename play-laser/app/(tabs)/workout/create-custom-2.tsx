@@ -66,7 +66,7 @@ export default function CreateCustomRoutine2Screen() {
   }, [laserDuration]);
 
   const handleNavigateBack = () => {
-    router.replace(`./view-custom`);
+    router.replace("./start-custom");
   }
 
   const handleSaveRoutine = async () => {
