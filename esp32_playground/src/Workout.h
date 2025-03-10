@@ -8,8 +8,8 @@ private:
     uint8_t id;
     uint16_t duration_btwn_lasers_ms;
     uint16_t laser_duration_ms;
-    uint8_t columns;
-    uint8_t rows;
+    uint8_t height;
+    uint8_t width;
     std::vector<uint8_t> positions;
     uint8_t num_positions;
     uint8_t positions_index;
@@ -33,7 +33,7 @@ public:
 
     // Constructor
     Workout(uint8_t id, uint16_t duration_btwn, uint16_t lsr_duration, 
-    uint8_t cols, uint8_t rows, std::vector<uint8_t> pos, u_int8_t num_positions);
+    uint8_t height, uint8_t width, std::vector<uint8_t> pos, u_int8_t num_positions);
 
     void calibrate(double dist_ft);
     void checkRandom();
