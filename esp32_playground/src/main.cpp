@@ -52,23 +52,22 @@ void loop() {
             bluetooth_obj->getDistance(&bluetooth_obj->lidar_distance_cm);
         }
 
-        Workout test_workout;
+        Workout workout;
         // test_workout = Workout();
-        test_workout = Workout( 1, 
+        workout = Workout( 1, 
                                 bluetooth_obj->get_DBL(), 
                                 bluetooth_obj->get_LD(), 
-                                bluetooth_obj->get_C(), 
+                                bluetooth_obj->get_C(),
                                 bluetooth_obj->get_R(), 
                                 bluetooth_obj->get_P(), 
                                 bluetooth_obj->get_NP());
 
-        test_workout.calibrate(bluetooth_obj->calculate_distance());
+        workout.calibrate(bluetooth_obj->calculate_distance());
+        workout.checkRandom();
 
-        test_workout.checkRandom();
+        while(!bluetooth_obj->stop() && workout.execute())
+        workout.return_to_base();
 
-        while(!bluetooth_obj->stop() && test_workout.execute())
-        test_workout.return_to_base();
-
-        bluetooth_obj->reset_workout();
+        workout->reset_workout();
     }
 }

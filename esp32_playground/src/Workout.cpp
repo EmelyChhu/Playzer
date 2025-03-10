@@ -76,14 +76,30 @@ uint8_t Workout::decode_position_col(uint8_t *pos){
     return (*pos) % columns;
 } 
 
-void Workout::go_to_position(uint8_t *pos){
-    Serial.println("BOT duty cycle:");
-    Serial.println(BASE_DUTY_CYCLE + div_per_col*(base_col - decode_position_col(pos)));
-    ledcWrite(PWM_CHANNEL_BOT_SERVO, BASE_DUTY_CYCLE + div_per_col*(base_col - decode_position_col(pos)));
+void Workout::go_to_position(uint8_t *pos, bool slide){
+    if (slide){
+        prev_bot_DC = curr_bot_DC;
+        prev_top_DC = curr_top_DC;
+    }
+    curr_bot_DC = BASE_DUTY_CYCLE + div_per_col*(base_col - decode_position_col(pos));
+    curr_top_DC = BASE_DUTY_CYCLE + div_per_row*(base_row - decode_position_row(pos));
     
+    Serial.println("BOT duty cycle:");
+    Serial.println(curr_bot_DC);
+
     Serial.println("TOP duty cycle:");
-    Serial.println(BASE_DUTY_CYCLE + div_per_row*(base_row - decode_position_row(pos)));
-    ledcWrite(PWM_CHANNEL_TOP_SERVO, BASE_DUTY_CYCLE + div_per_row*(base_row - decode_position_row(pos)));
+    Serial.println(curr_top_DC);
+
+    if !(slide) {
+        ledcWrite(PWM_CHANNEL_BOT_SERVO, curr_bot_DC);
+        ledcWrite(PWM_CHANNEL_TOP_SERVO, curr_top_DC);
+        delay(MOVEMENT_DELAY);
+    }else{
+
+        delay(duration_btwn_lasers_ms)
+        // to do
+
+    }
 } 
 
 void Workout::return_to_base(){
@@ -93,8 +109,7 @@ void Workout::return_to_base(){
 }
 
 void Workout::checkRandom(){
-    // rows == 15 indicates random workout
-    if (rows == 15){ // checking if positions should be random
+    if (random){ // checking if positions should be random
         rows = 4;
         base_row = rows;
         std::srand(std::time(0));
@@ -106,7 +121,7 @@ void Workout::checkRandom(){
     }
 }
 
-bool Workout::execute(){
+bool Workout::execute(bool slide){
     if (positions_index >= num_positions){
         return_to_base();
         return false;
@@ -115,19 +130,23 @@ bool Workout::execute(){
     Serial.println("position:");
     Serial.println(positions[positions_index]);
 
-    go_to_position(&(positions[positions_index]));
-
-    delay(MOVEMENT_DELAY);
+    go_to_position(&(positions[positions_index]), slide);
 
     turn_on_laser();
 
     delay(laser_duration_ms);
 
-    turn_off_laser();
-
-    delay(duration_btwn_lasers_ms);
+    if !(slide){
+        turn_off_laser();
+        delay(duration_btwn_lasers_ms);
+    }
 
     positions_index++;
 
     return true;
+}
+
+void Workout::init(){
+    checkRandom();
+
 }

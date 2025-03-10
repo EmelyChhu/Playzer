@@ -20,6 +20,13 @@ private:
     uint8_t div_per_col;
     uint8_t div_per_row;
 
+    uint8_t prev_bot_DC = 0;
+    uint8_t prev_top_DC = 0;
+
+    uint8_t curr_bot_DC = 0;
+    uint8_t curr_top_DC = 0;
+
+
     void go_to_position(uint8_t* pos);
     
     uint8_t decode_position_row(uint8_t *pos);
@@ -38,7 +45,7 @@ public:
     void calibrate(double dist_ft);
     void checkRandom();
 
-    bool execute();
+    bool execute(bool slide);
     void return_to_base();
 
     ~Workout() {
