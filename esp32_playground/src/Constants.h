@@ -13,6 +13,9 @@
 const uint8_t BOT_MOTOR_PIN = 14;
 const uint8_t TOP_MOTOR_PIN = 12;
 
+const uint8_t NUM_COLUMNS = 8;
+const uint8_t NUM_ROWS = 4;
+
 const int PWM_CHANNEL_BOT_SERVO = 0;
 const int PWM_CHANNEL_TOP_SERVO = 1;
 const int PWM_FREQ = 100;

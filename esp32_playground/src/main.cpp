@@ -54,20 +54,20 @@ void loop() {
 
         Workout workout;
         // test_workout = Workout();
-        workout = Workout( 1, 
-                                bluetooth_obj->get_DBL(), 
-                                bluetooth_obj->get_LD(), 
-                                bluetooth_obj->get_H(), 
-                                bluetooth_obj->get_W(), 
-                                bluetooth_obj->get_P(), 
-                                bluetooth_obj->get_NP());
+        workout = Workout(  bluetooth_obj->get_RAND(),
+                            bluetooth_obj->get_SLIDE(),
+                            bluetooth_obj->get_DBL(), 
+                            bluetooth_obj->get_LD(), 
+                            bluetooth_obj->get_H(), 
+                            bluetooth_obj->get_W(), 
+                            bluetooth_obj->get_P(), 
+                            bluetooth_obj->get_NP());
 
         workout.calibrate(bluetooth_obj->calculate_distance());
-        workout.checkRandom();
 
         while(!bluetooth_obj->stop() && workout.execute())
         workout.return_to_base();
 
-        workout->reset_workout();
+        bluetooth_obj->reset_workout();
     }
 }

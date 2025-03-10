@@ -72,8 +72,8 @@ public:
     void reset_workout();
     bool stop();
 
-    uint8_t get_RAND();
-    uint8_t get_SLIDE();
+    bool get_RAND();
+    bool get_SLIDE();
     uint8_t get_DBL();
 
     uint8_t get_LD();

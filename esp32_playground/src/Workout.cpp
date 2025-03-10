@@ -11,9 +11,9 @@ void turn_off_laser(){
     digitalWrite(LASER_PIN, LOW);
 }
 
-Workout::Workout(uint8_t id, uint8_t random, uint8_t sliding, uint16_t duration_btwn, uint16_t lsr_duration, 
+Workout::Workout(bool random, bool slide, uint16_t duration_btwn, uint16_t lsr_duration, 
 uint8_t height, uint8_t width, std::vector<uint8_t> pos, uint8_t num_positions) :
-id(id), random(random), sliding(sliding), height(height), width(width), positions(pos), num_positions(num_positions)
+random(random), slide(slide), height(height), width(width), positions(pos), num_positions(num_positions)
 {
     duration_btwn_lasers_ms = duration_btwn * 1000;
     laser_duration_ms = lsr_duration * 1000;
@@ -24,15 +24,22 @@ id(id), random(random), sliding(sliding), height(height), width(width), position
     base_row = width;
     positions_index = 0;
 
+    if (random){ // checking if positions should be random
+        std::srand(std::time(0));
+
+        for (uint8_t i = 0; i < num_positions; i++){
+            positions[i] = (std::rand() % 32) + 1;
+        }
+    }
+
 }
 
 Workout::Workout() // creates default workout for testing
 {
-    id = 0;
     height = 6;
     width = 4;
-    sliding = 0;
-    random = 0;
+    slide = false;
+    random = false;
     num_positions = 12;
     positions_index = 0;
 
@@ -49,8 +56,6 @@ Workout::Workout() // creates default workout for testing
 
     div_per_col = 5;
     div_per_row = 6;
-    
-
 }
 
 void Workout::calibrate(double dist_ft){
@@ -73,14 +78,14 @@ void Workout::calibrate(double dist_ft){
 }
 
 uint8_t Workout::decode_position_row(uint8_t *pos){
-    return (int)((*pos) / height);
+    return (int)((*pos) / NUM_COLUMNS);
 } 
 
 uint8_t Workout::decode_position_col(uint8_t *pos){
-    return (*pos) % height;
+    return (*pos) % NUM_COLUMNS;
 } 
 
-void Workout::go_to_position(uint8_t *pos, bool slide){
+void Workout::go_to_position(uint8_t *pos){
     if (slide){
         prev_bot_DC = curr_bot_DC;
         prev_top_DC = curr_top_DC;
@@ -94,14 +99,24 @@ void Workout::go_to_position(uint8_t *pos, bool slide){
     Serial.println("TOP duty cycle:");
     Serial.println(curr_top_DC);
 
-    if !(slide) {
+    if (!slide) {
         ledcWrite(PWM_CHANNEL_BOT_SERVO, curr_bot_DC);
         ledcWrite(PWM_CHANNEL_TOP_SERVO, curr_top_DC);
         delay(MOVEMENT_DELAY);
     }else{
+        delta_top = curr_top_DC - prev_top_DC;
+        delta_bot = curr_bot_DC - prev_bot_DC;
 
-        delay(duration_btwn_lasers_ms)
-        // to do
+
+        // needs more work
+        ledcWrite(PWM_CHANNEL_BOT_SERVO, prev_bot_DC + (delta_bot/2));
+        ledcWrite(PWM_CHANNEL_TOP_SERVO, prev_top_DC + (delta_top/2));
+        delay(duration_btwn_lasers_ms/2);
+
+        ledcWrite(PWM_CHANNEL_BOT_SERVO, curr_bot_DC);
+        ledcWrite(PWM_CHANNEL_TOP_SERVO, curr_top_DC);
+        delay(duration_btwn_lasers_ms/2);
+        //
 
     }
 } 
@@ -112,20 +127,7 @@ void Workout::return_to_base(){
     ledcWrite(PWM_CHANNEL_TOP_SERVO, BASE_DUTY_CYCLE);
 }
 
-void Workout::checkRandom(){
-    if (random){ // checking if positions should be random
-        rows = 4;
-        base_row = rows;
-        std::srand(std::time(0));
-
-        for (uint8_t i = 0; i < num_positions; i++){
-            positions[i] = (std::rand() % 32) + 1;
-        }
-
-    }
-}
-
-bool Workout::execute(bool slide){
+bool Workout::execute(){
     if (positions_index >= num_positions){
         return_to_base();
         return false;
@@ -134,13 +136,13 @@ bool Workout::execute(bool slide){
     Serial.println("position:");
     Serial.println(positions[positions_index]);
 
-    go_to_position(&(positions[positions_index]), slide);
+    go_to_position(&(positions[positions_index]));
 
     turn_on_laser();
 
     delay(laser_duration_ms);
 
-    if !(slide){
+    if (!slide){
         turn_off_laser();
         delay(duration_btwn_lasers_ms);
     }
@@ -148,9 +150,4 @@ bool Workout::execute(bool slide){
     positions_index++;
 
     return true;
-}
-
-void Workout::init(){
-    checkRandom();
-
 }

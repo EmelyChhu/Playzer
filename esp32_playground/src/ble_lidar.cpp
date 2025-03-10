@@ -245,11 +245,11 @@ uint8_t BLE_LIDAR::get_W(){
 uint8_t BLE_LIDAR::get_NP(){
   return num_pos;
 }
-uint8_t BLE_LIDAR::get_RAND(){
-  return random_bit;
+bool BLE_LIDAR::get_RAND(){
+  return (random_bit == 1);
 }
-uint8_t BLE_LIDAR::get_SLIDE(){
-  return sliding_bit;
+bool BLE_LIDAR::get_SLIDE(){
+  return (sliding_bit == 1);
 }
 std::vector<uint8_t> BLE_LIDAR::get_P(){
   return positions;
