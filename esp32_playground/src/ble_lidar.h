@@ -21,9 +21,11 @@ class BLE_LIDAR {
 public:
     static uint8_t duration_btwn_lasers;
     static uint8_t laser_duration;
-    static uint8_t cols;
-    static uint8_t rows;
+    static uint8_t height;
+    static uint8_t width;
     static uint8_t num_pos;
+    static uint8_t random_bit;
+    static uint8_t sliding_bit;
     static bool stopWorkout; 
 
     BLECharacteristic *pCharacteristic;
@@ -70,11 +72,13 @@ public:
     void reset_workout();
     bool stop();
 
+    uint8_t get_RAND();
+    uint8_t get_SLIDE();
     uint8_t get_DBL();
 
     uint8_t get_LD();
-    uint8_t get_C();
-    uint8_t get_R();
+    uint8_t get_H();
+    uint8_t get_W();
     uint8_t get_NP();
     std::vector<uint8_t> get_P();
 

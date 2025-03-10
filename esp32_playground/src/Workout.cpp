@@ -11,15 +11,17 @@ void turn_off_laser(){
     digitalWrite(LASER_PIN, LOW);
 }
 
-Workout::Workout(uint8_t id, uint16_t duration_btwn, uint16_t lsr_duration, 
-uint8_t cols, uint8_t rows, std::vector<uint8_t> pos, uint8_t num_positions) :
-id(id), columns(cols), rows(rows), positions(pos), num_positions(num_positions)
+Workout::Workout(uint8_t id, uint8_t random, uint8_t sliding, uint16_t duration_btwn, uint16_t lsr_duration, 
+uint8_t height, uint8_t width, std::vector<uint8_t> pos, uint8_t num_positions) :
+id(id), random(random), sliding(sliding), height(height), width(width), positions(pos), num_positions(num_positions)
 {
     duration_btwn_lasers_ms = duration_btwn * 1000;
     laser_duration_ms = lsr_duration * 1000;
+    height = height * 2; 
+    width = width * 2;
 
-    base_col = (int)(columns / 2);
-    base_row = rows;
+    base_col = (int)(height / 2);
+    base_row = width;
     positions_index = 0;
 
 }
@@ -27,8 +29,10 @@ id(id), columns(cols), rows(rows), positions(pos), num_positions(num_positions)
 Workout::Workout() // creates default workout for testing
 {
     id = 0;
-    columns = 6;
-    rows = 4;
+    height = 6;
+    width = 4;
+    sliding = 0;
+    random = 0;
     num_positions = 12;
     positions_index = 0;
 
@@ -40,8 +44,8 @@ Workout::Workout() // creates default workout for testing
     duration_btwn_lasers_ms = 1 * 1000;
     laser_duration_ms = 2 * 1000;
 
-    base_col = (int)(columns / 2);
-    base_row = rows;
+    base_col = (int)(height / 2);
+    base_row = width;
 
     div_per_col = 5;
     div_per_row = 6;
@@ -69,11 +73,11 @@ void Workout::calibrate(double dist_ft){
 }
 
 uint8_t Workout::decode_position_row(uint8_t *pos){
-    return (int)((*pos) / columns);
+    return (int)((*pos) / height);
 } 
 
 uint8_t Workout::decode_position_col(uint8_t *pos){
-    return (*pos) % columns;
+    return (*pos) % height;
 } 
 
 void Workout::go_to_position(uint8_t *pos, bool slide){

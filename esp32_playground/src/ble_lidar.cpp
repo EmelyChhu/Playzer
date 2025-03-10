@@ -4,9 +4,11 @@ using namespace std;
 
 uint8_t BLE_LIDAR::duration_btwn_lasers;
 uint8_t BLE_LIDAR::laser_duration;
-uint8_t BLE_LIDAR::cols;
-uint8_t BLE_LIDAR::rows;
+uint8_t BLE_LIDAR::height;
+uint8_t BLE_LIDAR::width;
 uint8_t BLE_LIDAR::num_pos;
+uint8_t BLE_LIDAR::random_bit;
+uint8_t BLE_LIDAR::sliding_bit;
 bool BLE_LIDAR::stopWorkout;
 
 
@@ -151,14 +153,17 @@ void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
         }
 
         // get the rest of the data
-        cols = (dec_num >> 46) & 0xF; // 4 bits
-        rows = (dec_num >> 46 + 4) & 0xF; // 4 bits
+        height = (dec_num >> 46) & 0xF; // 4 bits
+        width = (dec_num >> 46 + 4) & 0xF; // 4 bits
         duration_btwn_lasers = (dec_num >> 46 + 8) & 0xF; // 4 bits
         laser_duration = (dec_num >> 46 + 12) & 0xF; // 4 bits
+        sliding_bit = (dec_num >> 46 + 16) & 0x1;
+        random_bit = (dec_num >> 46 + 17) & 0x1;
 
         Serial.println("Number received:" + String(dec_num));
+        Serial.println("Sliding: "+ String(sliding_bit) + "\t Random: "+ String(random_bit));
         Serial.println("Duration Btwn Lasers: "+ String(duration_btwn_lasers) + "\t Laser Duration: "+ String(laser_duration));
-        Serial.println("Rows: "+ String(rows) + "\t Columns: "+ String(cols));
+        Serial.println("width: "+ String(width) + "\t height: "+ String(height));
         
 
         // print out the laser positions
@@ -214,8 +219,8 @@ void BLE_LIDAR::lidar_notify(double dist_ft)
 void BLE_LIDAR::reset_workout(){
   duration_btwn_lasers = 0;
   laser_duration = 0;
-  cols = 0;
-  rows = 0;
+  height = 0;
+  width = 0;
   num_pos = 0;
   stopWorkout = false;
   positions.clear();
@@ -231,14 +236,20 @@ uint8_t BLE_LIDAR::get_DBL(){
 uint8_t BLE_LIDAR::get_LD(){
   return laser_duration;
 }
-uint8_t BLE_LIDAR::get_C(){
-  return cols;
+uint8_t BLE_LIDAR::get_H(){
+  return height;
 }
-uint8_t BLE_LIDAR::get_R(){
-  return rows;
+uint8_t BLE_LIDAR::get_W(){
+  return width;
 }
 uint8_t BLE_LIDAR::get_NP(){
   return num_pos;
+}
+uint8_t BLE_LIDAR::get_RAND(){
+  return random_bit;
+}
+uint8_t BLE_LIDAR::get_SLIDE(){
+  return sliding_bit;
 }
 std::vector<uint8_t> BLE_LIDAR::get_P(){
   return positions;
