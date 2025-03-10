@@ -24,6 +24,8 @@ public:
     static uint8_t height;
     static uint8_t width;
     static uint8_t num_pos;
+    static uint8_t random_bit;
+    static uint8_t sliding_bit;
     static bool stopWorkout; 
 
     BLECharacteristic *pCharacteristic;
@@ -70,6 +72,8 @@ public:
     void reset_workout();
     bool stop();
 
+    uint8_t get_RAND();
+    uint8_t get_SLIDE();
     uint8_t get_DBL();
 
     uint8_t get_LD();

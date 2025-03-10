@@ -11,9 +11,9 @@ void turn_off_laser(){
     digitalWrite(LASER_PIN, LOW);
 }
 
-Workout::Workout(uint8_t id, uint16_t duration_btwn, uint16_t lsr_duration, 
+Workout::Workout(uint8_t id, uint8_t random, uint8_t sliding, uint16_t duration_btwn, uint16_t lsr_duration, 
 uint8_t height, uint8_t width, std::vector<uint8_t> pos, uint8_t num_positions) :
-id(id), height(height), width(width), positions(pos), num_positions(num_positions)
+id(id), random(random), sliding(sliding), height(height), width(width), positions(pos), num_positions(num_positions)
 {
     duration_btwn_lasers_ms = duration_btwn * 1000;
     laser_duration_ms = lsr_duration * 1000;
@@ -31,6 +31,8 @@ Workout::Workout() // creates default workout for testing
     id = 0;
     height = 6;
     width = 4;
+    sliding = 0;
+    random = 0;
     num_positions = 12;
     positions_index = 0;
 
@@ -95,8 +97,8 @@ void Workout::return_to_base(){
 }
 
 void Workout::checkRandom(){
-    // width == 15 indicates random workout
-    if (width == 15){ // checking if positions should be random
+    // random == 1 is random workout
+    if (random == 1){ // checking if positions should be random
         width = 4;
         base_row = width;
         std::srand(std::time(0));
