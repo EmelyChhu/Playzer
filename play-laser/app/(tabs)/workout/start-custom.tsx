@@ -12,7 +12,7 @@ import React, { useState, useEffect } from 'react';
  * 
  * @returns {JSX.Element} - React component that renders the UI
  * 
- * provides a button for each custom routine that users can click to start that workout (`(tabs)/workout/start/start-routine`)
+ * provides a button for each custom routine that users can click to start that workout (`(tabs)/workout/start-routine`)
  */
 export default function ViewCustomRoutinesScreen() {
   const [customWorkouts, setCustomWorkouts] = useState<string[][]>();
@@ -51,6 +51,17 @@ export default function ViewCustomRoutinesScreen() {
         <Text variant="bodyMedium">
           View routines you've created or create your own.
         </Text>
+        <Text style={styles.subtitle} variant="titleLarge">
+          New
+        </Text>
+        <View style={styles.routineButtonsContainer}>
+          <NavigationButton
+            size="small"
+            path="./create-custom-1"
+            text="Create"
+            icon="plus"
+          />
+        </View>
         <Text style={styles.subtitle} variant="titleLarge">
           Created
         </Text>
