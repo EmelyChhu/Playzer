@@ -27,18 +27,18 @@ export default function WorkoutStartScreen() {
         <View style={styles.routineButtonsContainer}>
           <NavigationButton
             size="medium"
-            path="./workout/start-premade"
+            path="/(tabs)/workout/start-premade"
             text="Premade"
             icon="list"
           />
           <NavigationButton
             size="medium"
-            path="./workout/start-custom"
+            path="/(tabs)/workout/start-custom"
             text="Custom"
             icon="edit"
           />
         </View>
-        <Button style={styles.button} mode='contained' onPress={() => router.push("./workout/start-random")}>
+        <Button style={styles.button} mode='contained' onPress={() => router.push("/(tabs)/workout/start-random")}>
           <Text style={[styles.text, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             Device Randomized
           </Text>
@@ -68,9 +68,7 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     height: 48,
-    alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   text: {
     fontSize: 16,
