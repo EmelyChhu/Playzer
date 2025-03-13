@@ -2,6 +2,7 @@
 #define WORKOUT_H
 
 #include "Constants.h"
+#include <cmath>
 
 class Workout {
 private:
@@ -38,8 +39,6 @@ private:
 
 
 public:
-    // Default constructor
-    Workout();
 
     // Constructor
     Workout(bool random, bool slide, uint16_t duration_btwn, uint16_t lsr_duration, 

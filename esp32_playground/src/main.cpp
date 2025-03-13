@@ -51,17 +51,15 @@ void loop() {
             // polls the distance to get an accurate lidar sensor reading
             bluetooth_obj->getDistance(&bluetooth_obj->lidar_distance_cm);
         }
-
-        Workout workout;
-        // test_workout = Workout();
-        workout = Workout(  bluetooth_obj->get_RAND(),
-                            bluetooth_obj->get_SLIDE(),
-                            bluetooth_obj->get_DBL(), 
-                            bluetooth_obj->get_LD(), 
-                            bluetooth_obj->get_H(), 
-                            bluetooth_obj->get_W(), 
-                            bluetooth_obj->get_P(), 
-                            bluetooth_obj->get_NP());
+        
+        Workout workout(bluetooth_obj->get_RAND(),
+                        bluetooth_obj->get_SLIDE(),
+                        bluetooth_obj->get_DBL(), 
+                        bluetooth_obj->get_LD(), 
+                        bluetooth_obj->get_H(), 
+                        bluetooth_obj->get_W(), 
+                        bluetooth_obj->get_P(), 
+                        bluetooth_obj->get_NP());
 
         workout.calibrate(bluetooth_obj->calculate_distance());
 

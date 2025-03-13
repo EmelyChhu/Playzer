@@ -34,47 +34,14 @@ random(random), slide(slide), height(height), width(width), positions(pos), num_
 
 }
 
-Workout::Workout() // creates default workout for testing
-{
-    height = 6;
-    width = 4;
-    slide = false;
-    random = false;
-    num_positions = 12;
-    positions_index = 0;
-
-    positions.resize(12); 
-    for (size_t i = 1; i < num_positions+1; i++) {
-        positions[i-1] = i;
-    }
-
-    duration_btwn_lasers_ms = 1 * 1000;
-    laser_duration_ms = 2 * 1000;
-
-    base_col = (int)(height / 2);
-    base_row = width;
-
-    div_per_col = 5;
-    div_per_row = 6;
-}
-
 void Workout::calibrate(double dist_ft){
-    if (dist_ft < 5){
-        div_per_col = 7;  
-        div_per_row = 8; 
-    } else if (dist_ft < 10){
-        div_per_col = 6;
-        div_per_row = 7;
-    } else if (dist_ft < 15){
-        div_per_col = 5;
-        div_per_row = 6;
-    } else if (dist_ft < 20){
-        div_per_col = 4;
-        div_per_row = 5;
-    } else{
-        div_per_col = 3;
-        div_per_row = 4;
-    }
+
+    int col_divs = int(std::atan(width / 2 / dist_ft) * (180 / M_PI) / ANGLE_PER_DUTY_CYCLE);
+    div_per_col = int(col_divs / 8) ? col_divs % 8 > 3 : int(col_divs / 8) + 1;
+
+    int row_divs = int(std::atan(height / dist_ft) * (180 / M_PI) / ANGLE_PER_DUTY_CYCLE);
+    div_per_row = int(row_divs / 4) ? row_divs % 8 > 1 : int(row_divs / 8) + 1;
+
 }
 
 uint8_t Workout::decode_position_row(uint8_t *pos){
