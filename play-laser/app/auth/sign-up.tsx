@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { useState, useEffect, useLayoutEffect } from 'react';
 
 import { View } from '@/components/Themed';
-import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
+import { PaperProvider, Text, Button, TextInput, Checkbox } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 
@@ -67,6 +67,8 @@ export default function SignUpScreen() {
     const [validNameInput, setValidNameInput] = useState(true);
     const [validEmailInput, setValidEmailInput] = useState(true);
     const [validPasswordInput, setValidPasswordInput] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
+    const [checked, setChecked] = useState(false);
 
     const auth = FIREBASE_AUTH;
 
@@ -109,9 +111,6 @@ export default function SignUpScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title} variant="displaySmall">
-          Create an Account
-        </Text>
         <Text style={styles.label} variant="titleMedium">
           Full Name
         </Text>
@@ -147,15 +146,29 @@ export default function SignUpScreen() {
             <TextInput
                 style={styles.input}
                 mode="outlined"
-                secureTextEntry={true}
+                secureTextEntry={!showPassword}
                 error={validPasswordInput ? false : true}
                 textColor={validPasswordInput ? undefined : "pink"}
                 label="Password"
                 value={password}
                 onChangeText={setPassword}/>
         </View>
-    <Text style={validPasswordInput ? styles.subtitle : styles.subtitleError}>Passwords must contain at least 8 characters.</Text>
+        <Text style={validPasswordInput ? styles.subtitle : styles.subtitleError}>
+          Passwords must contain at least 8 characters.
+        </Text>
         {!validPasswordInput ? <Text style={styles.errorText}>Please enter a valid password.</Text> : null}
+        <View style={styles.checkboxContainer}>
+          <Checkbox
+            status={checked ? 'checked' : 'unchecked'}
+            onPress={() => {
+              setChecked(!checked);
+              setShowPassword(!showPassword);
+            }}
+          />
+          <Text>
+            Show password
+          </Text>
+        </View>
         <Button style={styles.button} mode="contained" onPress={handleSignUp} disabled={buttonDisabled}>
             Sign up
         </Button>
@@ -170,6 +183,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     padding: 10,
+  },
+  checkboxContainer: {
+    width: '100%',
+    height: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginTop: 6,
   },
   title: {
     padding: 25,
