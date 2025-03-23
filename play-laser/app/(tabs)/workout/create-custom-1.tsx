@@ -151,7 +151,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   largeInput: {
     width: '100%',

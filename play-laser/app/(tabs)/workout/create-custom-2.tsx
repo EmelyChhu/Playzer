@@ -93,6 +93,7 @@ export default function CreateCustomRoutine2Screen() {
       setErrorMessageLasers("Please add at least 5 laser positions.");
     }
     if (!convFail) {
+      setButtonDisabled(true);
       const newCustomWorkout = {
         id: "0",
         name: name,
@@ -110,7 +111,7 @@ export default function CreateCustomRoutine2Screen() {
       console.log("Saved Custom Routine:", newCustomWorkout);
       setButtonText("Workout Saved! Exit");
       setIsSaved(true);
-      // setButtonDisabled(true);
+      setButtonDisabled(false);
     }
   }
 
@@ -266,7 +267,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   laserGridInput: {
     alignItems: 'center',
