@@ -62,6 +62,9 @@ export default function StartPremadeRoutinesScreen() {
         <Text style={styles.subtitle} variant="titleLarge">
           Basic
         </Text>
+        <Text variant="bodyMedium">
+          Accuracy (Predictable Patterns)
+        </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal>
             {basicWorkouts.map((workout, index) => (
@@ -77,6 +80,9 @@ export default function StartPremadeRoutinesScreen() {
         <Text style={styles.subtitle} variant="titleLarge">
           Random
         </Text>
+        <Text variant="bodyMedium">
+          Reaction Time (Random Patterns)
+        </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
             {randomWorkouts.map((workout, index) => (
@@ -91,6 +97,9 @@ export default function StartPremadeRoutinesScreen() {
         </View>
         <Text style={styles.subtitle} variant="titleLarge">
           Sport-Specific
+        </Text>
+        <Text variant="bodyMedium">
+          Relevant (Common Patterns in Each Sport)
         </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
