@@ -31,7 +31,8 @@
     "plugins": [
       "expo-router",
       "react-native-ble-plx",
-      "expo-font"
+      "expo-font",
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true

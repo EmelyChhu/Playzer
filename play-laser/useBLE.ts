@@ -57,7 +57,7 @@ function useBLE(): BluetoothLowEnergyApi {
   const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
   const [distance, setDistance] = useState<number>(0);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-  const [screenState, setScreenState] = useState(1);    // possible states: 1 (connection), 2 (sync distance), 3 (workout), 4 (workout complete)
+  const [screenState, setScreenState] = useState(1);    // possible states: 1 (connection), 2 (sync distance), 3 (settings), 4 (workout), 5 (workout complete)
 
   const requestAndroid31Permissions = async () => {
     // const bluetoothScanPermission = await PermissionsAndroid.request(

@@ -10,6 +10,9 @@ import { useState, useEffect, useRef } from 'react';
 import { btoa, atob } from 'react-native-quick-base64';
 import { Workout, randomWorkout } from '@/types';
 import { router } from 'expo-router';
+import { useAudioPlayer } from 'expo-audio';
+
+const audioSource = require('../../../assets/audio/done.mp3');
 
 import DeviceModal from "../../device-connection-modal";
 import { useBLEContext } from "@/BLEContext"
@@ -421,7 +424,9 @@ export default function ConnectStartScreen() {
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-  
+
+    const player = useAudioPlayer(audioSource);
+
     useEffect(() => {
       if (workoutState == 2) {
         if (time < workoutDuration) {
@@ -434,7 +439,8 @@ export default function ConnectStartScreen() {
             clearInterval(id);
           };
         } else {
-          setScreenState(4);
+          setScreenState(5);
+          player.play()
           if (intervalId) {
             clearInterval(intervalId);
           }
