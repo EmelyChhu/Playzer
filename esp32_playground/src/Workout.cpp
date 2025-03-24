@@ -12,16 +12,16 @@ void turn_off_laser(){
 }
 
 Workout::Workout(bool random, bool slide, uint16_t duration_btwn, uint16_t lsr_duration, 
-uint8_t height, uint8_t width, std::vector<uint8_t> pos, uint8_t num_positions) :
-random(random), slide(slide), height(height), width(width), positions(pos), num_positions(num_positions)
+uint8_t h, uint8_t w, std::vector<uint8_t> pos, uint8_t num_positions) :
+random(random), slide(slide), positions(pos), num_positions(num_positions)
 {
     duration_btwn_lasers_ms = duration_btwn * 1000;
     laser_duration_ms = lsr_duration * 1000;
-    height = height * 2; 
-    width = width * 2;
+    height = h * 2; 
+    width = w * 2;
 
-    base_col = (int)(height / 2);
-    base_row = width;
+    base_col = NUM_COLUMNS/2;
+    base_row = NUM_ROWS;
     positions_index = 0;
 
     if (random){ // checking if positions should be random
@@ -36,11 +36,17 @@ random(random), slide(slide), height(height), width(width), positions(pos), num_
 
 void Workout::calibrate(double dist_ft){
 
-    int col_divs = int(std::atan(width / 2 / dist_ft) * (180 / M_PI) / ANGLE_PER_DUTY_CYCLE);
-    div_per_col = int(col_divs / 8) ? col_divs % 8 > 3 : int(col_divs / 8) + 1;
+    Serial.println(width);
+    Serial.println(dist_ft);
+    Serial.println(std::atan(width / (2 * dist_ft)));
 
-    int row_divs = int(std::atan(height / dist_ft) * (180 / M_PI) / ANGLE_PER_DUTY_CYCLE);
-    div_per_row = int(row_divs / 4) ? row_divs % 8 > 1 : int(row_divs / 8) + 1;
+
+    int col_divs = int(std::atan(width / (2 * dist_ft)) * (180 / 3.14) / ANGLE_PER_DUTY_CYCLE);
+    div_per_col = col_divs % 8 < 4 ? int(col_divs / 8) : int(col_divs / 8) + 1;
+
+    int row_divs = int(std::atan(height / dist_ft) * (180 / 3.14) / ANGLE_PER_DUTY_CYCLE);
+    div_per_row = row_divs % 4 < 2 ? int(row_divs / 4) : int(row_divs / 4) + 1;
+    if (div_per_row > 10) div_per_row = 10;
 
 }
 
@@ -70,21 +76,40 @@ void Workout::go_to_position(uint8_t *pos){
         ledcWrite(PWM_CHANNEL_BOT_SERVO, curr_bot_DC);
         ledcWrite(PWM_CHANNEL_TOP_SERVO, curr_top_DC);
         delay(MOVEMENT_DELAY);
-    }else{
+    } else if (prev_bot_DC == curr_bot_DC && prev_top_DC == curr_top_DC) {
+        ledcWrite(PWM_CHANNEL_BOT_SERVO, curr_bot_DC);
+        ledcWrite(PWM_CHANNEL_TOP_SERVO, curr_top_DC);
+        delay(duration_btwn_lasers_ms);
+
+    } else{
         delta_top = curr_top_DC - prev_top_DC;
         delta_bot = curr_bot_DC - prev_bot_DC;
+        uint8_t small_itr = 0;
 
-
-        // needs more work
-        ledcWrite(PWM_CHANNEL_BOT_SERVO, prev_bot_DC + (delta_bot/2));
-        ledcWrite(PWM_CHANNEL_TOP_SERVO, prev_top_DC + (delta_top/2));
-        delay(duration_btwn_lasers_ms/2);
+        if (abs(delta_top) > abs(delta_bot)){
+            for (int i = 0; abs(i) <= abs(delta_top); i += (delta_top/abs(delta_top))){
+                ledcWrite(PWM_CHANNEL_TOP_SERVO, prev_top_DC + i);
+                if (abs(delta_bot) > abs(small_itr)){
+                    small_itr += delta_bot / abs(delta_bot);
+                    ledcWrite(PWM_CHANNEL_BOT_SERVO, prev_bot_DC + small_itr);
+                }
+                delay(duration_btwn_lasers_ms/abs(delta_top));
+            }
+        } else {
+            for (int i = 0; abs(i) <= abs(delta_bot); i += (delta_bot/abs(delta_bot))){
+                ledcWrite(PWM_CHANNEL_BOT_SERVO, prev_bot_DC + i);
+                if (abs(delta_top) > abs(small_itr)){
+                    small_itr += delta_top / abs(delta_top);
+                    ledcWrite(PWM_CHANNEL_TOP_SERVO, prev_top_DC + small_itr);
+                }
+                delay(duration_btwn_lasers_ms/abs(delta_bot));
+            }
+        }
 
         ledcWrite(PWM_CHANNEL_BOT_SERVO, curr_bot_DC);
         ledcWrite(PWM_CHANNEL_TOP_SERVO, curr_top_DC);
-        delay(duration_btwn_lasers_ms/2);
-        //
 
+        
     }
 } 
 

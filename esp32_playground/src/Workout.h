@@ -25,8 +25,8 @@ private:
     uint8_t prev_bot_DC = 0;
     uint8_t prev_top_DC = 0;
 
-    uint8_t curr_bot_DC = 0;
-    uint8_t curr_top_DC = 0;
+    uint8_t curr_bot_DC = BASE_DUTY_CYCLE;
+    uint8_t curr_top_DC = BASE_DUTY_CYCLE;
     int delta_top;
     int delta_bot;
 
@@ -42,7 +42,7 @@ public:
 
     // Constructor
     Workout(bool random, bool slide, uint16_t duration_btwn, uint16_t lsr_duration, 
-    uint8_t height, uint8_t width, std::vector<uint8_t> pos, u_int8_t num_positions);
+    uint8_t h, uint8_t w, std::vector<uint8_t> pos, u_int8_t num_positions);
 
     void calibrate(double dist_ft);
     void checkRandom();
