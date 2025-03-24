@@ -94,6 +94,7 @@ export default function CreateCustomRoutine2Screen() {
     }
     if (!convFail) {
       setButtonDisabled(true);
+      setButtonText("Workout Saving");
       const newCustomWorkout = {
         id: "0",
         name: name,
@@ -122,6 +123,10 @@ export default function CreateCustomRoutine2Screen() {
       setButtonDisabled(true);
     }
   }, [durationBetweenLasers, laserDuration, laserPositions]);
+
+  const handleRemoveLaserPosition = (index: number) => {
+    setLaserPositions((prevPositions) => prevPositions.filter((_, i) => i !== index));
+  };
 
   return (
     <PaperProvider>
@@ -180,6 +185,8 @@ export default function CreateCustomRoutine2Screen() {
                 workout={workouts[0]}
                 index={index}
                 laserPosition={laserPosition}
+                removeButton={true}
+                removeLaserPosition={handleRemoveLaserPosition}
               />
             ))}
           </ScrollView>

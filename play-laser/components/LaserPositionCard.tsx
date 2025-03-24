@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 
 import { View } from '@/components/Themed';
-import { Text } from 'react-native-paper';import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Text } from 'react-native-paper';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { LaserPositionCardProps, LaserGridProps } from '@/types';
 
 import Colors from '@/constants/Colors';
@@ -22,7 +23,7 @@ export default function LaserPositionCard(
   props: LaserPositionCardProps
 ) {
   const colorScheme = useColorScheme();
-  const { workout, laserPosition, index } = props;
+  const { workout, laserPosition, index, removeButton, removeLaserPosition } = props;
   
   return (
     <View style={[styles.laserPositionCard, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
@@ -35,6 +36,15 @@ export default function LaserPositionCard(
       <Text style={[styles.text, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
         Laser {index + 1}
       </Text>
+      {(removeButton && removeLaserPosition) ? 
+        <Pressable
+          onPress={() => removeLaserPosition(index)}
+          style={styles.removeButton}
+        >
+          <FontAwesome name="times-circle" size={20} color="#422f7f" />
+        </Pressable>
+      :
+      null}
     </View>
   );
 }
@@ -115,4 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 8,
   },
+  removeButton: {
+    marginLeft: 8,
+  }
 });
