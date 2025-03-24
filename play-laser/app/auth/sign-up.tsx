@@ -100,7 +100,9 @@ export default function SignUpScreen() {
 
     useEffect(() => {
       if (name != "" && email != "" && password != "") {
-          setButtonDisabled(false);
+        setButtonDisabled(false);
+      } else {
+        setButtonDisabled(true);
       }
     }, [name, email, password]);
 
@@ -154,7 +156,7 @@ export default function SignUpScreen() {
         </View>
     <Text style={validPasswordInput ? styles.subtitle : styles.subtitleError}>Passwords must contain at least 8 characters.</Text>
         {!validPasswordInput ? <Text style={styles.errorText}>Please enter a valid password.</Text> : null}
-        <Button style={styles.button} mode="contained" onPress={handleSignUp}>
+        <Button style={styles.button} mode="contained" onPress={handleSignUp} disabled={buttonDisabled}>
             Sign up
         </Button>
       </View>

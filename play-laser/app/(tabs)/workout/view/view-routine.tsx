@@ -13,14 +13,13 @@ import { fetchWorkouts } from "@/FirebaseConfig";
 import { useLocalSearchParams } from 'expo-router';
 
 /**
- * StartRoutineScreen Component - screen that provides information for a given workout routine
+ * ViewRoutineScreen Component - screen that provides information for a given workout routine
  * 
  * @returns {JSX.Element} - React component that renders the UI
  * 
- * provides "Start Workout" button that will navigate to the screen to start the workout (`(tabs)/workout/start/connect-start`)
  * provides the workout's duration, laser duration, duration between lasers, and a card for each laser position
  */
-export default function StartRoutineScreen() {
+export default function ViewRoutineScreen() {
   const colorScheme = useColorScheme();
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [minutes, setMinutes] = useState(0);
@@ -29,21 +28,17 @@ export default function StartRoutineScreen() {
   const { workoutId } = useLocalSearchParams();
 
   useEffect(() => {
-    // const workoutId = "QTTJdK3H0jS6yLcAItvg";
     // const workoutId = "1"; // TESTING BASIC 1 PREMADE ROUTINE
     console.log("Fetching workout with ID:", workoutId);
 
     const loadWorkout = async () => {
       const fetchedWorkout = await fetchWorkouts(workoutId);
-
-      // RETURNS ALL INFO ON DOCUMENT CALLED
       console.log("Fetched workout:", fetchedWorkout);
-
       setWorkout(fetchedWorkout);
-      const workoutDuration = fetchedWorkout.laserPositions.length * (fetchedWorkout.durationBetweenLasers + fetchedWorkout.laserDuration);
+
+      const workoutDuration = Number(fetchedWorkout.laserPositions.length) * (Number(fetchedWorkout.durationBetweenLasers) + Number(fetchedWorkout.laserDuration));
       setMinutes(Math.floor(workoutDuration / 60));
       setSeconds(workoutDuration % 60);
-      // console.log(workoutDuration, minutes, seconds)
     };
     loadWorkout();
   }, []);
@@ -67,18 +62,9 @@ export default function StartRoutineScreen() {
         <Text style={styles.title} variant="headlineMedium">
           {workout.name}
         </Text>
-        <Text variant="bodyMedium">
+        <Text style={styles.description} variant="bodyMedium">
             {workout.description}
         </Text>
-        <Button
-          style={styles.button}
-          mode='contained'
-          onPress={() => router.push(`./connect-start?workoutId=${workoutId}`)}
-        >
-          <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
-            Start Workout
-          </Text>
-        </Button>
         <Text style={styles.title} variant="titleLarge">
           Workout Details
         </Text>
@@ -138,16 +124,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: 4,
   },
-  buttonText: {
-    fontSize: 16,
-    // marginLeft: 8,
-  },
-  button: {
-    width: '100%',
-    height: 48,
-    marginVertical: 16,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
+  description: {
+    marginBottom: 12,
   },
 });

@@ -8,14 +8,14 @@ import { getWorkoutTypeDocs } from "@/FirebaseConfig";
 import React, { useState, useEffect } from 'react';
 
 /**
- * StartPremadeRoutinesScreen Component - screen that displays created premade routines
+ * ViewPremadeRoutinesScreen Component - screen that displays created premade routines
  * 
  * @returns {JSX.Element} - React component that renders the UI
  * 
- * provides 3 categories of premade routines: Basic, Random, and Sport-Specific
- * provides a button for each premade routine that users can click to start that workout (`(tabs)/workout/start/start-routine`)
+ * provides 3 categories of premade routines: Basic, Random, and Sport-Specific 
+ * provides a button for each premade routine that users can click to view that workout (`(tabs)/workout/view/view-routine`)
  */
-export default function StartPremadeRoutinesScreen() {
+export default function ViewPremadeRoutinesScreen() {
   const [basicWorkouts, setBasicWorkouts] = useState<string[][]>();
   const [randomWorkouts, setRandomWorkouts] = useState<string[][]>();
   const [sportSpecificWorkouts, setSportSpecificWorkouts] = useState<string[][]>();
@@ -69,7 +69,7 @@ export default function StartPremadeRoutinesScreen() {
                 key={index}
                 size="small"
                 text={workout[0]}
-                path={`./start-routine?workoutId=${workout[1]}`}
+                path={`./view-routine?workoutId=${workout[1]}`}
               />
             ))}
           </ScrollView>
@@ -84,7 +84,7 @@ export default function StartPremadeRoutinesScreen() {
                 key={index}
                 size="small"
                 text={workout[0]}
-                path={`./start-routine?workoutId=${workout[1]}`}
+                path={`./view-routine?workoutId=${workout[1]}`}
               />
             ))}
           </ScrollView>
@@ -99,7 +99,7 @@ export default function StartPremadeRoutinesScreen() {
                 key={index}
                 size="small"
                 text={workout[0]}
-                path={`./start-routine?workoutId=${workout[1]}`}
+                path={`./view-routine?workoutId=${workout[1]}`}
               />
             ))}
           </ScrollView>

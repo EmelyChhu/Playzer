@@ -55,8 +55,8 @@ const LaserGrid: React.FC<LaserGridProps> = ({
   laserPosition
 }) => {
   const colorScheme = useColorScheme();
-  const laserPositionRow = laserPosition != undefined ? Math.floor((laserPosition - 1) / numColumns) : -1;
-  const laserPositionColumn = laserPosition != undefined ? (laserPosition - 1) % numColumns : -1;
+  const laserPositionRow = laserPosition != undefined ? Math.floor(laserPosition / numColumns) : -1;
+  const laserPositionColumn = laserPosition != undefined ? (laserPosition % numColumns) : -1;
 
   const rows = [];
   for (let i = 0; i < numRows; i++) {
