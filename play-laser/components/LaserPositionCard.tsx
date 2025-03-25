@@ -41,7 +41,7 @@ export default function LaserPositionCard(
           onPress={() => removeLaserPosition(index)}
           style={styles.removeButton}
         >
-          <FontAwesome name="times-circle" size={20} color="#422f7f" />
+          <FontAwesome name="trash" size={20} color="#422f7f" />
         </Pressable>
       :
       null}
@@ -127,5 +127,6 @@ const styles = StyleSheet.create({
   },
   removeButton: {
     marginLeft: 8,
+    marginBottom: 2,
   }
 });

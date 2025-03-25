@@ -114,6 +114,9 @@ export default function ConnectStartScreen() {
   };
 
   const encodeWorkoutData2 = (workout: Workout, width: number, height: number, sliding: number): bigint => {
+    const widthDiv = Math.floor(width / 2);
+    const heightDiv = Math.floor(height / 2);
+
     let data = BigInt(0);
     if (workout.id == "RANDOM") {
       data |= BigInt(1); // 1 bit for deviceRandomized
@@ -127,9 +130,9 @@ export default function ConnectStartScreen() {
     data <<= BigInt(4);
     data |= BigInt(workout.durationBetweenLasers);  // 4 bits for durationBetweenLasers
     data <<= BigInt(4);
-    data |= BigInt(width);  // 4 bits for width
+    data |= BigInt(widthDiv);  // 4 bits for width
     data <<= BigInt(4);
-    data |= BigInt(height);  // 4 bits for height
+    data |= BigInt(heightDiv);  // 4 bits for height
     data <<= BigInt(5);
 
     for (let i = 19; i >= 11; i--) {
@@ -439,8 +442,8 @@ export default function ConnectStartScreen() {
             clearInterval(id);
           };
         } else {
-          setScreenState(5);
           player.play()
+          setTimeout(() => setScreenState(5), 2000);
           if (intervalId) {
             clearInterval(intervalId);
           }
