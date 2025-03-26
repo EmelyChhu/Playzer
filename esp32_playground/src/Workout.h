@@ -22,11 +22,11 @@ private:
     uint8_t div_per_col;
     uint8_t div_per_row;
 
-    uint8_t prev_bot_DC = 0;
-    uint8_t prev_top_DC = 0;
+    int prev_bot_DC;
+    int prev_top_DC;
 
-    uint8_t curr_bot_DC = BASE_DUTY_CYCLE;
-    uint8_t curr_top_DC = BASE_DUTY_CYCLE;
+    int curr_bot_DC;
+    int curr_top_DC;
     int delta_top;
     int delta_bot;
 

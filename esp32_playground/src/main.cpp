@@ -26,23 +26,28 @@ void setup() {
 
 void loop() { 
 
-    // Workout test_workout;
     // std::vector<uint8_t> test_pos;
-    // for (int x = 1; x < 33; x++){
+    // for (int x = 0; x < 32; x++){
     //     test_pos.push_back((x));
     // }
     // // test_workout = Workout();
-    // test_workout = Workout( 1, 
-    //                         1, 
-    //                         2, 
-    //                         8, 
-    //                         4, // 15 rows == random 
-    //                         test_pos, 
-    //                         32);
+    // Workout workout(true,
+    //         true,
+    //         4, 
+    //         2, 
+    //         10, 
+    //         10, 
+    //         test_pos, 
+    //         32);
 
-    // test_workout.calibrate(bluetooth_obj->calculate_distance());
+    // workout.calibrate(6.0);
+    // // workout.calibrate(bluetooth_obj->calculate_distance());
 
-    // test_workout.execute();
+    // while(workout.execute())
+    // workout.return_to_base();
+
+    // delay(5000);
+
 
     if(bluetooth_obj->deviceConnected)
     {

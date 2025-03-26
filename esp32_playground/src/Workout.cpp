@@ -20,15 +20,17 @@ random(random), slide(slide), positions(pos), num_positions(num_positions)
     height = h * 2; 
     width = w * 2;
 
-    base_col = NUM_COLUMNS/2;
-    base_row = NUM_ROWS;
+    base_col = NUM_COLUMNS / 2;
+    base_row = NUM_ROWS - 1;
     positions_index = 0;
+
+    curr_bot_DC = curr_top_DC = BASE_DUTY_CYCLE;
 
     if (random){ // checking if positions should be random
         std::srand(std::time(0));
 
         for (uint8_t i = 0; i < num_positions; i++){
-            positions[i] = (std::rand() % 32) + 1;
+            positions[i] = (std::rand() % 32);
         }
     }
 
@@ -43,6 +45,7 @@ void Workout::calibrate(double dist_ft){
 
     int col_divs = int(std::atan(width / (2 * dist_ft)) * (180 / 3.14) / ANGLE_PER_DUTY_CYCLE);
     div_per_col = col_divs % 8 < 4 ? int(col_divs / 8) : int(col_divs / 8) + 1;
+    if (div_per_col > 12) div_per_col = 12;
 
     int row_divs = int(std::atan(height / dist_ft) * (180 / 3.14) / ANGLE_PER_DUTY_CYCLE);
     div_per_row = row_divs % 4 < 2 ? int(row_divs / 4) : int(row_divs / 4) + 1;
@@ -55,7 +58,7 @@ uint8_t Workout::decode_position_row(uint8_t *pos){
 } 
 
 uint8_t Workout::decode_position_col(uint8_t *pos){
-    return (*pos) % NUM_COLUMNS;
+    return (*pos) % (NUM_COLUMNS);
 } 
 
 void Workout::go_to_position(uint8_t *pos){
@@ -76,39 +79,53 @@ void Workout::go_to_position(uint8_t *pos){
         ledcWrite(PWM_CHANNEL_BOT_SERVO, curr_bot_DC);
         ledcWrite(PWM_CHANNEL_TOP_SERVO, curr_top_DC);
         delay(MOVEMENT_DELAY);
-    } else if (prev_bot_DC == curr_bot_DC && prev_top_DC == curr_top_DC) {
-        ledcWrite(PWM_CHANNEL_BOT_SERVO, curr_bot_DC);
-        ledcWrite(PWM_CHANNEL_TOP_SERVO, curr_top_DC);
-        delay(duration_btwn_lasers_ms);
-
     } else{
         delta_top = curr_top_DC - prev_top_DC;
         delta_bot = curr_bot_DC - prev_bot_DC;
-        uint8_t small_itr = 0;
-
-        if (abs(delta_top) > abs(delta_bot)){
-            for (int i = 0; abs(i) <= abs(delta_top); i += (delta_top/abs(delta_top))){
-                ledcWrite(PWM_CHANNEL_TOP_SERVO, prev_top_DC + i);
-                if (abs(delta_bot) > abs(small_itr)){
-                    small_itr += delta_bot / abs(delta_bot);
-                    ledcWrite(PWM_CHANNEL_BOT_SERVO, prev_bot_DC + small_itr);
-                }
-                delay(duration_btwn_lasers_ms/abs(delta_top));
-            }
-        } else {
-            for (int i = 0; abs(i) <= abs(delta_bot); i += (delta_bot/abs(delta_bot))){
-                ledcWrite(PWM_CHANNEL_BOT_SERVO, prev_bot_DC + i);
-                if (abs(delta_top) > abs(small_itr)){
-                    small_itr += delta_top / abs(delta_top);
-                    ledcWrite(PWM_CHANNEL_TOP_SERVO, prev_top_DC + small_itr);
-                }
-                delay(duration_btwn_lasers_ms/abs(delta_bot));
-            }
+        
+        if (delta_top == 0 && delta_bot == 0){
+            ledcWrite(PWM_CHANNEL_BOT_SERVO, curr_bot_DC);
+            ledcWrite(PWM_CHANNEL_TOP_SERVO, curr_top_DC);
+            delay(duration_btwn_lasers_ms);
+            return;
         }
 
-        ledcWrite(PWM_CHANNEL_BOT_SERVO, curr_bot_DC);
-        ledcWrite(PWM_CHANNEL_TOP_SERVO, curr_top_DC);
+        int small_itr = 0;
+        int i = 0;
 
+        if (abs(delta_top) > abs(delta_bot)){
+            while(abs(i) < abs(delta_top)){
+                i += delta_top / abs(delta_top);
+                ledcWrite(PWM_CHANNEL_TOP_SERVO, prev_top_DC + i);
+                Serial.print("top DC: ");
+                Serial.println(prev_top_DC+i);
+                if (abs(delta_bot) > abs(small_itr)){
+                    small_itr += int(delta_bot / abs(delta_bot));
+                    ledcWrite(PWM_CHANNEL_BOT_SERVO, prev_bot_DC + small_itr);
+                    Serial.print("bot DC: ");
+                    Serial.println(prev_bot_DC+small_itr);
+                }else {
+                    ledcWrite(PWM_CHANNEL_BOT_SERVO, curr_bot_DC);
+                }
+                delay(int(duration_btwn_lasers_ms/abs(delta_top)));
+            }
+        } else {
+            while(abs(i) < abs(delta_bot)){
+                i += delta_bot / abs(delta_bot);
+                ledcWrite(PWM_CHANNEL_BOT_SERVO, prev_bot_DC + i);
+                Serial.print("bot DC: ");
+                Serial.println(prev_bot_DC+i);
+                if (abs(delta_top) > abs(small_itr)){
+                    small_itr += int(delta_top / abs(delta_top));
+                    ledcWrite(PWM_CHANNEL_TOP_SERVO, prev_top_DC + small_itr);
+                    Serial.print("top DC: ");
+                    Serial.println(prev_top_DC+small_itr);
+                } else {
+                    ledcWrite(PWM_CHANNEL_TOP_SERVO, curr_top_DC);
+                }
+                delay(int(duration_btwn_lasers_ms/abs(delta_bot)));
+            }
+        }
         
     }
 } 
