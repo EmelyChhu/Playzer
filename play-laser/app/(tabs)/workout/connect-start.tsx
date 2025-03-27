@@ -357,7 +357,7 @@ export default function ConnectStartScreen() {
         <Text variant="bodyMedium">
           Input the settings for your workout routine.
         </Text>
-        <Button style={styles.saveButton} mode='contained' onPress={handleStartRoutine}>
+        <Button style={styles.saveButton} mode='contained' onPress={handleStartRoutine} disabled={buttonDisabled}>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             Confirm settings
           </Text>
