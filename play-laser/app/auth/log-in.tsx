@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { useState, useEffect, useLayoutEffect } from 'react';
 
 import { View } from '@/components/Themed';
-import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
+import { PaperProvider, Text, Button, TextInput, Checkbox } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 
@@ -28,6 +28,8 @@ export default function LogInScreen() {
     const [password, setPassword] = useState("");
     const [buttonDisabled, setButtonDisabled] = useState(true);
     const [errorMessage, setErrorMessage] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [checked, setChecked] = useState(false);
 
     const auth = FIREBASE_AUTH;
 
@@ -76,9 +78,6 @@ export default function LogInScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title} variant="displaySmall">
-          Log In
-        </Text>
         <Text style={styles.label} variant="titleMedium">
           Email
         </Text>
@@ -99,13 +98,25 @@ export default function LogInScreen() {
             <TextInput
                 style={styles.input}
                 mode="outlined"
-                secureTextEntry={true}
+                secureTextEntry={!showPassword}
                 label="Password"
                 value={password}
                 onChangeText={setPassword}
                 error={!!errorMessage}/>
           </View>
           {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+          <View style={styles.checkboxContainer}>
+            <Checkbox
+              status={checked ? 'checked' : 'unchecked'}
+              onPress={() => {
+                setChecked(!checked);
+                setShowPassword(!showPassword);
+              }}
+            />
+            <Text>
+              Show password
+            </Text>
+          </View>
         <Button style={styles.button} mode="contained" onPress={handleLogIn} disabled={buttonDisabled}>
             Log in
         </Button>
@@ -120,6 +131,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     padding: 10,
+  },
+  checkboxContainer: {
+    width: '100%',
+    height: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginTop: 6,
   },
   title: {
     padding: 25,

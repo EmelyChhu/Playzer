@@ -61,7 +61,7 @@ const DeviceModalListItem: FC<DeviceModalListItemProps> = (props) => {
  * 
  * displays instructional message
  * displays button with the name of the device that connects the given device to the phone
- * provides "Close connection window" button that closes the modal and navigates to the connect-start page (`/(tabs)/workout/start/connect-start.tsx`)
+ * provides "Close connection window" button that closes the modal and navigates to the connect-start page (`/(tabs)/workout/connect-start.tsx`)
  */
 const DeviceModal: FC<DeviceModalProps> = (props) => {
   const colorScheme = useColorScheme();
@@ -149,9 +149,7 @@ const modalStyle = StyleSheet.create({
     width: '100%',
     height: 48,
     marginVertical: 16,
-    alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   }
 });
 

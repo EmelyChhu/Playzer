@@ -2,7 +2,7 @@ import { StyleSheet, ScrollView } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
-import { Text, Button, PaperProvider } from 'react-native-paper';
+import { Text, Button, PaperProvider, ActivityIndicator } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -48,6 +48,19 @@ export default function ProfileScreen() {
     }, [])
   );
 
+  if(!name || !recentWorkouts) {
+    return (
+      <PaperProvider>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText} variant="displayLarge">
+            Loading user information...
+          </Text>
+          <ActivityIndicator animating={true} size={100}/>
+        </View>
+      </PaperProvider>
+    );
+  }
+
   return (
     <PaperProvider>
       <View style={styles.container}>
@@ -64,7 +77,7 @@ export default function ProfileScreen() {
         <View style={styles.recentWorkoutsContainer}>
           <Text style={styles.header}>Recent Workouts</Text>
           {recentWorkouts.length == 0 ? 
-            <Text style={styles.emptyStateText} variant="bodyLarge">
+            <Text variant="bodyLarge">
               You haven't completed a workout yet! Complete a workout to see it here.
             </Text>
             :
@@ -132,14 +145,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   scrollViewContainer: {
-    flex: 1,
     width: '100%',
+    height: '57%',
     marginTop: 4,
     marginBottom: 150,
   },
   infoContainer: {
     flex: 1,
-    // width: '100%',
     flexDirection: 'column',
     backgroundColor: 'transparent',
   },
@@ -152,9 +164,6 @@ const styles = StyleSheet.create({
   recentWorkoutsContainer: {
     paddingHorizontal: 16,
     width: '100%',
-    height: '100%',
-    // backgroundColor: 'white',
-    // paddingVertical: 24,
   },
   title: {
     fontSize: 20,
@@ -184,9 +193,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginTop: 24,
   },
-  emptyStateText: {
-    // marginHorizontal: 16,
-  },
   card: {
     backgroundColor: 'white',
     flexDirection: 'row',
@@ -206,5 +212,15 @@ const styles = StyleSheet.create({
   workoutNameText: {
     fontSize: 18,
     textAlign: 'left',
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    gap: 32,
+  },
+  loadingText: {
+    textAlign: 'center',
   },
 });

@@ -131,7 +131,7 @@ const exampleWorkout9: Workout = {
 }
 
 export const randomWorkout: Workout = {
-    id: "0",
+    id: "RANDOM",
     name: "Device Randomized",
     type: "Random",
     durationBetweenLasers: 0,

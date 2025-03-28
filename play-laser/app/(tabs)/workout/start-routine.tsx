@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, Pressable } from 'react-native';
 
 import { View } from '@/components/Themed';
 import { PaperProvider, Text, Button, ActivityIndicator } from 'react-native-paper';
@@ -7,9 +7,10 @@ import { useColorScheme } from '@/components/useColorScheme';
 import LaserPositionCard from '@/components/LaserPositionCard';
 import { Workout } from '@/types';
 import { router } from 'expo-router';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import React, { useState, useEffect } from 'react';
-import { fetchWorkouts } from "@/FirebaseConfig";
+import { fetchWorkouts, removeWorkout } from "@/FirebaseConfig";
 import { useLocalSearchParams } from 'expo-router';
 
 /**
@@ -17,7 +18,7 @@ import { useLocalSearchParams } from 'expo-router';
  * 
  * @returns {JSX.Element} - React component that renders the UI
  * 
- * provides "Start Workout" button that will navigate to the screen to start the workout (`(tabs)/workout/start/connect-start`)
+ * provides "Start Workout" button that will navigate to the screen to start the workout (`(tabs)/workout/connect-start`)
  * provides the workout's duration, laser duration, duration between lasers, and a card for each laser position
  */
 export default function StartRoutineScreen() {
@@ -48,6 +49,11 @@ export default function StartRoutineScreen() {
     loadWorkout();
   }, []);
 
+  const handleDeleteRoutine = async () => {
+    await removeWorkout(workoutId);
+    router.push("/(tabs)/workout/start-custom");
+  }
+
   if(!workout) {
     return (
       <PaperProvider>
@@ -64,9 +70,20 @@ export default function StartRoutineScreen() {
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title} variant="headlineMedium">
-          {workout.name}
-        </Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title} variant="headlineMedium">
+            {workout.name}
+          </Text>
+          {workout.type == "Custom" ?
+            <Pressable
+              onPress={() => handleDeleteRoutine(workoutId)}
+              style={styles.removeButton}
+            >
+              <FontAwesome name="trash" size={22} color="#fa9b9b" />
+            </Pressable>
+          :
+          null}
+        </View>
         <Text variant="bodyMedium">
             {workout.description}
         </Text>
@@ -118,6 +135,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     padding: 16,
   },
+  titleContainer: {
+    width: '100%',
+    height: 36,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
   scrollViewContainer: {
     flex: 1,
     width: '100%',
@@ -140,14 +164,15 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    // marginLeft: 8,
   },
   button: {
     width: '100%',
     height: 48,
     marginVertical: 16,
-    alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
+  },
+  removeButton: {
+    marginLeft: 12,
+    marginBottom: 4,
   },
 });

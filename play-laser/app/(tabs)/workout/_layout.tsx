@@ -18,19 +18,64 @@ export default function WorkoutStackLayout() {
         name="index"
         options={{ 
           headerShown: true,
-          headerTitle: "Workout"
+          headerTitle: "Workout",
+          headerBackTitle: "Back",
         }} 
       />
       <Stack.Screen 
-        name="start"
+        name="start-premade"
         options={{ 
-          headerShown: false,
+          headerShown: true,
+          headerTitle: "Premade Routines",
+          headerBackTitle: "Back",
         }} 
       />
       <Stack.Screen 
-        name="view"
+        name="start-custom"
         options={{ 
-          headerShown: false,
+          headerShown: true,
+          headerTitle: "Custom Routines",
+          headerBackTitle: "Back",
+        }} 
+      />
+      <Stack.Screen 
+        name="create-custom-1"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Create a Routine",
+          headerBackTitle: "Back",
+        }} 
+      />
+      <Stack.Screen 
+        name="create-custom-2"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Create a Routine",
+          headerBackTitle: "Back",
+        }} 
+      />
+      <Stack.Screen 
+        name="start-random"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Random Routine Settings",
+          headerBackTitle: "Back",
+        }} 
+      />
+      <Stack.Screen 
+        name="start-routine"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Routine",
+          headerBackTitle: "Back",
+        }} 
+      />
+      <Stack.Screen 
+        name="connect-start"
+        options={{ 
+          headerShown: true,
+          headerTitle: "Start Routine",
+          headerBackTitle: "Back",
         }} 
       />
     </Stack>
