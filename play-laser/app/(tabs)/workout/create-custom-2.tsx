@@ -66,7 +66,7 @@ export default function CreateCustomRoutine2Screen() {
   }, [laserDuration]);
 
   const handleNavigateBack = () => {
-    router.replace(`./view-custom`);
+    router.replace("./start-custom");
   }
 
   const handleSaveRoutine = async () => {
@@ -93,6 +93,8 @@ export default function CreateCustomRoutine2Screen() {
       setErrorMessageLasers("Please add at least 5 laser positions.");
     }
     if (!convFail) {
+      setButtonDisabled(true);
+      setButtonText("Workout Saving");
       const newCustomWorkout = {
         id: "0",
         name: name,
@@ -110,7 +112,7 @@ export default function CreateCustomRoutine2Screen() {
       console.log("Saved Custom Routine:", newCustomWorkout);
       setButtonText("Workout Saved! Exit");
       setIsSaved(true);
-      // setButtonDisabled(true);
+      setButtonDisabled(false);
     }
   }
 
@@ -121,6 +123,10 @@ export default function CreateCustomRoutine2Screen() {
       setButtonDisabled(true);
     }
   }, [durationBetweenLasers, laserDuration, laserPositions]);
+
+  const handleRemoveLaserPosition = (index: number) => {
+    setLaserPositions((prevPositions) => prevPositions.filter((_, i) => i !== index));
+  };
 
   return (
     <PaperProvider>
@@ -179,6 +185,8 @@ export default function CreateCustomRoutine2Screen() {
                 workout={workouts[0]}
                 index={index}
                 laserPosition={laserPosition}
+                removeButton={true}
+                removeLaserPosition={handleRemoveLaserPosition}
               />
             ))}
           </ScrollView>
@@ -266,7 +274,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   laserGridInput: {
     alignItems: 'center',

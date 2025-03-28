@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
     height: 80,
     marginVertical: 8,
     justifyContent: 'center',
-    alignItems: 'center',
     marginRight: 16,
   },
   mediumContainer: {
@@ -70,11 +69,9 @@ const styles = StyleSheet.create({
     height: 96,
     marginVertical: 16,
     justifyContent: 'center',
-    alignItems: 'center',
   },
   contentContainer: {
     flexDirection: 'column',
-    alignItems: 'center',
     backgroundColor: 'transparent',
   },
   text: {

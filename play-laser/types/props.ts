@@ -4,6 +4,8 @@ export type LaserPositionCardProps = {
   workout: Workout,
   index: number,
   laserPosition: number;
+  removeButton?: boolean;
+  removeLaserPosition?: (index: number) => void;
 }
 
 export type LaserGridProps = {
