@@ -2,7 +2,7 @@ import { StyleSheet, PermissionsAndroid } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { View } from '@/components/Themed';
-import { PaperProvider, Button, TextInput, Text, ActivityIndicator, Portal, Dialog } from 'react-native-paper';
+import { PaperProvider, Button, TextInput, Text, ActivityIndicator, Portal, Dialog, SegmentedButtons } from 'react-native-paper';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { BleManager } from 'react-native-ble-plx';
@@ -10,8 +10,11 @@ import { useState, useEffect, useRef } from 'react';
 import { btoa, atob } from 'react-native-quick-base64';
 import { Workout, randomWorkout } from '@/types';
 import { router } from 'expo-router';
+import { useAudioPlayer } from 'expo-audio';
 
-import DeviceModal from "./../../../device-connection-modal";
+const audioSource = require('../../../assets/audio/done.mp3');
+
+import DeviceModal from "../../device-connection-modal";
 import { useBLEContext } from "@/BLEContext"
 import { fetchWorkouts, addRecent } from "@/FirebaseConfig";
 import { useLocalSearchParams } from 'expo-router';
@@ -23,8 +26,9 @@ import { useLocalSearchParams } from 'expo-router';
  * 
  * ScreenState 1 - Connection: provides an interface to connect to the Playzer device
  * ScreenState 2 - Sync Distance: provides a live feed of the device's distance from the wall using a LiDar sensor
- * ScreenState 3 - Workout: provides an interface to begin a workout routine and a timer to track the progress
- * ScreenState 4 Workout Complete: provides a message that the workout is completed and "Exit" button
+ * ScreenState 3 - Settings: provides an interface to input desired grid size and sliding settings
+ * ScreenState 4 - Workout: provides an interface to begin a workout routine and a timer to track the progress
+ * ScreenState 5 Workout Complete: provides a message that the workout is completed and "Exit" button
  */
 export default function ConnectStartScreen() {
   const colorScheme = useColorScheme();
@@ -45,11 +49,14 @@ export default function ConnectStartScreen() {
   } = useBLEContext();
 
   // const connectedDevice = true;
+  // const screenState = 3;
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [workoutDuration, setWorkoutDuration] = useState(150);
-  
+  const [height, setHeight] = useState("");
+  const [width, setWidth] = useState("");
+  const [sliding, setSliding] = useState("");
 
   const { workoutId, laserDuration, durationBetweenLasers, numLaserPositions } = useLocalSearchParams();
 
@@ -106,15 +113,26 @@ export default function ConnectStartScreen() {
     setIsModalVisible(true);
   };
 
-  const encodeWorkoutData2 = (workout: Workout): bigint => {
-    let data = BigInt(0);
+  const encodeWorkoutData2 = (workout: Workout, width: number, height: number, sliding: number): bigint => {
+    const widthDiv = Math.floor(width / 2);
+    const heightDiv = Math.floor(height / 2);
 
-    data |= BigInt(workout.laserDuration) << BigInt(4);  // 4 bits for laserDuration
-    data |= BigInt(workout.durationBetweenLasers);
+    let data = BigInt(0);
+    if (workout.id == "RANDOM") {
+      data |= BigInt(1); // 1 bit for deviceRandomized
+    } else {
+      data |= BigInt(0); // 1 bit for deviceRandomized
+    }
+    data <<= BigInt(1); 
+    data |= BigInt(sliding);  // 1 bit for sliding
     data <<= BigInt(4);
-    data |= BigInt(workout.numRows);  // 4 bits for numRows
+    data |= BigInt(workout.laserDuration);  // 4 bits for laserDuration
     data <<= BigInt(4);
-    data |= BigInt(workout.numColumns);  // 4 bits for numColumns
+    data |= BigInt(workout.durationBetweenLasers);  // 4 bits for durationBetweenLasers
+    data <<= BigInt(4);
+    data |= BigInt(widthDiv);  // 4 bits for width
+    data <<= BigInt(4);
+    data |= BigInt(heightDiv);  // 4 bits for height
     data <<= BigInt(5);
 
     for (let i = 19; i >= 11; i--) {
@@ -273,6 +291,127 @@ export default function ConnectStartScreen() {
       </View>
     );
   }
+
+  function SettingsScreen() {
+    const colorScheme = useColorScheme();
+  
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessageSliding, setErrorMessageSliding] = useState("");
+    const [errorWidth, setErrorWidth] = useState(false);
+    const [errorHeight, setErrorHeight] = useState(false);
+  
+    useEffect(() => {
+      setWidth(width);
+    }, [width]);
+  
+    useEffect(() => {
+      setHeight(height);
+    }, [height]);
+  
+    useEffect(() => {
+      setSliding(sliding);
+    }, [sliding]);
+  
+    const handleStartRoutine = async () => {
+      const numWidth = parseFloat(width);
+      const numHeight = parseFloat(height);
+      let convFail = false;
+      setErrorMessage("");
+      setErrorMessageSliding("");
+      setErrorWidth(false);
+      setErrorHeight(false);
+  
+      if (!(!isNaN(numWidth) && Number.isInteger(numWidth) && numWidth % 2 == 0 && numWidth >= 2 && numWidth <= 30)) {
+        convFail = true;
+        setErrorMessage("Please enter an even integer between 2-30.");
+        setErrorWidth(true);
+      }
+      if (!(!isNaN(numHeight) && Number.isInteger(numHeight) && numHeight % 2 == 0 && numHeight >= 2 && numHeight <= 30)) {
+        convFail = true;
+        setErrorMessage("Please enter an even integer between 2-30.");
+        setErrorHeight(true);
+      }
+      if (sliding == "") {
+        convFail = true;
+        setErrorMessageSliding("Please select a laser type.");
+      }
+      if (!convFail) {
+        setScreenState(4);
+      }
+    }
+  
+    useEffect(() => {
+      if (width !== "" && height !== "" && sliding !== "") {
+        setButtonDisabled(false);
+      } else {
+        setButtonDisabled(true);
+      }
+    }, [width, height, sliding]);
+  
+    return (
+      <View style={styles.settingsContainer}>
+        <Text style={styles.settingsTitle} variant="headlineMedium">
+          Set Routine Settings
+        </Text>
+        <Text variant="bodyMedium">
+          Input the settings for your workout routine.
+        </Text>
+        <Button style={styles.saveButton} mode='contained' onPress={handleStartRoutine} disabled={buttonDisabled}>
+          <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+            Confirm settings
+          </Text>
+        </Button>
+        <Text style={styles.settingsTitle} variant="titleLarge">
+          Grid Size (feet)
+        </Text>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.input}
+            mode="outlined"
+            label="Width"
+            value={width}
+            onChangeText={setWidth}
+            error={errorWidth}
+          />
+          <TextInput
+            style={styles.input}
+            mode="outlined"
+            label="Height"
+            value={height}
+            onChangeText={setHeight}
+            error={errorHeight}
+          />
+        </View>
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+        <Text style={styles.settingsTitle} variant="titleLarge">
+          Laser Type
+        </Text>
+        <SegmentedButtons
+          style={styles.segmentedButton}
+          value={sliding}
+          onValueChange={setSliding}
+          buttons={[
+            {
+              value: '0',
+              label: 'Blinking',
+              icon: 'dots-grid',
+            },
+            {
+              value: '1',
+              label: 'Sliding',
+              icon: 'line-scan'
+            },
+          ]}
+        />
+        {errorMessageSliding ? 
+          <Text style={styles.errorText}>     
+            {errorMessageSliding}
+          </Text>
+        : null}
+      </View>
+    );
+  }
   
   /**
    * WorkoutScreen Component - screen that provides the flow for starting a workout routine
@@ -288,7 +427,9 @@ export default function ConnectStartScreen() {
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-  
+
+    const player = useAudioPlayer(audioSource);
+
     useEffect(() => {
       if (workoutState == 2) {
         if (time < workoutDuration) {
@@ -301,7 +442,8 @@ export default function ConnectStartScreen() {
             clearInterval(id);
           };
         } else {
-          setScreenState(4);
+          player.play()
+          setTimeout(() => setScreenState(5), 2000);
           if (intervalId) {
             clearInterval(intervalId);
           }
@@ -323,7 +465,7 @@ export default function ConnectStartScreen() {
 
         await new Promise(resolve => setTimeout(resolve, 2000));
         
-        const data2 = encodeWorkoutData2(workout);
+        const data2 = encodeWorkoutData2(workout, width, height, sliding);
         sendData(connectedDevice, data2);    // send workout data packet 2 to device
         console.log("Workout data 2 sent to device:", data2.toString(16));
 
@@ -449,8 +591,10 @@ export default function ConnectStartScreen() {
           case 2:
             return <SyncDistanceScreen />;
           case 3:
-            return <WorkoutScreen />;
+            return <SettingsScreen />;
           case 4:
+            return <WorkoutScreen />;
+          case 5:
             return <WorkoutCompleteScreen />;
           default:
             return (
@@ -504,12 +648,6 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
-  input: {
-    height: 40,
-    width: 100,
-    margin: 12,
-    alignSelf: 'center',
-  },
   buttonText: {
     fontSize: 16,
   },
@@ -517,18 +655,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 48,
     marginVertical: 16,
-    alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   smallButton: {
     width: 100,
     height: 48,
     marginVertical: 16,
     marginLeft: 32,
-    alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   infoText: {
     textAlign: 'center',
@@ -539,5 +673,52 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 75,
     marginTop: 6,
-  }
+  },
+  settingsContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    padding: 16,
+    paddingBottom: 0,
+  },
+  settingsTitle: {
+    fontWeight: 'bold',
+    textAlign: 'left',
+    marginBottom: 4,
+    marginTop: 8,
+  },
+  subtitle: {
+    fontWeight: 'bold',
+    marginTop: 8,
+  },
+  saveButton: {
+    width: '100%',
+    height: 48,
+    marginTop: 16,
+    justifyContent: 'center',
+  },
+  inputContainer: {
+    width: '100%',
+    height: 50,
+    flexDirection: 'row',
+  },
+  input: {
+    width: '48%',
+    marginRight: 8,
+    height: 40,
+  },
+  largeInput: {
+    width: '100%',
+    marginRight: 8,
+    height: 40,
+  },
+  errorText: {
+    color: 'pink',
+    textAlign: 'left',
+    width: '100%',
+    marginTop: 8,
+  },
+  segmentedButton: {
+    marginTop: 6,
+  },
 });

@@ -88,7 +88,7 @@ export default function StartRandomRoutineScreen() {
     } else {
       setButtonDisabled(true);
     }
-  }, [durationBetweenLasers, laserDuration]);
+  }, [durationBetweenLasers, laserDuration, laserPositions]);
 
   return (
     <PaperProvider>
@@ -99,7 +99,7 @@ export default function StartRandomRoutineScreen() {
         <Text variant="bodyMedium">
           Input the settings for your device randomized routine.
         </Text>
-        <Button style={styles.saveButton} mode='contained' onPress={handleStartRoutine}>
+        <Button style={styles.saveButton} mode='contained' onPress={handleStartRoutine} disabled={buttonDisabled}>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             Start Workout
           </Text>
@@ -167,15 +167,12 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    marginLeft: 8,
   },
   saveButton: {
     width: '100%',
     height: 48,
     marginTop: 16,
-    alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   inputContainer: {
     width: '100%',

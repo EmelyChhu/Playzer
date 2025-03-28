@@ -8,14 +8,14 @@ import { getWorkoutTypeDocs } from "@/FirebaseConfig";
 import React, { useState, useEffect } from 'react';
 
 /**
- * ViewPremadeRoutinesScreen Component - screen that displays created premade routines
+ * StartPremadeRoutinesScreen Component - screen that displays created premade routines
  * 
  * @returns {JSX.Element} - React component that renders the UI
  * 
- * provides 3 categories of premade routines: Basic, Random, and Sport-Specific 
- * provides a button for each premade routine that users can click to view that workout (`(tabs)/workout/view/view-routine`)
+ * provides 3 categories of premade routines: Basic, Random, and Sport-Specific
+ * provides a button for each premade routine that users can click to start that workout (`(tabs)/workout/start-routine`)
  */
-export default function ViewPremadeRoutinesScreen() {
+export default function StartPremadeRoutinesScreen() {
   const [basicWorkouts, setBasicWorkouts] = useState<string[][]>();
   const [randomWorkouts, setRandomWorkouts] = useState<string[][]>();
   const [sportSpecificWorkouts, setSportSpecificWorkouts] = useState<string[][]>();
@@ -62,6 +62,9 @@ export default function ViewPremadeRoutinesScreen() {
         <Text style={styles.subtitle} variant="titleLarge">
           Basic
         </Text>
+        <Text variant="bodyMedium">
+          Accuracy (Predictable Patterns)
+        </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal>
             {basicWorkouts.map((workout, index) => (
@@ -69,13 +72,16 @@ export default function ViewPremadeRoutinesScreen() {
                 key={index}
                 size="small"
                 text={workout[0]}
-                path={`./view-routine?workoutId=${workout[1]}`}
+                path={`./start-routine?workoutId=${workout[1]}`}
               />
             ))}
           </ScrollView>
         </View>
         <Text style={styles.subtitle} variant="titleLarge">
           Random
+        </Text>
+        <Text variant="bodyMedium">
+          Reaction Time (Random Patterns)
         </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
@@ -84,13 +90,16 @@ export default function ViewPremadeRoutinesScreen() {
                 key={index}
                 size="small"
                 text={workout[0]}
-                path={`./view-routine?workoutId=${workout[1]}`}
+                path={`./start-routine?workoutId=${workout[1]}`}
               />
             ))}
           </ScrollView>
         </View>
         <Text style={styles.subtitle} variant="titleLarge">
           Sport-Specific
+        </Text>
+        <Text variant="bodyMedium">
+          Relevant (Common Patterns in Each Sport)
         </Text>
         <View style={styles.routineButtonsContainer}>
           <ScrollView horizontal style={styles.routineButtonsContainer}>
@@ -99,7 +108,7 @@ export default function ViewPremadeRoutinesScreen() {
                 key={index}
                 size="small"
                 text={workout[0]}
-                path={`./view-routine?workoutId=${workout[1]}`}
+                path={`./start-routine?workoutId=${workout[1]}`}
               />
             ))}
           </ScrollView>

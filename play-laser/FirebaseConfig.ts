@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "firebase/auth"; 
 import { getFirestore, 
   collection, getDocs, addDoc,
-  doc, getDoc, setDoc,
+  doc, getDoc, setDoc, deleteDoc,
   query, where, updateDoc, arrayUnion 
 } from "firebase/firestore";
 import { Workout } from '@/types';
@@ -151,13 +151,17 @@ export const addRecent = async (DocId: string) => {
       await setDoc(userDocRef, { workoutHistory: [] });
     }
 
-    let workoutName = "Device-Randomized";
+    let workoutName = "Random Workout";
     const currentDate = new Date().toISOString().split("T")[0];
 
     const workoutDocSnap = await getDoc(workoutDocRef);
-    if (DocId != "RANDOM") {
+    if (!workoutDocSnap.exists()) {
       const workoutData = workoutDocSnap.data();
-      workoutName = workoutData.name || "Device-Randomized";
+      if (workoutData) {
+        workoutName = workoutData.name;
+      } else {
+        workoutName = "Random Workout";
+      }
     }
     else {
       console.log(`No workout found with ID: ${DocId}, assuming it is a random workout.`);
@@ -196,6 +200,17 @@ export const addWorkout = async (workoutData: any) => {
     console.error("Error adding workout:", error);
   }
 };
+
+// removes workout document from the collection
+export const removeWorkout = async (DocId: string) => {
+  try {
+    await deleteDoc(doc(FIREBASE_DB, "Workout", DocId));
+    console.log("Workout successfully removed.");
+  }
+  catch (error) {
+    console.error("Error removing workout from Firestore.");
+  }
+}
 
 // Return an array containing arrays of Workout [type, name, doc id]
 export const getWorkoutDocuments = async () => {
