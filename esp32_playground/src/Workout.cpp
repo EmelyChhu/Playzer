@@ -136,6 +136,13 @@ void Workout::return_to_base(){
     ledcWrite(PWM_CHANNEL_TOP_SERVO, BASE_DUTY_CYCLE);
 }
 
+void Workout::show_bounds(){
+    uint8_t bounds[4] = {0, 7, 24, 31};
+    for (int i = 0; i < 4; i++){
+        go_to_position(&bounds[i]);
+    }
+}
+
 bool Workout::execute(){
     if (positions_index >= num_positions){
         return_to_base();

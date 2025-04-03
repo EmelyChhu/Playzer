@@ -47,6 +47,7 @@ public:
     void calibrate(double dist_ft);
     void checkRandom();
 
+    void show_bounds();
     bool execute();
     void return_to_base();
 

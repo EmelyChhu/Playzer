@@ -68,6 +68,8 @@ void loop() {
 
         workout.calibrate(bluetooth_obj->calculate_distance());
 
+        workout.show_bounds();
+
         while(!bluetooth_obj->stop() && workout.execute())
         workout.return_to_base();
 
