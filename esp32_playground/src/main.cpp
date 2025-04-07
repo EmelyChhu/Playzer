@@ -72,6 +72,7 @@ void loop() {
 
         while(!bluetooth_obj->stop() && workout.execute())
         workout.return_to_base();
+        workout.turn_off_laser();
 
         bluetooth_obj->reset_workout();
     }

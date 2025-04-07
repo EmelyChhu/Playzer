@@ -32,6 +32,7 @@ private:
 
 
     void go_to_position(uint8_t* pos);
+    void go_to_position_slide(uint8_t* pos);
     
     uint8_t decode_position_row(uint8_t *pos);
 
@@ -50,6 +51,8 @@ public:
     void show_bounds();
     bool execute();
     void return_to_base();
+
+    void turn_off_laser();
 
     ~Workout() {
         positions.clear(); // Free allocated memory
