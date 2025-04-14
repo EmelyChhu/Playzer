@@ -4,7 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import LaserPositionCard from '@/components/LaserPositionCard';
 import { View } from '@/components/Themed';
-import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
+import { PaperProvider, Text, Button, TextInput, Snackbar } from 'react-native-paper';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -43,6 +43,11 @@ export default function CreateCustomRoutine2Screen() {
   const [errorMessageLasers, setErrorMessageLasers] = useState("");
   const [buttonText, setButtonText] = useState("Save Custom Routine");
   const [isSaved, setIsSaved] = useState(false);
+  
+  const [visible, setVisible] = React.useState(false);
+  const [pressedPosition, setPressedPosition] = useState<number | null>(null);
+
+  const onDismissSnackBar = () => setVisible(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -174,6 +179,8 @@ export default function CreateCustomRoutine2Screen() {
             numPositions={32}
             setLaserPositions={setLaserPositions}
             laserPositions={laserPositions}
+            setVisible={setVisible}
+            setPressedPosition={setPressedPosition}
           />
         </View>
         {errorMessageLasers ? <Text style={styles.errorText}>{errorMessageLasers}</Text> : null}
@@ -191,6 +198,20 @@ export default function CreateCustomRoutine2Screen() {
             ))}
           </ScrollView>
         </View>
+        <Snackbar
+          style={[styles.snackbar, {backgroundColor: Colors[colorScheme ?? 'light'].headerBackground}]}
+          visible={visible}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: 'Dismiss',
+            onPress: () => {
+              setVisible(false)
+            },
+          }}>
+          <Text>
+            Laser position {pressedPosition == null ? "N/A" : pressedPosition + 1} added
+          </Text>
+        </Snackbar>
       </View>
     </PaperProvider>
   );
@@ -204,16 +225,22 @@ export default function CreateCustomRoutine2Screen() {
  * @param {number} props.numRows - number of rows in the grid
  * @param {number[]} [props.laserPositions] - current array of inputted laser positions
  * @param {(positions: number[]) => void} [props.setLaserPositions] - function to update the array of inputted laser positions
+ * @param {(visible: boolean) => void} [props.setVisible] - function to set the snackbar to visible
+ * @param {(pressedPosition: number | null) => void} [props.setPressedPosition] - function to update the position to be displayed in the snackbar
  * 
  * @returns {JSX.Element} - pressable grid where each cell represents a selectable laser position
  */
-const LaserGridInput: React.FC<LaserGridProps> = ({ numColumns, numRows, setLaserPositions, laserPositions }) => {
+const LaserGridInput: React.FC<LaserGridProps> = ({ numColumns, numRows, setLaserPositions, laserPositions, setVisible, setPressedPosition }) => {
   const colorScheme = useColorScheme();
   
   const handleLaserPositionPress = (row: number, column: number) => {
     const newPosition = row * 8 + column;
     if (setLaserPositions && laserPositions) {
       setLaserPositions([...laserPositions, newPosition]);
+    }
+    if (setVisible && setPressedPosition) {
+      setVisible(true);
+      setPressedPosition(newPosition);
     }
   };
 
@@ -321,4 +348,8 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 8,
   },
+  snackbar: {
+    width: '100%',
+    marginLeft: 16,
+  }
 });

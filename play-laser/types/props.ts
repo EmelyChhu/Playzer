@@ -15,6 +15,8 @@ export type LaserGridProps = {
   laserPosition?: number,
   setLaserPositions?: React.Dispatch<React.SetStateAction<number[]>>,
   laserPositions?: number[],
+  setVisible?: React.Dispatch<React.SetStateAction<boolean>>,
+  setPressedPosition?: React.Dispatch<React.SetStateAction<number | null>>,
 }
 
 export type PreviousWorkoutProps = {

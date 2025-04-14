@@ -50,9 +50,9 @@ export default function CreateCustomRoutine1Screen() {
     setErrorName(false);
     setErrorDescription(false);
 
-    if (name == "") {
+    if (name == "" || name.length > 7) {
       convFail = true;
-      setErrorMessageName("Please enter a string with 1-8 characters.");
+      setErrorMessageName("Please enter a string with 1-7 characters.");
       setErrorName(true);
     }
     if (description == "") {
