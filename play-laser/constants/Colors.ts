@@ -11,6 +11,7 @@ export default {
     headerBackground: '#fff',
     button: '#6850ac',
     buttonText: '#fff',
+    progressBackground: '#3d3660',
   },
   dark: {
     text: '#fff',
@@ -21,5 +22,6 @@ export default {
     headerBackground: '#121212',
     button: '#cdbdfb',
     buttonText: '#422f7f',
+    progressBackground: '#5d5186',
   },
 };
