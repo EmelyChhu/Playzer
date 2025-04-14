@@ -12,7 +12,10 @@ import { Workout, randomWorkout } from '@/types';
 import { router } from 'expo-router';
 import { useAudioPlayer } from 'expo-audio';
 
-const audioSource = require('../../../assets/audio/done.mp3');
+const audioSourceDraw = require('../../../assets/audio/draw.mp3');
+const audioSourceStart = require('../../../assets/audio/start.mp3');
+const audioSourceComplete = require('../../../assets/audio/complete.mp3');
+const audioSourceDoneNoise = require('../../../assets/audio/done.mp3');
 
 import DeviceModal from "../../device-connection-modal";
 import { useBLEContext } from "@/BLEContext"
@@ -434,7 +437,10 @@ export default function ConnectStartScreen() {
     const [isRunning, setIsRunning] = useState(false);
     const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
-    const player = useAudioPlayer(audioSource);
+    const playerDoneNoise = useAudioPlayer(audioSourceDoneNoise);
+    const playerCompleteSpeech = useAudioPlayer(audioSourceComplete);
+    const playerDrawSpeech = useAudioPlayer(audioSourceDraw);
+    const playerStartSpeech = useAudioPlayer(audioSourceStart);
 
     useEffect(() => {
       if (workoutState == 2) {
@@ -448,7 +454,8 @@ export default function ConnectStartScreen() {
             clearInterval(id);
           };
         } else {
-          player.play()
+          playerDoneNoise.play()
+          playerCompleteSpeech.play()
           setTimeout(() => setScreenState(5), 2000);
           if (intervalId) {
             clearInterval(intervalId);
@@ -483,7 +490,9 @@ export default function ConnectStartScreen() {
         setScreenState(1);
       }
       
+      playerDrawSpeech.play()
       setTimeout(() => setWorkoutState(2), 5000);   // set workout state to running
+      playerStartSpeech.play()
       setTime(0);
     }
 

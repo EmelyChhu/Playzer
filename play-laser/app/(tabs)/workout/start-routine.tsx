@@ -12,6 +12,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import React, { useState, useEffect } from 'react';
 import { fetchWorkouts, removeWorkout } from "@/FirebaseConfig";
 import { useLocalSearchParams } from 'expo-router';
+import { useBLEContext } from "@/BLEContext"
 
 /**
  * StartRoutineScreen Component - screen that provides information for a given workout routine
@@ -28,6 +29,10 @@ export default function StartRoutineScreen() {
   const [seconds, setSeconds] = useState(0);
   
   const { workoutId } = useLocalSearchParams();
+  const {
+    screenState,
+    setScreenState
+  } = useBLEContext();
 
   useEffect(() => {
     // const workoutId = "QTTJdK3H0jS6yLcAItvg";
@@ -52,6 +57,11 @@ export default function StartRoutineScreen() {
   const handleDeleteRoutine = async () => {
     await removeWorkout(workoutId);
     router.push("/(tabs)/workout/start-custom");
+  }
+
+  const navigateToConnectStart = () => {
+    setScreenState(1);
+    router.push(`./connect-start?workoutId=${workoutId}`);
   }
 
   if(!workout) {
@@ -90,7 +100,7 @@ export default function StartRoutineScreen() {
         <Button
           style={styles.button}
           mode='contained'
-          onPress={() => router.push(`./connect-start?workoutId=${workoutId}`)}
+          onPress={() => navigateToConnectStart()}
         >
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             Start Workout
