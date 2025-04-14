@@ -49,14 +49,14 @@ export default function ConnectStartScreen() {
   } = useBLEContext();
 
   // const connectedDevice = true;
-  // const screenState = 3;
+  // let screenState = 3;
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [workout, setWorkout] = useState<Workout | null>(null);
   const [workoutDuration, setWorkoutDuration] = useState(150);
-  const [height, setHeight] = useState("");
-  const [width, setWidth] = useState("");
-  const [sliding, setSliding] = useState("");
+  const [heightGlobal, setHeightGlobal] = useState("");
+  const [widthGlobal, setWidthGlobal] = useState("");
+  const [slidingGlobal, setSlidingGlobal] = useState("");
 
   const { workoutId, laserDuration, durationBetweenLasers, numLaserPositions } = useLocalSearchParams();
 
@@ -300,6 +300,9 @@ export default function ConnectStartScreen() {
     const [errorMessageSliding, setErrorMessageSliding] = useState("");
     const [errorWidth, setErrorWidth] = useState(false);
     const [errorHeight, setErrorHeight] = useState(false);
+    const [height, setHeight] = useState("");
+    const [width, setWidth] = useState("");
+    const [sliding, setSliding] = useState("");
   
     useEffect(() => {
       setWidth(width);
@@ -337,6 +340,9 @@ export default function ConnectStartScreen() {
         setErrorMessageSliding("Please select a laser type.");
       }
       if (!convFail) {
+        setHeightGlobal(height);
+        setWidthGlobal(width);
+        setSlidingGlobal(sliding);
         setScreenState(4);
       }
     }
@@ -465,7 +471,8 @@ export default function ConnectStartScreen() {
 
         await new Promise(resolve => setTimeout(resolve, 2000));
         
-        const data2 = encodeWorkoutData2(workout, width, height, sliding);
+        const data2 = encodeWorkoutData2(workout, widthGlobal, heightGlobal, slidingGlobal);
+        console.log("Width: ", widthGlobal, "Height: ", heightGlobal, "Sliding: ", slidingGlobal);
         sendData(connectedDevice, data2);    // send workout data packet 2 to device
         console.log("Workout data 2 sent to device:", data2.toString(16));
 
@@ -476,7 +483,7 @@ export default function ConnectStartScreen() {
         setScreenState(1);
       }
       
-      setWorkoutState(2);   // set workout state to running
+      setTimeout(() => setWorkoutState(2), 5000);   // set workout state to running
       setTime(0);
     }
 

@@ -72,7 +72,7 @@ export default function ProfileScreen() {
             color={Colors[colorScheme ?? 'light'].button}
           />
           <Text style={styles.title}>{name || "User"}</Text>
-          <Button style={styles.editButton} mode="contained">Edit Profile</Button>
+          {/* <Button style={styles.editButton} mode="contained">Edit Profile</Button> */}
         </View>
         <View style={styles.recentWorkoutsContainer}>
           <Text style={styles.header}>Recent Workouts</Text>
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   },
   scrollViewContainer: {
     width: '100%',
-    height: '57%',
+    height: '65%',
     marginTop: 4,
     marginBottom: 150,
   },
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     width: '100%',
-    height: 225,
+    height: 150,
     alignItems: 'center',
     justifyContent: 'center',
   },
