@@ -151,21 +151,20 @@ export const addRecent = async (DocId: string) => {
       await setDoc(userDocRef, { workoutHistory: [] });
     }
 
-    let workoutName = "Random Workout";
+    let workoutName = "Workout";
     const currentDate = new Date().toISOString().split("T")[0];
 
     const workoutDocSnap = await getDoc(workoutDocRef);
-    if (!workoutDocSnap.exists()) {
+    if (workoutDocSnap.exists()) {
       const workoutData = workoutDocSnap.data();
-      if (workoutData) {
-        workoutName = workoutData.name;
-      } else {
-        workoutName = "Random Workout";
-      }
+      workoutName = workoutData?.name || "Workout";
+    } else {
+      workoutName = "Random Workout";
     }
-    else {
-      console.log(`No workout found with ID: ${DocId}, assuming it is a random workout.`);
-    }
+
+    // const workoutData = workoutDocSnap.data();
+    // const workoutName = workoutData.name || "Unnamed Workout";
+    // const currentDate = new Date().toISOString().split("T")[0];
 
     let workoutHistory = [];
     if (userDocSnap.exists()) {
