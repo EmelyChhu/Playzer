@@ -1,4 +1,18 @@
 # Playzer
+### Production Release Completed Work
+- Software
+    - Workout Flow
+        - Added auditory cues throughout workout start and complete
+        - Improved user experience user after navigating away from page
+    - Home Page
+        - Added feature for user levels based on number of workouts completed
+- Hardware
+    - Calibration
+        - Better accuracy of play area height and width
+    - Improved Enclosure
+        - Modeled more space-efficient enclosure and reprinted laser mount
+        - New enclosure to be implemented for the showcase date
+      
 ### Beta Build Completed Work
 - Software
     - Add device-randomized workout flow
