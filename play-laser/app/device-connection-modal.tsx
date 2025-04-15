@@ -9,11 +9,33 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { View } from '@/components/Themed';
+import { Device } from "react-native-ble-plx";
 import { Button } from 'react-native-paper';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 
-const DeviceModalListItem = (props) => {
+type DeviceModalListItemProps = {
+  item: ListRenderItemInfo<Device>;
+  connectToPeripheral: (device: Device) => void;
+  closeModal: () => void;
+};
+
+type DeviceModalProps = {
+  devices: Device[];
+  visible: boolean;
+  connectToPeripheral: (device: Device) => void;
+  closeModal: () => void;
+};
+
+/**
+ * DeviceModalListItem Component - button that displays a nearby Playzer device and allows user to connect to them
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * displays the name of the device
+ * pressing the button will connect to the given device
+ */
+const DeviceModalListItem: FC<DeviceModalListItemProps> = (props) => {
   const colorScheme = useColorScheme();
   const { item, connectToPeripheral, closeModal } = props;
 
@@ -32,9 +54,31 @@ const DeviceModalListItem = (props) => {
   );
 };
 
-const DeviceModal = (props) => {
+/**
+ * DeviceModal Component - screen that displays nearby Playzer devices and allows user to connect to them
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * displays instructional message
+ * displays button with the name of the device that connects the given device to the phone
+ * provides "Close connection window" button that closes the modal and navigates to the connect-start page (`/(tabs)/workout/connect-start.tsx`)
+ */
+const DeviceModal: FC<DeviceModalProps> = (props) => {
   const colorScheme = useColorScheme();
   const { devices, visible, connectToPeripheral, closeModal } = props;
+
+  const renderDeviceModalListItem = useCallback(
+    (item: ListRenderItemInfo<Device>) => {
+      return (
+        <DeviceModalListItem
+          item={item}
+          connectToPeripheral={connectToPeripheral}
+          closeModal={closeModal}
+        />
+      );
+    },
+    [closeModal, connectToPeripheral]
+  );
 
   return (
     <Modal
@@ -47,6 +91,11 @@ const DeviceModal = (props) => {
         <Text style={[modalStyle.modalTitleText, {color: Colors[colorScheme ?? 'light'].text}]}>
           Tap on a device to connect
         </Text>
+        <FlatList
+          contentContainerStyle={modalStyle.modalFlatlistContiner}
+          data={devices}
+          renderItem={renderDeviceModalListItem}
+        />
         <Button style={modalStyle.closeModalButton} mode="contained" onPress={() => closeModal()}>
           <Text>Close connection window</Text>
         </Button>
@@ -75,7 +124,6 @@ const modalStyle = StyleSheet.create({
   modalTitle: {
     flex: 1,
     padding: 16,
-    justifyContent: 'space-between'
   },
   modalTitleText: {
     marginTop: 40,
@@ -101,9 +149,7 @@ const modalStyle = StyleSheet.create({
     width: '100%',
     height: 48,
     marginVertical: 16,
-    alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   }
 });
 

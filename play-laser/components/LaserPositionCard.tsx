@@ -1,18 +1,29 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 
 import { View } from '@/components/Themed';
-import { Text } from 'react-native-paper';import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Text } from 'react-native-paper';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { LaserPositionCardProps, LaserGridProps } from '@/types';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 
+/**
+ * LaserPositionCard Component - card representing a laser position and the index of that laser within a workout routine
+ * 
+ * @param {LaserPositionCardProps} props - component props
+ * @param {Workout} props.workout - object for the given workout
+ * @param {number} props.laserPosition - the position of the laser within the grid
+ * @param {number} props.index - the index of the laser in the workout routine
+ * 
+ * @returns {JSX.Element} - styled card displaying a laser position within the grid
+ */
 export default function LaserPositionCard(
   props: LaserPositionCardProps
 ) {
   const colorScheme = useColorScheme();
-  const { workout, laserPosition, index } = props;
+  const { workout, laserPosition, index, removeButton, removeLaserPosition } = props;
   
   return (
     <View style={[styles.laserPositionCard, {backgroundColor: Colors[colorScheme ?? 'light'].button}]}>
@@ -25,18 +36,37 @@ export default function LaserPositionCard(
       <Text style={[styles.text, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
         Laser {index + 1}
       </Text>
+      {(removeButton && removeLaserPosition) ? 
+        <Pressable
+          onPress={() => removeLaserPosition(index)}
+          style={styles.removeButton}
+        >
+          <FontAwesome name="trash" size={20} color="#422f7f" />
+        </Pressable>
+      :
+      null}
     </View>
   );
 }
 
+/**
+ * LaserGrid Component - grid representation of laser positions in a workout routine where the laser position is highlighted
+ * 
+ * @param {LaserGridProps} props - component props
+ * @param {number} props.numColumns - number of columns in the workout grid
+ * @param {number} props.numRows - number of rows in the workout grid
+ * @param {number | undefined} props.laserPosition - position of the laser
+ * 
+ * @returns {JSX.Element} - grid of dots with the current laser position highlighted
+ */
 const LaserGrid: React.FC<LaserGridProps> = ({
   numColumns,
   numRows,
   laserPosition
 }) => {
   const colorScheme = useColorScheme();
-  const laserPositionRow = laserPosition != undefined ? Math.floor((laserPosition - 1) / numColumns) : -1;
-  const laserPositionColumn = laserPosition != undefined ? (laserPosition - 1) % numColumns : -1;
+  const laserPositionRow = laserPosition != undefined ? Math.floor(laserPosition / numColumns) : -1;
+  const laserPositionColumn = laserPosition != undefined ? (laserPosition % numColumns) : -1;
 
   const rows = [];
   for (let i = 0; i < numRows; i++) {
@@ -95,4 +125,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 8,
   },
+  removeButton: {
+    marginLeft: 8,
+    marginBottom: 2,
+  }
 });

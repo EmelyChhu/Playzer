@@ -2,15 +2,30 @@ import { StyleSheet } from 'react-native';
 import { useState, useEffect, useLayoutEffect } from 'react';
 
 import { View } from '@/components/Themed';
-import { PaperProvider, Text, Button, TextInput } from 'react-native-paper';
+import { PaperProvider, Text, Button, TextInput, Checkbox } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 
-import { FIREBASE_AUTH } from '@/FirebaseConfig';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { FIREBASE_AUTH, addUsers } from '@/FirebaseConfig';
+// import { createUserWithEmailAndPassword } from 'firebase/auth';
 
-// returns true if the email has a localPart@domain.com
-function isValidEmail(email : string) : boolean {
+/**
+ * isValidName Function - checks whether a given name is a valid string that doesn't contain numbers or special characters aside from - and space
+ * 
+ * @param {string} - user entered name
+ * @returns {boolean} - if the name is valid
+ */
+export function isValidName(name : string) : boolean {
+  return /^[A-Za-z]+([ -][A-Za-z]+)*$/.test(name.trim());
+}
+
+/**
+ * isValidEmail Function - checks whether a given email has a localPart@domain.com format
+ * 
+ * @param {string} - user entered email
+ * @returns {boolean} - if the email is valid
+ */
+export function isValidEmail(email : string) : boolean {
   const atIndex = email.indexOf("@");
   if (atIndex == -1 || atIndex == 0 || atIndex == email.length - 1) {
     return false;
@@ -23,34 +38,55 @@ function isValidEmail(email : string) : boolean {
   return true;
 }
 
-// returns true if the password is 8 or more characters long
-function isValidPassword(password : string) : boolean {
+/**
+ * isValidPassword Function - checks whether a given password is equal to or longer than 8 characters
+ * 
+ * @param {string} - user entered password
+ * @returns {boolean} - if the password is valid
+ */
+export function isValidPassword(password : string) : boolean {
   return (password.length >= 8 ? true : false);
 }
 
-export default function EntryScreen() {
+/**
+ * SignUpScreen Component - sign up screen for the Playzer app
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * provides "Email" text input box that allows users to enter their email
+ * provides "Password" text input box that allows users to enter their password
+ * provides "Sign up" button that logs users into the app and creates a new account if the entered information is valid
+ */
+export default function SignUpScreen() {
     const navigation = useNavigation();
-
+    
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [buttonDisabled, setButtonDisabled] = useState(true);
+    const [validNameInput, setValidNameInput] = useState(true);
     const [validEmailInput, setValidEmailInput] = useState(true);
     const [validPasswordInput, setValidPasswordInput] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
+    const [checked, setChecked] = useState(false);
 
     const auth = FIREBASE_AUTH;
 
     const handleSignUp = async () => {
+      const validName = isValidName(name)
       const validEmail = isValidEmail(email)
       const validPassword = isValidPassword(password)
-
+      
+      setValidNameInput(validName);
       setValidEmailInput(validEmail);
       setValidPasswordInput(validPassword);
 
-      if (validEmail && validPassword) {
+      if (validName && validEmail && validPassword) {
         setButtonDisabled(false);
         try {
-          const response = await createUserWithEmailAndPassword(auth, email, password);
-          console.log(response);
+          // const response = await createUserWithEmailAndPassword(auth, email, password);
+          // console.log(response);
+          addUsers(name, email, password);
           alert('Account created succesfully!')
           router.push("../(tabs)/home")
         }
@@ -65,17 +101,30 @@ export default function EntryScreen() {
     }
 
     useEffect(() => {
-      if (email != "" && password != "") {
-          setButtonDisabled(false);
+      if (name != "" && email != "" && password != "") {
+        setButtonDisabled(false);
+      } else {
+        setButtonDisabled(true);
       }
-    }, [email, password]);
+    }, [name, email, password]);
 
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title} variant="displaySmall">
-          Create an Account
+        <Text style={styles.label} variant="titleMedium">
+          Full Name
         </Text>
+        <View style={styles.inputContainer}>
+            <TextInput
+                style={styles.input}
+                mode="outlined"
+                error={validNameInput ? false : true}
+                textColor={validNameInput ? undefined : "pink"}
+                label="Name"
+                value={name}
+                onChangeText={setName}/>
+        </View>
+        {!validNameInput ? <Text style={styles.errorText}>Please enter a string with 1+ characters.</Text> : null}
         <Text style={styles.label} variant="titleMedium">
           Email
         </Text>
@@ -97,16 +146,30 @@ export default function EntryScreen() {
             <TextInput
                 style={styles.input}
                 mode="outlined"
-                secureTextEntry={true}
+                secureTextEntry={!showPassword}
                 error={validPasswordInput ? false : true}
                 textColor={validPasswordInput ? undefined : "pink"}
                 label="Password"
                 value={password}
                 onChangeText={setPassword}/>
         </View>
-    <Text style={validPasswordInput ? styles.subtitle : styles.subtitleError}>Passwords must contain at least 8 characters.</Text>
+        <Text style={validPasswordInput ? styles.subtitle : styles.subtitleError}>
+          Passwords must contain at least 8 characters.
+        </Text>
         {!validPasswordInput ? <Text style={styles.errorText}>Please enter a valid password.</Text> : null}
-        <Button style={styles.button} mode="contained" onPress={handleSignUp}>
+        <View style={styles.checkboxContainer}>
+          <Checkbox
+            status={checked ? 'checked' : 'unchecked'}
+            onPress={() => {
+              setChecked(!checked);
+              setShowPassword(!showPassword);
+            }}
+          />
+          <Text>
+            Show password
+          </Text>
+        </View>
+        <Button style={styles.button} mode="contained" onPress={handleSignUp} disabled={buttonDisabled}>
             Sign up
         </Button>
       </View>
@@ -120,6 +183,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     padding: 10,
+  },
+  checkboxContainer: {
+    width: '100%',
+    height: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginTop: 6,
   },
   title: {
     padding: 25,

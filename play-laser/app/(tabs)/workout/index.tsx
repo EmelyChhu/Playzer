@@ -2,45 +2,47 @@ import { StyleSheet } from 'react-native';
 
 import { View } from '@/components/Themed';
 import { PaperProvider, Text, Button } from 'react-native-paper';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
 import NavigationButton from '@/components/NavigationButton';
 import { Workout, exampleWorkouts } from '@/types';
 import { router } from 'expo-router';
+import Colors from '@/constants/Colors';
+import { useColorScheme } from '@/components/useColorScheme';
 
-export default function WorkoutScreen() {
-  const colorScheme = useColorScheme();
+/**
+ * WorkoutStartScreen Component - workout start screen for the Playzer app
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * provides "Premade" button that allows users to navigate to the Start Premade Routines page (`(tabs)/workout/start/index`)
+ * provides "Custom" button that allows users to navigate to the Start Custom Routines page (TODO)
+ */
+export default function WorkoutStartScreen() {
   const workouts = exampleWorkouts;
+  const colorScheme = useColorScheme();
 
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Text style={styles.title} variant="titleLarge">Quick Start</Text>
-        <Button style={styles.button} mode='contained' contentStyle={styles.buttonContainer} onPress={() => router.push("./workout/start")}>
-          <View style={styles.buttonContainer}>
-            <FontAwesome
-              name="crosshairs"
-              size={25}
-              color={Colors[colorScheme ?? 'light'].buttonText}
-            />
-            <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>Start a Workout</Text>
-          </View> 
-        </Button>
-        <Text style={styles.title} variant="titleLarge">View Workout Routines</Text>
+        <Text style={styles.title} variant="titleLarge">Select a Workout Routine</Text>
         <View style={styles.routineButtonsContainer}>
           <NavigationButton
             size="medium"
-            text="Premade Routines"
+            path="/(tabs)/workout/start-premade"
+            text="Premade"
             icon="list"
           />
           <NavigationButton
             size="medium"
-            path="./workout/view/"
-            text="Custom Routines"
+            path="/(tabs)/workout/start-custom"
+            text="Custom"
             icon="edit"
-          />       
+          />
         </View>
+        <Button style={styles.button} mode='contained' onPress={() => router.push("/(tabs)/workout/start-random")}>
+          <Text style={[styles.text, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
+            Device Randomized
+          </Text>
+        </Button>
       </View>
     </PaperProvider>
   );
@@ -57,28 +59,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'left',
   },
-  buttonText: {
-    fontSize: 16,
-    marginLeft: 8,
-  },
-  button: {
-    width: '100%',
-    height: 48,
-    marginVertical: 16,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    paddingTop: 2,  // TODO: make vertical centering automatic
-  },
   routineButtonsContainer: {
     flexDirection: 'row',
     width: '100%',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+  },
+  button: {
+    width: '100%',
+    height: 48,
+    justifyContent: 'center',
+  },
+  text: {
+    fontSize: 16,
+    textAlign: 'center',
   },
 });

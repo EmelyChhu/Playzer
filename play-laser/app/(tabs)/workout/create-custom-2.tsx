@@ -11,13 +11,26 @@ import { useColorScheme } from '@/components/useColorScheme';
 import { Workout, exampleWorkouts } from '@/types';
 import { router } from 'expo-router';
 import { LaserPositionCardProps, LaserGridProps } from '@/types';
+import { useLocalSearchParams } from 'expo-router';
 
 import { addWorkout } from "@/FirebaseConfig";
 import { FIREBASE_AUTH } from "@/FirebaseConfig";
 
-export default function CreateCustomRoutineScreen() {
+/**
+ * CreateCustomRoutine2Screen Component - screen that provides the second page for users to create and save a new custom routine
+ * 
+ * @returns {JSX.Element} - React component that renders the UI
+ * 
+ * provides "Save Custom Routine" button that verifies whether the user input is valid and saves the new workout routine if it is
+ * provides "Laser" text input box that allows users to enter the duration of each laser
+ * provides "Between Lasers" text input box that allows users to enter the duration between each laser
+ * provides a grid of dots that the user can click to add laser positions
+ */
+export default function CreateCustomRoutine2Screen() {
   const colorScheme = useColorScheme();
   const workouts = exampleWorkouts;
+
+  const { name, description } = useLocalSearchParams();
 
   const [workoutDuration, setWorkoutDuration] = useState(0);
   const [durationBetweenLasers, setDurationBetweenLasers] = useState("");
@@ -52,6 +65,10 @@ export default function CreateCustomRoutineScreen() {
     setLaserDuration(laserDuration);
   }, [laserDuration]);
 
+  const handleNavigateBack = () => {
+    router.replace("./start-custom");
+  }
+
   const handleSaveRoutine = async () => {
     const numLaserDuration = parseFloat(laserDuration);
     const numDurationBetweenLasers = parseFloat(durationBetweenLasers);
@@ -61,60 +78,66 @@ export default function CreateCustomRoutineScreen() {
     setErrorDurationBetweenLasers(false);
     setErrorMessageLasers("");
 
-    if (!(!isNaN(numLaserDuration) && Number.isInteger(numLaserDuration) && numLaserDuration >= 1 && numLaserDuration <= 30)) {
+    if (!(!isNaN(numLaserDuration) && Number.isInteger(numLaserDuration) && numLaserDuration >= 1 && numLaserDuration <= 15)) {
       convFail = true;
-      setErrorMessage("Please enter an integer between 1-30.");
+      setErrorMessage("Please enter an integer between 1-15.");
       setErrorLaserDuration(true);
     }
-    if (!(!isNaN(numDurationBetweenLasers) && Number.isInteger(numDurationBetweenLasers) && numDurationBetweenLasers >= 1 && numDurationBetweenLasers <= 30)) {
+    if (!(!isNaN(numDurationBetweenLasers) && Number.isInteger(numDurationBetweenLasers) && numDurationBetweenLasers >= 1 && numDurationBetweenLasers <= 15)) {
       convFail = true;
-      setErrorMessage("Please enter an integer between 1-30.");
+      setErrorMessage("Please enter an integer between 1-15.");
       setErrorDurationBetweenLasers(true);
     }
-    if (laserPositions.length <= 5) {
+    if (laserPositions.length < 5) {
       convFail = true;
       setErrorMessageLasers("Please add at least 5 laser positions.");
     }
     if (!convFail) {
+      setButtonDisabled(true);
+      setButtonText("Workout Saving");
       const newCustomWorkout = {
-        id: "4",
-        name: "Custom 1",
+        id: "0",
+        name: name,
         type: "Custom",
-        durationBetweenLasers: {durationBetweenLasers},
-        laserDuration: {laserDuration},
+        durationBetweenLasers: numDurationBetweenLasers,
+        laserDuration: numLaserDuration,
         numColumns: 8,
         numRows: 4,
         numPositions: 32,
-        laserPositions: {laserPositions},
+        laserPositions: laserPositions,
         creatorId: FIREBASE_AUTH.currentUser?.uid,
-        description: "This is a newly created custom workout routine."
+        description: description
       }
       await addWorkout(newCustomWorkout);
-      setButtonText("Workout Saved!");
+      console.log("Saved Custom Routine:", newCustomWorkout);
+      setButtonText("Workout Saved! Exit");
       setIsSaved(true);
-      // setButtonDisabled(true);
-      // navigate back to "View Custom Routines Page"
+      setButtonDisabled(false);
     }
   }
 
   useEffect(() => {
-    if (durationBetweenLasers !== "" && laserDuration !== "" && laserPositions.length >= 5) {
+    if (durationBetweenLasers != "" && laserDuration != "" && laserPositions.length >= 1) {
       setButtonDisabled(false);
     } else {
       setButtonDisabled(true);
     }
-  }, [durationBetweenLasers, laserDuration]);
+  }, [durationBetweenLasers, laserDuration, laserPositions]);
+
+  const handleRemoveLaserPosition = (index: number) => {
+    setLaserPositions((prevPositions) => prevPositions.filter((_, i) => i !== index));
+  };
 
   return (
     <PaperProvider>
       <View style={styles.container}>
         <Text style={styles.title} variant="headlineMedium">
-          Create a Routine
+          Routine Settings and Content
         </Text>
         <Text variant="bodyMedium">
           Input the workout settings and click on the grid to add laser positions.
         </Text>
-        <Button style={styles.saveButton} mode='contained' onPress={handleSaveRoutine}>
+        <Button style={styles.saveButton} mode='contained' onPress={buttonText == "Workout Saved! Exit" ? handleNavigateBack : handleSaveRoutine} disabled={buttonDisabled}>
           <Text style={[styles.buttonText, {color: Colors[colorScheme ?? 'light'].buttonText}]}>
             {buttonText}
           </Text>
@@ -162,6 +185,8 @@ export default function CreateCustomRoutineScreen() {
                 workout={workouts[0]}
                 index={index}
                 laserPosition={laserPosition}
+                removeButton={true}
+                removeLaserPosition={handleRemoveLaserPosition}
               />
             ))}
           </ScrollView>
@@ -171,11 +196,22 @@ export default function CreateCustomRoutineScreen() {
   );
 }
 
+/**
+ * LaserGridInput Component - grid input component that allows users to input laser positions that are stored in the laserPositions state variable
+ * 
+ * @param {Object} props - component props
+ * @param {number} props.numColumns - number of columns in the grid
+ * @param {number} props.numRows - number of rows in the grid
+ * @param {number[]} [props.laserPositions] - current array of inputted laser positions
+ * @param {(positions: number[]) => void} [props.setLaserPositions] - function to update the array of inputted laser positions
+ * 
+ * @returns {JSX.Element} - pressable grid where each cell represents a selectable laser position
+ */
 const LaserGridInput: React.FC<LaserGridProps> = ({ numColumns, numRows, setLaserPositions, laserPositions }) => {
   const colorScheme = useColorScheme();
   
   const handleLaserPositionPress = (row: number, column: number) => {
-    const newPosition = row * 8 + column + 1;
+    const newPosition = row * 8 + column;
     if (setLaserPositions && laserPositions) {
       setLaserPositions([...laserPositions, newPosition]);
     }
@@ -231,7 +267,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    marginLeft: 8,
   },
   saveButton: {
     width: '100%',
@@ -239,7 +274,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     alignSelf: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
   },
   laserGridInput: {
     alignItems: 'center',
@@ -263,7 +297,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   laserGridInputContainer : {
-    flex: 1,
+    height: 160,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
