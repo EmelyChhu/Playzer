@@ -87,7 +87,7 @@ export default function SignUpScreen() {
           // const response = await createUserWithEmailAndPassword(auth, email, password);
           // console.log(response);
           addUsers(name, email, password);
-          alert('Account created succesfully!')
+          // alert('Account created succesfully!')
           router.push("../(tabs)/home")
         }
         catch (error : any) {

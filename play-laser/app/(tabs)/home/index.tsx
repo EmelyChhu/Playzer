@@ -39,7 +39,7 @@ export default function HomeScreen() {
       };
   
       fetchUserHistory();
-    }, [])
+    }, [FIREBASE_AUTH.currentUser?.uid])
   );
 
   if(!recentWorkouts) {

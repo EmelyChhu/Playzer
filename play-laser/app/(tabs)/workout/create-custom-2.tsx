@@ -209,7 +209,7 @@ export default function CreateCustomRoutine2Screen() {
             },
           }}>
           <Text>
-            Laser position {pressedPosition == null ? "N/A" : pressedPosition + 1} added
+            Laser position {laserPositions.length} added
           </Text>
         </Snackbar>
       </View>

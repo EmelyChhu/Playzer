@@ -454,9 +454,11 @@ export default function ConnectStartScreen() {
             clearInterval(id);
           };
         } else {
-          playerDoneNoise.play()
-          playerCompleteSpeech.play()
-          setTimeout(() => setScreenState(5), 2000);
+          playerDoneNoise.play();
+          // setTimeout(() => {
+          //   playerCompleteSpeech.play();
+          // }, 4000);
+          setTimeout(() => setScreenState(5), 3000);
           if (intervalId) {
             clearInterval(intervalId);
           }
@@ -490,9 +492,10 @@ export default function ConnectStartScreen() {
         setScreenState(1);
       }
       
-      playerDrawSpeech.play()
-      setTimeout(() => setWorkoutState(2), 5000);   // set workout state to running
-      playerStartSpeech.play()
+      playerDrawSpeech.play();
+      await new Promise(resolve => setTimeout(resolve, 5000));
+      playerStartSpeech.play();
+      setWorkoutState(2);   // set workout state to running
       setTime(0);
     }
 
