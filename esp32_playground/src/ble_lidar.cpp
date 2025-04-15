@@ -1,10 +1,16 @@
 #include "ble_lidar.h"
+#include "string.h"
+using namespace std;
 
 uint8_t BLE_LIDAR::duration_btwn_lasers;
 uint8_t BLE_LIDAR::laser_duration;
-uint8_t BLE_LIDAR::cols;
-uint8_t BLE_LIDAR::rows;
+uint8_t BLE_LIDAR::height;
+uint8_t BLE_LIDAR::width;
 uint8_t BLE_LIDAR::num_pos;
+uint8_t BLE_LIDAR::random_bit;
+uint8_t BLE_LIDAR::sliding_bit;
+bool BLE_LIDAR::stopWorkout;
+
 
 std::vector<uint8_t> BLE_LIDAR::positions;
 
@@ -40,83 +46,136 @@ void BLE_LIDAR::getDistance(int* distance) {
   }  
 }
 
-uint8_t BLE_LIDAR::calculate_distance()
+double BLE_LIDAR::calculate_distance()
 {
   // get the average distance here, polls it 
   // Retrieve LiDAR Distance in centimeters
-  int centimeters = 0;
   int sum = 0;
 
-  for(int i = 0; i < 30; i++)
+  for(int i = 0; i < 100; i++)
   {
-    getDistance(&centimeters);
-    while(!centimeters && centimeters < 10000) 
+    getDistance(&lidar_distance_cm);
+    while(!lidar_distance_cm && lidar_distance_cm < 10000) 
     {
-      getDistance(&centimeters);
+      getDistance(&lidar_distance_cm);
     }
-    sum += centimeters;
+    sum += lidar_distance_cm;
   }
 
   // get average
-  double avg_distance = sum / 30;  
+  double avg_distance = sum / 100;  
   
   // number of centimeters in 1 foot : 30.48
-  uint8_t feet = uint8_t(avg_distance / 30.48);
+  double feet = avg_distance / 30.48;
   Serial.println("\t AVG Distance in feet: "+ String(feet));
   return feet;
 } 
 
-void BLE_LIDAR::output_distance()
+void BLE_LIDAR::MyServerCallbacks::onConnect(BLEServer *pServer)
 {
-  // Retrieve LiDAR Distance in centimeters
-  int distance = 0;
-
-  getDistance(&distance);
-  while(!distance && distance < 10000) {
-    getDistance(&distance);
-  }
-
-  Serial.print("Distance in centimeters: "+ String(distance));
-  
+  Serial.println("Phone connected");
+  lidar->deviceConnected = true;
 }
 
+void BLE_LIDAR::MyServerCallbacks::onDisconnect(BLEServer *pServer)
+{
+  lidar->deviceConnected = false;
+  Serial.println("Phone disconnected, restarting advertising");
+  pServer->startAdvertising(); // restart advertising
+}
 
 void BLE_LIDAR::MyCallbacks::onWrite(BLECharacteristic *pCharacteristic) {
   std::string value = pCharacteristic->getValue();
+  stopWorkout = false;
+
   if (value.length() > 0) {
-    // convert data received to a 64 bit integer
     for (int i = 0; i < value.length(); i++) {
       Serial.print(value[i]);  // Print each character or byte
     }
     Serial.println();
 
-    uint64_t dec_num = std::stoull(value.c_str());
-
-    num_pos = dec_num & 0x1F; // 5 bits
-    // array of the numbers
-    for (uint8_t i = 0; i < num_pos; i++)
+    // app requesting LiDaR
+    if (value == "RESCAN")
     {
-      positions.push_back((dec_num >> 5 + (6*i)) & 0x3F); // each position is 6 bits
+      // send the lidar data
+      double dist_ft = lidar->calculate_distance();
+      lidar->lidar_notify(dist_ft);
     }
 
-    int after_lasers = 5 + (6 * num_pos);
-
-    cols = (dec_num >> after_lasers) & 0xF; // 4 bits
-    rows = (dec_num >> after_lasers + 4) & 0xF; // 4 bits
-    laser_duration = (dec_num >> after_lasers + 8) & 0xF; // 4 bits
-    duration_btwn_lasers = (dec_num >> after_lasers + 12) & 0xF; // 4 bits
-    
-    Serial.println("Number received:" + String(dec_num));
-    Serial.println("Duration Btwn Lasers: "+ String(duration_btwn_lasers) + "\t Laser Duration: "+ String(laser_duration));
-    Serial.println("Rows: "+ String(rows) + "\t Columns: "+ String(cols));
-    Serial.println("Number of Positions: "+ String(num_pos));
-
-    // print out the laser positions
-    Serial.print("Laser Positions: "); 
-    for (uint8_t i = 0; i < positions.size(); i++)
-    {
-      Serial.print(String(positions[i]) + " "); // each position is 6 bits
+    else if (value == "STOP"){
+      stopWorkout = true;
     }
+    // app is sending workout data
+    else
+    {
+      uint64_t dec_num = std::stoull(value.c_str()); 
+
+      // first uint64 being sent
+      if (!(dec_num & 0x1))
+      {
+        num_pos = (dec_num >> 1) & 0x1F; // 5 bits
+
+        // up to 11 positions
+        if(num_pos <= 11)
+        {
+          for (uint8_t i = 0; i < num_pos; i++)
+          {
+            positions.push_back((dec_num >> 6 + (5*i)) & 0x1F); // each position is 5 bits
+          }
+        }
+        else if (num_pos > 11)
+        {
+          for (uint8_t i = 0; i < 11; i++)
+          {
+            positions.push_back((dec_num >> 6 + (5*i)) & 0x1F); // each position is 5 bits
+          }
+        }
+
+        Serial.println("Number of Positions: "+ String(num_pos));
+        // print out the laser positions
+        Serial.print("Laser Positions: "); 
+        for (uint8_t i = 0; i < positions.size(); i++)
+        {
+          Serial.print(String(positions[i]) + " "); // each position is 5 bits
+        }
+        Serial.println();
+      }
+      // second uint64 being sent
+      else if (dec_num & 0x1)
+      {
+        // if num positions is > 11, get the rest of the positions
+        if(num_pos > 11)
+        {
+          for (uint8_t i = 0; i < num_pos - 11; i++)
+          {
+            positions.push_back((dec_num >> 1 + (5*i)) & 0x1F); // each position is 5 bits
+          }
+        }
+
+        // get the rest of the data
+        height = (dec_num >> 46) & 0xF; // 4 bits
+        width = (dec_num >> 46 + 4) & 0xF; // 4 bits
+        duration_btwn_lasers = (dec_num >> 46 + 8) & 0xF; // 4 bits
+        laser_duration = (dec_num >> 46 + 12) & 0xF; // 4 bits
+        sliding_bit = (dec_num >> 46 + 16) & 0x1;
+        random_bit = (dec_num >> 46 + 17) & 0x1;
+
+        Serial.println("Number received:" + String(dec_num));
+        Serial.println("Sliding: "+ String(sliding_bit) + "\t Random: "+ String(random_bit));
+        Serial.println("Duration Btwn Lasers: "+ String(duration_btwn_lasers) + "\t Laser Duration: "+ String(laser_duration));
+        Serial.println("width: "+ String(width) + "\t height: "+ String(height));
+        
+
+        // print out the laser positions
+        Serial.print("Laser Positions: "); 
+        for (uint8_t i = 0; i < positions.size(); i++)
+        {
+          Serial.print(String(positions[i]) + " "); // each position is 5 bits
+        }
+        Serial.println();
+      }
+    }
+
   }
 }
 
@@ -124,18 +183,18 @@ void BLE_LIDAR::BLE_setup(){
   // BLE Setup
   BLEDevice::init("Playzer");
   BLEServer *pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks(this));
   BLEService *pService = pServer->createService(SERVICE_UUID);
   
-  BLECharacteristic *pCharacteristic =
+  pCharacteristic =
     pService->createCharacteristic(
       NUM_CHARACTERISTIC_UUID, 
       BLECharacteristic::PROPERTY_READ | 
       BLECharacteristic::PROPERTY_WRITE | 
       BLECharacteristic::PROPERTY_NOTIFY
     );
-
-  pCharacteristic->setValue("Hello World says Sharika");
-  pCharacteristic->setCallbacks(new MyCallbacks());
+  pCharacteristic->setValue("hello world");
+  pCharacteristic->setCallbacks(new MyCallbacks(this));
 
   pService->start();
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
@@ -146,13 +205,28 @@ void BLE_LIDAR::BLE_setup(){
   BLEDevice::startAdvertising();
 }
 
+void BLE_LIDAR::lidar_notify(double dist_ft)
+{
+  if (this->pCharacteristic == nullptr) {
+        Serial.println("Characteristic not initialized");
+        return;
+    }
+  std::string dist = std::to_string(dist_ft);
+  pCharacteristic->setValue(dist);
+  pCharacteristic->notify();
+}
+
 void BLE_LIDAR::reset_workout(){
   duration_btwn_lasers = 0;
   laser_duration = 0;
-  cols = 0;
-  rows = 0;
+  height = 0;
+  width = 0;
   num_pos = 0;
+  stopWorkout = false;
   positions.clear();
+}
+bool BLE_LIDAR::stop(){
+  return stopWorkout;
 }
 
 uint8_t BLE_LIDAR::get_DBL(){
@@ -162,14 +236,20 @@ uint8_t BLE_LIDAR::get_DBL(){
 uint8_t BLE_LIDAR::get_LD(){
   return laser_duration;
 }
-uint8_t BLE_LIDAR::get_C(){
-  return cols;
+uint8_t BLE_LIDAR::get_H(){
+  return height;
 }
-uint8_t BLE_LIDAR::get_R(){
-  return rows;
+uint8_t BLE_LIDAR::get_W(){
+  return width;
 }
 uint8_t BLE_LIDAR::get_NP(){
   return num_pos;
+}
+bool BLE_LIDAR::get_RAND(){
+  return (random_bit == 1);
+}
+bool BLE_LIDAR::get_SLIDE(){
+  return (sliding_bit == 1);
 }
 std::vector<uint8_t> BLE_LIDAR::get_P(){
   return positions;

@@ -24,20 +24,56 @@ void setup() {
     Serial.println("Characteristic defined! Now you can read it in your phone!");
 }
 
-void loop() {
-    while (!bluetooth_obj->get_C() && !bluetooth_obj->get_R()){}
+void loop() { 
 
-    Workout test_workout;
-    test_workout = Workout( 1, 
-                            bluetooth_obj->get_DBL(), 
-                            bluetooth_obj->get_LD()*1000, 
-                            bluetooth_obj->get_C(), 
-                            bluetooth_obj->get_R(), 
-                            bluetooth_obj->get_P(), 
-                            bluetooth_obj->get_NP());
+    // std::vector<uint8_t> test_pos;
+    // for (int x = 0; x < 32; x++){
+    //     test_pos.push_back((x));
+    // }
+    // // test_workout = Workout();
+    // Workout workout(true,
+    //         true,
+    //         4, 
+    //         2, 
+    //         10, 
+    //         10, 
+    //         test_pos, 
+    //         32);
 
-    test_workout.execute();
+    // workout.calibrate(6.0);
+    // // workout.calibrate(bluetooth_obj->calculate_distance());
 
-    bluetooth_obj->reset_workout();
+    // while(workout.execute())
+    // workout.return_to_base();
 
+    // delay(5000);
+
+
+    if(bluetooth_obj->deviceConnected)
+    {
+        while (!bluetooth_obj->get_H() && !bluetooth_obj->get_W())
+        {
+            // polls the distance to get an accurate lidar sensor reading
+            bluetooth_obj->getDistance(&bluetooth_obj->lidar_distance_cm);
+        }
+        
+        Workout workout(bluetooth_obj->get_RAND(),
+                        bluetooth_obj->get_SLIDE(),
+                        bluetooth_obj->get_DBL(), 
+                        bluetooth_obj->get_LD(), 
+                        bluetooth_obj->get_H(), 
+                        bluetooth_obj->get_W(), 
+                        bluetooth_obj->get_P(), 
+                        bluetooth_obj->get_NP());
+
+        workout.calibrate(bluetooth_obj->calculate_distance());
+
+        workout.show_bounds();
+
+        while(!bluetooth_obj->stop() && workout.execute())
+        workout.return_to_base();
+        workout.turn_off_laser();
+
+        bluetooth_obj->reset_workout();
+    }
 }
